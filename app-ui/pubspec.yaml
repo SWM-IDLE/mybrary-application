@@ -1,0 +1,76 @@
+name: mybrary
+description: Connect people with a collection of books and discover the value of books.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.1+1
+
+environment:
+  sdk: '>=3.0.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+
+  # auth & network
+  flutter_web_auth: ^0.5.0
+  http: ^1.1.0
+  flutter_secure_storage: ^8.0.0 # minSdkVersion 18
+  dio: ^5.2.1+1
+  # barcode scan
+  mobile_scanner: ^3.3.0 # minSdkVersion 21
+  # permission
+  permission_handler: ^10.4.2
+  # image
+  flutter_svg: ^2.0.7
+  image_picker: ^1.0.1
+  # dynamic url
+  url_launcher: ^6.1.12
+  # book detail parser
+  html: ^0.15.4
+  http_parser: ^4.0.2
+  # firebase & config
+  firebase_crashlytics: ^3.3.5
+  firebase_core: ^2.15.1
+  firebase_analytics: ^10.4.5
+  flutter_dotenv: ^5.1.0
+  # state management
+  flutter_riverpod: ^2.3.7
+  shared_preferences: ^2.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/img/icon/
+    - assets/img/logo/
+    - assets/svg/icon/
+    - assets/svg/icon/small/
+    - assets/svg/badge/
+    - .env
+
+  fonts:
+    - family: NotoSansKR
+      fonts:
+        - asset: assets/fonts/NotoSansKR-Black.otf
+          weight: 900
+        - asset: assets/fonts/NotoSansKR-Bold.otf
+          weight: 700
+        - asset: assets/fonts/NotoSansKR-Medium.otf
+          weight: 500
+        - asset: assets/fonts/NotoSansKR-Regular.otf
+          weight: 400
+        - asset: assets/fonts/NotoSansKR-Light.otf
+          weight: 300
+        - asset: assets/fonts/NotoSansKR-Thin.otf
+          weight: 100
