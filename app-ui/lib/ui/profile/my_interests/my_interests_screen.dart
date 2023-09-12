@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mybrary/data/model/profile/interest_categories_response.dart';
 import 'package:mybrary/data/model/profile/my_interests_response.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/interests_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/single_data_error.dart';

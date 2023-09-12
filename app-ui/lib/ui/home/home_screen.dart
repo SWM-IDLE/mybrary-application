@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/data/model/home/book_list_by_category_response.dart';
 import 'package:mybrary/data/model/home/book_recommendations_response.dart';
 import 'package:mybrary/data/model/home/today_registered_book_count_response.dart';
+import 'package:mybrary/data/provider/home_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/home_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
-import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/home/components/home_barcode_button.dart';
 import 'package:mybrary/ui/home/components/home_best_seller.dart';
@@ -18,14 +19,14 @@ import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _homeRepository = HomeRepository();
 
   late Future<TodayRegisteredBookCountResponseData>
@@ -44,6 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
 
     _homeRepository
         .getBookListByInterest(
@@ -83,6 +86,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(todayRegisteredBookCountProvider);
+
+    if (state == null) {
+      return const DefaultLayout(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return DefaultLayout(
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(
@@ -93,20 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
           const HomeIntro(),
           const HomeBarcodeButton(),
           SliverToBoxAdapter(
-            child: FutureBuilder<TodayRegisteredBookCountResponseData>(
-                future: _todayRegisteredBookCountData,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return buildErrorPage();
-                  }
-
-                  if (snapshot.hasData) {
-                    return HomeBookCount(
-                      todayRegisteredBookCount: snapshot.data!.count!,
-                    );
-                  }
-                  return const CircularLoading();
-                }),
+            child: HomeBookCount(
+              todayRegisteredBookCount: state.count,
+            ),
           ),
           SliverToBoxAdapter(
             child: FutureBuilder<BookListByCategoryResponseData>(

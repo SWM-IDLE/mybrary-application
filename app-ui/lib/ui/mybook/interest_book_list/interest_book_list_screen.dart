@@ -2,8 +2,8 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:mybrary/data/model/book/book_list_response.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';

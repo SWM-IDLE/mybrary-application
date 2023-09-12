@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mybrary/data/model/search/book_detail_review_response.dart';
-import 'package:mybrary/provider/user_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';

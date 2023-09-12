@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:mybrary/data/network/api.dart';
-import 'package:mybrary/provider/user_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/style.dart';

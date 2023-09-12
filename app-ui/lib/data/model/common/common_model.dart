@@ -2,13 +2,25 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'common_model.g.dart';
 
+abstract class CommonResponseBase {}
+
+class CommonResponseError extends CommonResponseBase {
+  final String message;
+
+  CommonResponseError({
+    required this.message,
+  });
+}
+
+class CommonResponseLoading extends CommonResponseBase {}
+
 @JsonSerializable(
   genericArgumentFactories: true,
 )
-class CommonModel<T> {
+class CommonModel<T> extends CommonResponseBase {
   final String status;
   final String message;
-  final T data;
+  final T? data;
 
   CommonModel({
     required this.status,
@@ -19,4 +31,20 @@ class CommonModel<T> {
   factory CommonModel.fromJson(
           Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
       _$CommonModelFromJson(json, fromJsonT);
+}
+
+class CommonResponseRefetching<T> extends CommonModel<T> {
+  CommonResponseRefetching({
+    required super.status,
+    required super.message,
+    required super.data,
+  });
+}
+
+class CommonResponseFetchingMore<T> extends CommonModel<T> {
+  CommonResponseFetchingMore({
+    required super.status,
+    required super.message,
+    required super.data,
+  });
 }
