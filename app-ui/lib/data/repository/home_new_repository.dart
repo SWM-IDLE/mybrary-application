@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mybrary/data/model/common/books_params.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
+import 'package:mybrary/data/model/home/books_by_category_model.dart';
 import 'package:mybrary/data/model/home/today_registered_book_count_model.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/dio_provider.dart';
@@ -21,10 +23,13 @@ abstract class HomeNewRepository {
   factory HomeNewRepository(Dio dio, {String baseUrl}) = _HomeNewRepository;
 
   @GET('/mybooks/today-registration-count')
-  @Headers({
-    'Authorization':
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBY2Nlc3NUb2tlbiIsImxvZ2luSWQiOiIxYTI0MGYzZC05MjQyLTQ0NjEtYjlhNC1kOTAwNTJmZjlkYzciLCJleHAiOjE2OTQxNTQzNzJ9.YX-uiA1tUiV0BrrSwi9tysr30BTGT_WEPaP5ECdoR9Vda4lGGU54zifb6cdLhJTwNtd7VXoEb2aC4urbWx05fg',
-  })
   Future<CommonModel<TodayRegisteredBookCountModel>>
       getTodayRegisteredBookCount();
+
+  @GET('/books/recommendations')
+  Future<CommonModel<BooksByCategoryModel>> getBooksByCategory({
+    @Queries() BooksParams? booksParams = const BooksParams(
+      type: 'Bestseller',
+    ),
+  });
 }

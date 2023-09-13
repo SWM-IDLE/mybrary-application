@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mybrary/data/model/home/book_list_by_category_response.dart';
 import 'package:mybrary/data/model/home/book_recommendations_response.dart';
-import 'package:mybrary/data/model/home/today_registered_book_count_response.dart';
+import 'package:mybrary/data/provider/home_bestseller_provider.dart';
 import 'package:mybrary/data/provider/home_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/home_repository.dart';
@@ -29,10 +28,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _homeRepository = HomeRepository();
 
-  late Future<TodayRegisteredBookCountResponseData>
-      _todayRegisteredBookCountData;
-
-  late Future<BookListByCategoryResponseData> _bookListByCategoryData;
   late Future<BookRecommendationsResponseData> _bookRecommendationsData;
 
   late String _bookCategory = '';
@@ -47,6 +42,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
 
     ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
+    ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
 
     _homeRepository
         .getBookListByInterest(
@@ -62,13 +58,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       },
     );
 
-    _todayRegisteredBookCountData = _homeRepository.getTodayRegisteredBookCount(
-      context: context,
-    );
-    _bookListByCategoryData = _homeRepository.getBookListByCategory(
-      context: context,
-      type: 'Bestseller',
-    );
     _bookRecommendationsData = _homeRepository.getBookListByInterest(
       context: context,
       type: 'Bestseller',
@@ -86,9 +75,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(todayRegisteredBookCountProvider);
+    final todayRegisteredBookCount =
+        ref.watch(todayRegisteredBookCountProvider);
+    final booksByBestSeller = ref.watch(homeBestSellerProvider);
 
-    if (state == null) {
+    if (booksByBestSeller == null) {
       return const DefaultLayout(
         child: Center(
           child: CircularProgressIndicator(),
@@ -107,32 +98,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const HomeBarcodeButton(),
           SliverToBoxAdapter(
             child: HomeBookCount(
-              todayRegisteredBookCount: state.count,
+              todayRegisteredBookCount: todayRegisteredBookCount?.count ?? 0,
             ),
           ),
           SliverToBoxAdapter(
-            child: FutureBuilder<BookListByCategoryResponseData>(
-                future: _bookListByCategoryData,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return buildErrorPage();
-                  }
-                  if (snapshot.hasData) {
-                    return Container(
-                      height: 258,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16.0,
-                      ),
-                      child: HomeBestSeller(
-                        bookListByBestSeller: snapshot.data!.books!,
-                        onTapBook: (String isbn13) {
-                          _navigateToBookSearchDetailScreen(isbn13);
-                        },
-                      ),
-                    );
-                  }
-                  return Container();
-                }),
+            child: Container(
+              height: 258,
+              padding: const EdgeInsets.symmetric(
+                vertical: 16.0,
+              ),
+              child: HomeBestSeller(
+                bookListByBestSeller: booksByBestSeller.books,
+                onTapBook: (String isbn13) {
+                  _navigateToBookSearchDetailScreen(isbn13);
+                },
+              ),
+            ),
           ),
           SliverToBoxAdapter(
             child: FutureBuilder<BookRecommendationsResponseData>(
@@ -213,10 +194,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     ).then((value) => {
           setState(() {
-            _todayRegisteredBookCountData =
-                _homeRepository.getTodayRegisteredBookCount(
-              context: context,
-            );
+            ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
           })
         });
   }
