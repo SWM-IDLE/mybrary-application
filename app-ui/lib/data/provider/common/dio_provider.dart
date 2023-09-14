@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mybrary/data/network/api.dart';
-import 'package:mybrary/data/provider/secure_storage_provider.dart';
+import 'package:mybrary/data/provider/common/secure_storage_provider.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/variable/global_navigator_variable.dart';
 
@@ -37,6 +37,13 @@ class CustomInterceptor extends Interceptor {
     options.headers[accessTokenHeaderKey] = 'Bearer $accessToken';
 
     return super.onRequest(options, handler);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    log("API 응답값: ${response.data}");
+
+    return super.onResponse(response, handler);
   }
 
   @override

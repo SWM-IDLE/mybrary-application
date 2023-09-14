@@ -16,7 +16,7 @@ final todayRegisteredBookCountProvider =
 
 final homeProvider =
     StateNotifierProvider<HomeStateNotifier, CommonResponseBase>((ref) {
-  final repo = ref.watch(homeRepositoryProvider);
+  final repo = ref.watch(homeBookServiceRepositoryProvider);
 
   final notifier = HomeStateNotifier(
     repository: repo,
@@ -37,6 +37,8 @@ class HomeStateNotifier extends StateNotifier<CommonResponseBase> {
       state = await repository.getTodayRegisteredBookCount();
     }
 
-    await repository.getTodayRegisteredBookCount();
+    if (state is! CommonModel) {
+      return;
+    }
   }
 }

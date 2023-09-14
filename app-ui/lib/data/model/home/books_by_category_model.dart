@@ -26,4 +26,6 @@ class BooksModel {
 
   factory BooksModel.fromJson(Map<String, dynamic> json) =>
       _$BooksModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BooksModelToJson(this);
 }

@@ -6,7 +6,7 @@ part 'books_params.g.dart';
 class BooksParams {
   final String type;
   final String? page;
-  final String? categoryId;
+  final int? categoryId;
 
   const BooksParams({
     required this.type,

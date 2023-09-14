@@ -16,7 +16,7 @@ final homeBestSellerProvider = Provider<BooksByCategoryModel?>((ref) {
 final bestSellerProvider =
     StateNotifierProvider<HomeBestSellerStateNotifier, CommonResponseBase>(
         (ref) {
-  final repo = ref.watch(homeRepositoryProvider);
+  final repo = ref.watch(homeBookServiceRepositoryProvider);
 
   final notifier = HomeBestSellerStateNotifier(
     repository: repo,
@@ -37,6 +37,8 @@ class HomeBestSellerStateNotifier extends StateNotifier<CommonResponseBase> {
       state = await repository.getBooksByCategory();
     }
 
-    await repository.getBooksByCategory();
+    if (state is! CommonModel) {
+      return;
+    }
   }
 }

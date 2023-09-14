@@ -9,7 +9,7 @@ part of 'books_params.dart';
 BooksParams _$BooksParamsFromJson(Map<String, dynamic> json) => BooksParams(
       type: json['type'] as String,
       page: json['page'] as String?,
-      categoryId: json['categoryId'] as String?,
+      categoryId: json['categoryId'] as int?,
     );
 
 Map<String, dynamic> _$BooksParamsToJson(BooksParams instance) =>

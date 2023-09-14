@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mybrary/data/model/home/book_recommendations_response.dart';
-import 'package:mybrary/data/provider/home_bestseller_provider.dart';
-import 'package:mybrary/data/provider/home_provider.dart';
-import 'package:mybrary/data/provider/user_provider.dart';
+import 'package:mybrary/data/model/common/common_model.dart';
+import 'package:mybrary/data/model/home/books_by_category_model.dart';
+import 'package:mybrary/data/model/home/books_by_interest_model.dart';
+import 'package:mybrary/data/model/home/today_registered_book_count_model.dart';
+import 'package:mybrary/data/provider/home/home_bestseller_provider.dart';
+import 'package:mybrary/data/provider/home/home_provider.dart';
+import 'package:mybrary/data/provider/home/home_recommendation_books_provider.dart';
 import 'package:mybrary/data/repository/home_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
@@ -16,7 +19,6 @@ import 'package:mybrary/ui/home/components/home_intro.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books.dart';
 import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
-import 'package:mybrary/utils/logics/common_utils.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -28,14 +30,11 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _homeRepository = HomeRepository();
 
-  late Future<BookRecommendationsResponseData> _bookRecommendationsData;
-
   late String _bookCategory = '';
-  late List<BookRecommendations> _bookListByCategory = [];
+  late List<UserInterests> interests = [];
+  late List<BooksModel> _bookListByCategory = [];
 
   final ScrollController _categoryScrollController = ScrollController();
-
-  final _userId = UserState.userId;
 
   @override
   void initState() {
@@ -43,26 +42,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
     ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
-
-    _homeRepository
-        .getBookListByInterest(
-      context: context,
-      type: 'Bestseller',
-      userId: _userId,
-    )
-        .then(
-      (data) {
-        if (data.userInterests!.isNotEmpty) {
-          _bookCategory = data.userInterests![0].name!;
-        }
-      },
-    );
-
-    _bookRecommendationsData = _homeRepository.getBookListByInterest(
-      context: context,
-      type: 'Bestseller',
-      userId: _userId,
-    );
+    ref.read(recommendationBooksProvider.notifier).getBooksByFirstInterests();
   }
 
   void _scrollToTop() {
@@ -74,17 +54,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    _categoryScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final todayRegisteredBookCount =
         ref.watch(todayRegisteredBookCountProvider);
     final booksByBestSeller = ref.watch(homeBestSellerProvider);
+    final booksByInterests = ref.watch(homeRecommendationBooksProvider);
 
     if (booksByBestSeller == null) {
-      return const DefaultLayout(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
+      return _initHomeLayout(
+        todayRegisteredBookCount: todayRegisteredBookCount,
+        child: [
+          _sliverLoadingBox(),
+        ],
       );
+    }
+
+    if (booksByInterests == null) {
+      return _initHomeLayout(
+        todayRegisteredBookCount: todayRegisteredBookCount,
+        child: [
+          _sliverBestSellerBox(booksByBestSeller),
+          _sliverLoadingBox(),
+        ],
+      );
+    }
+
+    if (booksByInterests is! CommonResponseLoading) {
+      interests = _getUserInterests(booksByInterests.userInterests);
+
+      if (_bookListByCategory.isEmpty &&
+          booksByInterests.userInterests!.isNotEmpty) {
+        _bookListByCategory.addAll([...booksByInterests.bookRecommendations!]);
+        _bookCategory = interests.first.name!;
+      }
     }
 
     return DefaultLayout(
@@ -96,76 +104,165 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           _homeAppBar(),
           const HomeIntro(),
           const HomeBarcodeButton(),
-          SliverToBoxAdapter(
-            child: HomeBookCount(
-              todayRegisteredBookCount: todayRegisteredBookCount?.count ?? 0,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 258,
-              padding: const EdgeInsets.symmetric(
-                vertical: 16.0,
-              ),
-              child: HomeBestSeller(
-                bookListByBestSeller: booksByBestSeller.books,
-                onTapBook: (String isbn13) {
-                  _navigateToBookSearchDetailScreen(isbn13);
+          _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
+          _sliverBestSellerBox(booksByBestSeller),
+          _sliverRecommendationBooksHeaderBox(),
+          if (booksByInterests.userInterests!.isEmpty)
+            SliverToBoxAdapter(
+              child: InkWell(
+                onTap: () {
+                  _navigateToMyInterestsScreen();
                 },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 4.0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        '지금 바로 마이 관심사를 등록해보세요!',
+                        style: commonSubRegularStyle.copyWith(
+                          fontSize: 15.0,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                      SizedBox(
+                        child: SvgPicture.asset(
+                          'assets/svg/icon/right_arrow.svg',
+                          width: 14.0,
+                          height: 14.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: FutureBuilder<BookRecommendationsResponseData>(
-                future: _bookRecommendationsData,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return buildErrorPage();
-                  }
-
-                  if (snapshot.hasData) {
-                    final result = snapshot.data!;
-                    final interests = _getUserInterests(result.userInterests);
+          if (booksByInterests.userInterests!.isNotEmpty)
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 240,
+                child: HomeRecommendBooks(
+                  category: _bookCategory,
+                  userInterests: booksByInterests.userInterests!,
+                  bookListByCategory: _bookListByCategory,
+                  categoryScrollController: _categoryScrollController,
+                  onTapBook: (String isbn13) {
+                    _navigateToBookSearchDetailScreen(isbn13);
+                  },
+                  onTapMyInterests: _navigateToMyInterestsScreen,
+                  onTapCategory: (String category) {
                     final [firstInterest, secondInterest, thirdInterest] =
                         interests;
 
-                    if (_bookListByCategory.isEmpty) {
-                      _bookListByCategory
-                          .addAll([...result.bookRecommendations!]);
-                    }
-
-                    return Container(
-                      height: 310,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16.0,
-                      ),
-                      child: HomeRecommendBooks(
-                          category: _bookCategory,
-                          userInterests: result.userInterests!,
-                          bookListByCategory: _bookListByCategory,
-                          categoryScrollController: _categoryScrollController,
-                          onTapBook: (String isbn13) {
-                            _navigateToBookSearchDetailScreen(isbn13);
-                          },
-                          onTapMyInterests: _navigateToMyInterestsScreen,
-                          onTapCategory: (String category) {
-                            setState(() {
-                              _bookCategory = category;
-                              _setInterests(firstInterest, category);
-                              _setInterests(secondInterest, category);
-                              _setInterests(thirdInterest, category);
-                            });
-                          }),
-                    );
-                  }
-                  return Container();
-                }),
-          ),
+                    setState(() {
+                      _bookCategory = category;
+                      _setInterests(firstInterest, category);
+                      _setInterests(secondInterest, category);
+                      _setInterests(thirdInterest, category);
+                    });
+                  },
+                ),
+              ),
+            ),
           const SliverToBoxAdapter(
             child: SizedBox(
               height: 30.0,
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _sliverRecommendationBooksHeaderBox() {
+    return const SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 16.0,
+          bottom: 12.0,
+        ),
+        child: Row(
+          children: [
+            Text(
+              '추천 도서, ',
+              style: commonSubBoldStyle,
+            ),
+            Text(
+              '이건 어때요?',
+              style: commonMainRegularStyle,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _sliverTodayRegisteredBookCountBox(
+      TodayRegisteredBookCountModel? todayRegisteredBookCount) {
+    return SliverToBoxAdapter(
+      child: HomeBookCount(
+        todayRegisteredBookCount: todayRegisteredBookCount?.count ?? 0,
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _sliverBestSellerBox(
+      BooksByCategoryModel booksByBestSeller) {
+    return SliverToBoxAdapter(
+      child: Container(
+        height: 258,
+        padding: const EdgeInsets.symmetric(
+          vertical: 16.0,
+        ),
+        child: HomeBestSeller(
+          bookListByBestSeller: booksByBestSeller.books,
+          onTapBook: (String isbn13) {
+            _navigateToBookSearchDetailScreen(isbn13);
+          },
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _sliverLoadingBox() {
+    return const SliverToBoxAdapter(
+      child: Column(
+        children: [
+          SizedBox(height: 40),
+          Center(
+            child: CircularProgressIndicator(
+              color: primaryColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  DefaultLayout _initHomeLayout({
+    required TodayRegisteredBookCountModel? todayRegisteredBookCount,
+    List<Widget>? child,
+  }) {
+    return DefaultLayout(
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        slivers: [
+          _homeAppBar(),
+          const HomeIntro(),
+          const HomeBarcodeButton(),
+          _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
+          if (child != null) ...child,
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 30.0,
+            ),
+          ),
         ],
       ),
     );
@@ -207,20 +304,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     ).then(
       (value) => setState(() {
-        _homeRepository
-            .getBookListByInterest(
-              context: context,
-              type: 'Bestseller',
-              userId: _userId,
-            )
-            .then(
-              (data) => _bookCategory = data.userInterests![0].name!,
-            );
-        _bookRecommendationsData = _homeRepository.getBookListByInterest(
-          context: context,
-          type: 'Bestseller',
-          userId: _userId,
-        );
+        ref
+            .refresh(recommendationBooksProvider.notifier)
+            .getBooksByFirstInterests();
       }),
     );
   }
@@ -230,7 +316,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         .getBookListByCategory(
           context: context,
           type: 'Bestseller',
-          categoryId: interests.code!,
+          categoryId: interests.code,
         )
         .then(
           (data) => setState(() {
@@ -242,10 +328,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<UserInterests> _getUserInterests(List<UserInterests>? userInterests) {
     List<UserInterests> interests = userInterests ?? [];
     List<UserInterests> assignedInterests = List.filled(
-        3,
-        UserInterests.fromJson(
-          UserInterests().toJson(),
-        ));
+      3,
+      UserInterests.fromJson(UserInterests().toJson()),
+    );
 
     for (int i = 0; i < interests.length && i < 3; i++) {
       assignedInterests[i] = interests[i];
