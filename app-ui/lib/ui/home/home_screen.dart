@@ -11,12 +11,16 @@ import 'package:mybrary/data/provider/home/home_recommendation_books_provider.da
 import 'package:mybrary/data/repository/home_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/ui/common/components/error_page.dart';
+import 'package:mybrary/ui/common/components/sliver_loading.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/home/components/home_barcode_button.dart';
 import 'package:mybrary/ui/home/components/home_best_seller.dart';
 import 'package:mybrary/ui/home/components/home_book_count.dart';
+import 'package:mybrary/ui/home/components/home_interest_setting_button.dart';
 import 'package:mybrary/ui/home/components/home_intro.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books.dart';
+import 'package:mybrary/ui/home/components/home_recommend_books_header.dart';
 import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 
@@ -69,9 +73,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (booksByBestSeller == null) {
       return _initHomeLayout(
         todayRegisteredBookCount: todayRegisteredBookCount,
-        child: [
-          _sliverLoadingBox(),
-        ],
+        child: [const SliverLoading()],
       );
     }
 
@@ -80,7 +82,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         todayRegisteredBookCount: todayRegisteredBookCount,
         child: [
           _sliverBestSellerBox(booksByBestSeller),
-          _sliverLoadingBox(),
+          const SliverLoading(),
+        ],
+      );
+    }
+
+    if (isError([
+      todayRegisteredBookCount,
+      booksByBestSeller,
+      booksByInterests,
+    ])) {
+      return const Column(
+        children: [
+          ErrorPage(
+            errorMessage: '서비스에 문제가 있어요.\n잠시만 기다려 주세요 !',
+          ),
         ],
       );
     }
@@ -106,40 +122,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const HomeBarcodeButton(),
           _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
           _sliverBestSellerBox(booksByBestSeller),
-          _sliverRecommendationBooksHeaderBox(),
+          const HomeRecommendBooksHeader(),
           if (booksByInterests.userInterests!.isEmpty)
-            SliverToBoxAdapter(
-              child: InkWell(
-                onTap: () {
-                  _navigateToMyInterestsScreen();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 4.0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        '지금 바로 마이 관심사를 등록해보세요!',
-                        style: commonSubRegularStyle.copyWith(
-                          fontSize: 15.0,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      SizedBox(
-                        child: SvgPicture.asset(
-                          'assets/svg/icon/right_arrow.svg',
-                          width: 14.0,
-                          height: 14.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+            HomeInterestSettingButton(
+              onTapMyInterests: _navigateToMyInterestsScreen,
             ),
           if (booksByInterests.userInterests!.isNotEmpty)
             SliverToBoxAdapter(
@@ -178,29 +164,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  SliverToBoxAdapter _sliverRecommendationBooksHeaderBox() {
-    return const SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 16.0,
-          bottom: 12.0,
-        ),
-        child: Row(
-          children: [
-            Text(
-              '추천 도서, ',
-              style: commonSubBoldStyle,
-            ),
-            Text(
-              '이건 어때요?',
-              style: commonMainRegularStyle,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   SliverToBoxAdapter _sliverTodayRegisteredBookCountBox(
       TodayRegisteredBookCountModel? todayRegisteredBookCount) {
     return SliverToBoxAdapter(
@@ -224,21 +187,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             _navigateToBookSearchDetailScreen(isbn13);
           },
         ),
-      ),
-    );
-  }
-
-  SliverToBoxAdapter _sliverLoadingBox() {
-    return const SliverToBoxAdapter(
-      child: Column(
-        children: [
-          SizedBox(height: 40),
-          Center(
-            child: CircularProgressIndicator(
-              color: primaryColor,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -344,5 +292,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       _refreshBookLists(interest);
       _scrollToTop();
     }
+  }
+
+  bool isError(List<dynamic> states) {
+    return states.any((state) => state is CommonResponseError);
   }
 }
