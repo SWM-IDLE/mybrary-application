@@ -1,3 +1,6 @@
+import 'package:mybrary/data/model/home/books_by_category_model.dart';
+import 'package:mybrary/data/model/home/books_by_interest_model.dart';
+
 class BookRecommendationsResponse {
   String status;
   String message;
@@ -32,7 +35,7 @@ class BookRecommendationsResponse {
 
 class BookRecommendationsResponseData {
   List<UserInterests>? userInterests;
-  List<BookRecommendations>? bookRecommendations;
+  List<BooksModel>? bookRecommendations;
 
   BookRecommendationsResponseData({
     this.userInterests,
@@ -48,7 +51,7 @@ class BookRecommendationsResponseData {
           : null,
       bookRecommendations: json['bookRecommendations'] != null
           ? (json['bookRecommendations'] as List)
-              .map((i) => BookRecommendations.fromJson(i))
+              .map((i) => BooksModel.fromJson(i))
               .toList()
           : null,
     );
@@ -63,25 +66,6 @@ class BookRecommendationsResponseData {
       data['bookRecommendations'] =
           bookRecommendations!.map((v) => v.toJson()).toList();
     }
-    return data;
-  }
-}
-
-class UserInterests {
-  String? name;
-  int? code;
-
-  UserInterests({this.name, this.code});
-
-  UserInterests.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    code = json['code'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    data['code'] = code;
     return data;
   }
 }

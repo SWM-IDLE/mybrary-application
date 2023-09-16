@@ -13,7 +13,8 @@ class HomeIntro extends StatelessWidget {
           vertical: 8.0,
         ),
         child: const Text(
-          '안녕하세요, IDLE님\n마이북을 등록하고 나만의 도서관을 만들어보세요 📚',
+          '안녕하세요, 마이브러리에 오신 것을 환영합니다!\n마이북을 등록하고 나만의 도서관을 만들어보세요 📚',
+          overflow: TextOverflow.ellipsis,
           style: mainIntroTextStyle,
         ),
       ),

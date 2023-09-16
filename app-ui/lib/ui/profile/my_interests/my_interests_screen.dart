@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/model/profile/interest_categories_response.dart';
 import 'package:mybrary/data/model/profile/my_interests_response.dart';
+import 'package:mybrary/data/provider/home/home_recommendation_books_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/interests_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/single_data_error.dart';
@@ -11,7 +13,7 @@ import 'package:mybrary/ui/profile/my_interests/components/interest_category.dar
 import 'package:mybrary/ui/profile/my_interests/components/interest_description.dart';
 import 'package:mybrary/ui/profile/my_interests/components/recommend_phrase.dart';
 
-class MyInterestsScreen extends StatefulWidget {
+class MyInterestsScreen extends ConsumerStatefulWidget {
   final List<UserInterests>? userInterests;
 
   const MyInterestsScreen({
@@ -20,10 +22,10 @@ class MyInterestsScreen extends StatefulWidget {
   });
 
   @override
-  State<MyInterestsScreen> createState() => _MyInterestsScreenState();
+  ConsumerState<MyInterestsScreen> createState() => _MyInterestsScreenState();
 }
 
-class _MyInterestsScreenState extends State<MyInterestsScreen> {
+class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
   late List<CategoriesResponses> selectedInterests;
 
   final InterestsRepository _interestsRepository = InterestsRepository();
@@ -82,6 +84,9 @@ class _MyInterestsScreenState extends State<MyInterestsScreen> {
               context: context,
               snackBarText: '마이 관심사가 저장되었습니다.',
             );
+
+            ref.invalidate(recommendationBooksProvider);
+
             Navigator.pop(context);
           },
           style: disableAnimationButtonStyle,
