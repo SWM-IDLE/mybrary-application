@@ -111,55 +111,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     }
 
-    return DefaultLayout(
-      child: CustomScrollView(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        slivers: [
-          _homeAppBar(),
-          const HomeIntro(),
-          const HomeBarcodeButton(),
-          _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
-          _sliverBestSellerBox(booksByBestSeller),
-          const HomeRecommendBooksHeader(),
-          if (booksByInterests.userInterests!.isEmpty)
-            HomeInterestSettingButton(
-              onTapMyInterests: _navigateToMyInterestsScreen,
-            ),
-          if (booksByInterests.userInterests!.isNotEmpty)
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 240,
-                child: HomeRecommendBooks(
-                  category: _bookCategory,
-                  userInterests: booksByInterests.userInterests!,
-                  bookListByCategory: _bookListByCategory,
-                  categoryScrollController: _categoryScrollController,
-                  onTapBook: (String isbn13) {
-                    _navigateToBookSearchDetailScreen(isbn13);
-                  },
-                  onTapMyInterests: _navigateToMyInterestsScreen,
-                  onTapCategory: (String category) {
-                    final [firstInterest, secondInterest, thirdInterest] =
-                        interests;
+    return RefreshIndicator(
+      color: commonWhiteColor,
+      backgroundColor: primaryColor,
+      onRefresh: () {
+        return Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
+            ref.refresh(bestSellerProvider.notifier).getBooksByBestSeller();
+            ref
+                .refresh(recommendationBooksProvider.notifier)
+                .getBooksByFirstInterests();
+          },
+        );
+      },
+      child: DefaultLayout(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          slivers: [
+            _homeAppBar(),
+            const HomeIntro(),
+            const HomeBarcodeButton(),
+            _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
+            _sliverBestSellerBox(booksByBestSeller),
+            const HomeRecommendBooksHeader(),
+            if (booksByInterests.userInterests!.isEmpty)
+              HomeInterestSettingButton(
+                onTapMyInterests: _navigateToMyInterestsScreen,
+              ),
+            if (booksByInterests.userInterests!.isNotEmpty)
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 240,
+                  child: HomeRecommendBooks(
+                    category: _bookCategory,
+                    userInterests: booksByInterests.userInterests!,
+                    bookListByCategory: _bookListByCategory,
+                    categoryScrollController: _categoryScrollController,
+                    onTapBook: (String isbn13) {
+                      _navigateToBookSearchDetailScreen(isbn13);
+                    },
+                    onTapMyInterests: _navigateToMyInterestsScreen,
+                    onTapCategory: (String category) {
+                      final [firstInterest, secondInterest, thirdInterest] =
+                          interests;
 
-                    setState(() {
-                      _bookCategory = category;
-                      _setInterests(firstInterest, category);
-                      _setInterests(secondInterest, category);
-                      _setInterests(thirdInterest, category);
-                    });
-                  },
+                      setState(() {
+                        _bookCategory = category;
+                        _setInterests(firstInterest, category);
+                        _setInterests(secondInterest, category);
+                        _setInterests(thirdInterest, category);
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 30.0,
-            ),
-          )
-        ],
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 30.0,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
