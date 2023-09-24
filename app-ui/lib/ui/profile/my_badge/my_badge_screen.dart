@@ -64,7 +64,7 @@ class MyBadgeScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(50.0),
                               ),
                               child: const Text(
-                                '달성일\n2023년 8월 24일',
+                                '달성일과 뱃지가\n곧 제공될 예정이에요 !',
                                 style: commonSubRegularStyle,
                                 textAlign: TextAlign.center,
                               ),
@@ -73,14 +73,15 @@ class MyBadgeScreen extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                // Todo: 추후 api 개발 후, 문구 변경 예정
                                 Text(
-                                  '824명',
+                                  '마이 뱃지',
                                   style: commonSubBoldStyle.copyWith(
                                       color: primaryColor),
                                   textAlign: TextAlign.center,
                                 ),
                                 const Text(
-                                  '의 마이브러리 회원들이 달성',
+                                  ', 많은 기대 부탁드립니다 !',
                                   style: commonSubBoldStyle,
                                   textAlign: TextAlign.center,
                                 ),
