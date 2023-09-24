@@ -107,7 +107,7 @@ class MyBookDetailReview extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: userId == null ? 50.0 : 0.0),
+            SizedBox(height: userId == null ? 16.0 : 0.0),
           ],
         ),
       ),
