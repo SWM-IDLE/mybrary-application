@@ -4,11 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/style.dart';
-import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
-import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/profile/profile_edit/profile_edit_screen.dart';
 import 'package:mybrary/ui/setting/components/account_withdrawal.dart';
+import 'package:mybrary/ui/setting/components/login_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -50,6 +49,16 @@ class SettingScreen extends StatelessWidget {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const ProfileEditScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _settingTab(
+                      tabTitle: '로그인 정보',
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginInfo(),
                           ),
                         );
                       },
@@ -127,11 +136,10 @@ class SettingScreen extends StatelessWidget {
                     const SizedBox(height: 12.0),
                     _settingTab(
                       tabTitle: '리뷰로 응원하기',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => _settingTempPage(),
-                          ),
+                      onTap: () async {
+                        // Todo: 추후 AOS, IOS 별 링크 설정 필요
+                        await launchUrl(
+                          Uri.parse(androidAppLink),
                         );
                       },
                     ),
@@ -171,22 +179,6 @@ class SettingScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  SubPageLayout _settingTempPage() {
-    return const SubPageLayout(
-      appBarTitle: '리뷰로 응원하기',
-      child: Align(
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            ErrorPage(
-              errorMessage: '곧 서비스 링크가 열릴 예정이에요!',
-            ),
-          ],
-        ),
       ),
     );
   }

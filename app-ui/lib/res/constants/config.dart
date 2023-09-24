@@ -9,6 +9,8 @@ const String expiredKey = 'isExpired';
 const String headerJsonValue = "application/json";
 
 // 설정 페이지 내 링크 관련 상수
+const String androidAppLink =
+    'https://play.google.com/store/apps/details?id=kr.mybrary.mybrary';
 const String noticeAndUpdateLink =
     'https://ribbon-soil-e35.notion.site/66ab3cd94b0a4f89af6c8d2ec24056fd?pvs=4';
 const String mybraryGuideLink =
