@@ -88,14 +88,9 @@ class SettingScreen extends StatelessWidget {
                     _settingTab(
                       tabTitle: '1:1 문의하기',
                       onTap: () async {
-                        String url = inquiryLink;
-                        if (await canLaunchUrl(Uri.parse(url))) {
-                          await launchUrl(
-                            Uri.parse(url),
-                            mode: LaunchMode.externalApplication,
-                            webOnlyWindowName: '_self',
-                          );
-                        }
+                        await _connectWebLink(
+                          webLink: inquiryLink,
+                        );
                       },
                     ),
                     const SizedBox(height: 24.0),
@@ -138,14 +133,9 @@ class SettingScreen extends StatelessWidget {
                       tabTitle: '리뷰로 응원하기',
                       onTap: () async {
                         // Todo: 추후 AOS, IOS 별 링크 설정 필요
-                        String url = androidAppLink;
-                        if (await canLaunchUrl(Uri.parse(url))) {
-                          await launchUrl(
-                            Uri.parse(url),
-                            mode: LaunchMode.externalApplication,
-                            webOnlyWindowName: '_self',
-                          );
-                        }
+                        await _connectWebLink(
+                          webLink: androidAppLink,
+                        );
                       },
                     ),
                     _settingTab(
@@ -186,6 +176,19 @@ class SettingScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _connectWebLink({
+    required String webLink,
+  }) async {
+    String url = webLink;
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+        webOnlyWindowName: '_self',
+      );
+    }
   }
 
   Future<dynamic> _showLogoutAlert(
