@@ -49,7 +49,7 @@ class _SignInScreenState extends State<SignInScreen> {
               const Align(
                 alignment: Alignment.topLeft,
                 child: Logo(
-                  logoText: '도서의 가치를 발견할\n당신만의 도서\n마이브러리',
+                  logoText: '도서의 가치를 발견할\n당신만의 도서관\n마이브러리',
                 ),
               ),
               Column(
