@@ -8,6 +8,7 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
+import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/components/single_data_error.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/profile/follow/components/follow_layout.dart';
@@ -77,14 +78,8 @@ class _FollowScreenState extends State<FollowScreen>
   void initState() {
     super.initState();
 
-    _followerResponseData = _followRepository.getFollower(
-      context: context,
-      userId: widget.userId ?? _userId,
-    );
-    _followingResponseData = _followRepository.getFollowings(
-      context: context,
-      userId: widget.userId ?? _userId,
-    );
+    _getFollowerList();
+    _getFollowingList();
 
     if (widget.pageType == FollowPageType.follower) {
       _tabController.index = 0;
@@ -131,23 +126,41 @@ class _FollowScreenState extends State<FollowScreen>
                 '팔로잉 ${followings.length - notFollowingUsers.length}',
               ];
 
-              return NestedScrollView(
-                controller: _scrollController,
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return followPageSliverBuilder(
-                    context,
-                    innerBoxIsScrolled,
-                    _followTabs,
-                    _tabController,
+              return RefreshIndicator(
+                color: commonWhiteColor,
+                backgroundColor: primaryColor,
+                onRefresh: () {
+                  return Future.delayed(
+                    const Duration(seconds: 1),
+                    () {
+                      if (_tabController.index == 0) {
+                        _getFollowerList();
+                      }
+
+                      if (_tabController.index == 1) {
+                        _getFollowingList();
+                      }
+                    },
                   );
                 },
-                body: TabBarView(
-                  controller: _tabController,
-                  children: <Widget>[
-                    followerScreen(followers),
-                    followingScreen(followings),
-                  ],
+                child: NestedScrollView(
+                  controller: _scrollController,
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return followPageSliverBuilder(
+                      context,
+                      innerBoxIsScrolled,
+                      _followTabs,
+                      _tabController,
+                    );
+                  },
+                  body: TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      followerScreen(followers),
+                      followingScreen(followings),
+                    ],
+                  ),
                 ),
               );
             }
@@ -158,7 +171,13 @@ class _FollowScreenState extends State<FollowScreen>
     );
   }
 
-  Padding followerScreen(List<Followers> followers) {
+  Widget followerScreen(List<Followers> followers) {
+    if (followers.isEmpty) {
+      return const DataError(
+        errorMessage: '등록된 팔로워가 없습니다.',
+      );
+    }
+
     return Padding(
       padding: EdgeInsets.only(top: _paddingTopHeight),
       child: ListView.builder(
@@ -205,7 +224,13 @@ class _FollowScreenState extends State<FollowScreen>
     );
   }
 
-  Padding followingScreen(List<Followings> followings) {
+  Widget followingScreen(List<Followings> followings) {
+    if (followings.isEmpty) {
+      return const DataError(
+        errorMessage: '등록한 팔로잉이 없습니다.',
+      );
+    }
+
     return Padding(
       padding: EdgeInsets.only(top: _paddingTopHeight),
       child: ListView.builder(
@@ -374,6 +399,20 @@ class _FollowScreenState extends State<FollowScreen>
             (String name) => Tab(text: name),
           )
           .toList(),
+    );
+  }
+
+  Future<FollowingResponseData> _getFollowingList() {
+    return _followingResponseData = _followRepository.getFollowings(
+      context: context,
+      userId: widget.userId ?? _userId,
+    );
+  }
+
+  Future<FollowerResponseData> _getFollowerList() {
+    return _followerResponseData = _followRepository.getFollower(
+      context: context,
+      userId: widget.userId ?? _userId,
     );
   }
 }
