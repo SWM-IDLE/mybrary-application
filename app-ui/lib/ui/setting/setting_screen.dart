@@ -138,9 +138,14 @@ class SettingScreen extends StatelessWidget {
                       tabTitle: '리뷰로 응원하기',
                       onTap: () async {
                         // Todo: 추후 AOS, IOS 별 링크 설정 필요
-                        await launchUrl(
-                          Uri.parse(androidAppLink),
-                        );
+                        String url = androidAppLink;
+                        if (await canLaunchUrl(Uri.parse(url))) {
+                          await launchUrl(
+                            Uri.parse(url),
+                            mode: LaunchMode.externalApplication,
+                            webOnlyWindowName: '_self',
+                          );
+                        }
                       },
                     ),
                     _settingTab(
