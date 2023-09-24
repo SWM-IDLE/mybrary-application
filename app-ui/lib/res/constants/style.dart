@@ -183,6 +183,13 @@ final disableAnimationButtonStyle = ButtonStyle(
   overlayColor: MaterialStateProperty.all(Colors.transparent),
 );
 
+final disableTextButtonStyle = TextButton.styleFrom(
+  splashFactory: NoSplash.splashFactory,
+  minimumSize: Size.zero,
+  padding: EdgeInsets.zero,
+  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+);
+
 final followButtonRoundStyle = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(10.0),
 );

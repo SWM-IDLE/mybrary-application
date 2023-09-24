@@ -242,10 +242,14 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                       meaningTagColorCode: _newMeaningTagColorCode ?? colorCode,
                       meaningTagQuote: _newMeaningTagQuote ??
                           myBookDetailData.meaningTag!.quote!,
+                      userId: widget.userId ?? _userId,
+                      onTapRecord: () =>
+                          _showMyBookRecordEdit(context, colorCode, dateTime),
                     ),
                     _myBookDetailDivider(),
                     if (myBookReviewData == null)
                       _hasNoReview(
+                        hasData: false,
                         thumbnailUrl: myBookInfo.thumbnailUrl!,
                         title: myBookInfo.title!,
                         authors: myBookInfo.authors!,
@@ -254,6 +258,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                       ),
                     if (myBookReviewData != null)
                       MyBookDetailReview(
+                        hasData: true,
                         content: myBookReviewData.content!,
                         starRating: myBookReviewData.starRating!,
                         createdAt: myBookReviewData.createdAt!,
@@ -266,8 +271,9 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                         userId: widget.userId,
                       ),
                     SliverToBoxAdapter(
-                      child:
-                          SizedBox(height: widget.userId == null ? 30.0 : 70.0),
+                      child: SizedBox(
+                        height: widget.userId == null ? 70.0 : 30.0,
+                      ),
                     ),
                   ],
                 ),
@@ -627,24 +633,6 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
-                _bookRepository
-                    .getMyBookDetail(
-                      context: context,
-                      userId: _userId,
-                      myBookId: widget.myBookId,
-                    )
-                    .then(
-                      (data) => {
-                        setState(() {
-                          _meaningTagQuoteController.text =
-                              data.meaningTag!.quote!;
-                          _originalReadStatus = data.readStatus!;
-                          _originalShowable = data.showable!;
-                          _originalShareable = data.shareable!;
-                          _originalExchangeable = data.exchangeable!;
-                        }),
-                      },
-                    );
               },
               child: Container(
                 color: greyDDDDDD,
@@ -720,6 +708,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
     required List<String> authors,
     required double starRating,
     required TextEditingController contentController,
+    required bool hasData,
   }) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -739,6 +728,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                   InkWell(
                     onTap: () async {
                       _nextToMyBookReview(
+                        hasData: false,
                         thumbnailUrl: thumbnailUrl,
                         title: title,
                         authors: authors,
@@ -794,6 +784,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
 
   void _nextToMyBookReview({
     required bool isCreateReview,
+    required bool hasData,
     required String thumbnailUrl,
     required String title,
     required List<String> authors,
@@ -806,6 +797,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => MyBookEditReview(
+          hasData: hasData,
           isCreateReview: isCreateReview,
           thumbnailUrl: thumbnailUrl,
           title: title,
@@ -865,6 +857,8 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
       foregroundColor: commonBlackColor,
       actions: [
         IconButton(
+          padding: EdgeInsets.only(right: widget.userId == null ? 2.0 : 8.0),
+          constraints: const BoxConstraints(),
           visualDensity: VisualDensity.compact,
           onPressed: () {
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
@@ -879,7 +873,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
         ),
         if (widget.userId == null)
           Padding(
-            padding: const EdgeInsets.only(right: 12.0),
+            padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
               visualDensity: VisualDensity.compact,
               onPressed: () async {
@@ -963,8 +957,9 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                   },
                 );
               },
-              icon: SvgPicture.asset(
-                'assets/svg/icon/small/book_remove.svg',
+              icon: const Icon(
+                Icons.playlist_remove_outlined,
+                size: 28.0,
               ),
             ),
           ),
@@ -998,7 +993,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
           child: Container(
             height: 46.0,
             decoration: BoxDecoration(
-              color: isCancel ? greyF1F2F5 : primaryColor,
+              color: isCancel ? greyF1F2F5 : commonRedColor,
               borderRadius: BorderRadius.circular(4.0),
             ),
             child: Center(
