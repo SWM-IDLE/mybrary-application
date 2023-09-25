@@ -57,19 +57,19 @@ class _MyBookScreenState extends State<MyBookScreen> {
     _myBooksResponseData = _bookRepository.getMyBooks(
       context: context,
       userId: widget.userId ?? _userId,
-      order: '',
+      order: 'registration',
       readStatus: '',
     );
     _completedBooksResponseData = _bookRepository.getMyBooks(
       context: context,
       userId: widget.userId ?? _userId,
-      order: '',
+      order: 'registration',
       readStatus: 'COMPLETED',
     );
     _interestBooksResponseData = _bookRepository.getInterestBooks(
       context: context,
       userId: widget.userId ?? _userId,
-      order: '',
+      order: 'registration',
     );
   }
 
@@ -176,9 +176,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
   }
 
   List<dynamic> _limitedBookShelfData(List<dynamic> myBooksData) {
-    return myBooksData.length > 5
-        ? myBooksData.reversed.toList().sublist(0, 5)
-        : myBooksData.reversed.toList();
+    return myBooksData.length > 5 ? myBooksData.sublist(0, 5) : myBooksData;
   }
 
   Padding _myBookShelfItem({
@@ -381,7 +379,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
         _myBooksResponseData = _bookRepository.getMyBooks(
           context: context,
           userId: widget.userId ?? _userId,
-          order: '',
+          order: 'registration',
           readStatus: '',
         );
       }),
@@ -415,7 +413,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
           _myBooksResponseData = _bookRepository.getMyBooks(
             context: context,
             userId: widget.userId ?? _userId,
-            order: '',
+            order: 'registration',
             readStatus: '',
           );
           _interestBooksResponseData = _bookRepository.getInterestBooks(
@@ -434,7 +432,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
           _completedBooksResponseData = _bookRepository.getMyBooks(
             context: context,
             userId: widget.userId ?? _userId,
-            order: '',
+            order: 'registration',
             readStatus: 'COMPLETED',
           );
           _interestBooksResponseData = _bookRepository.getInterestBooks(
