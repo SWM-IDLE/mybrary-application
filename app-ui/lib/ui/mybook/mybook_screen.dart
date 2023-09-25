@@ -69,6 +69,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
     _interestBooksResponseData = _bookRepository.getInterestBooks(
       context: context,
       userId: widget.userId ?? _userId,
+      order: '',
     );
   }
 
@@ -146,19 +147,19 @@ class _MyBookScreenState extends State<MyBookScreen> {
                         _myBookShelfItem(
                           myBooksBookShelfData: myBooksBookShelfData,
                           status: '마이북',
-                          order: '',
+                          order: 'registration',
                           readStatus: '',
                         ),
                         _myBookShelfItem(
                           myBooksBookShelfData: interestBooksBookShelfData,
                           status: '관심북',
-                          order: '',
+                          order: 'registration',
                           readStatus: '',
                         ),
                         _myBookShelfItem(
                           myBooksBookShelfData: completedBooksBookShelfData,
                           status: '완독북',
-                          order: '',
+                          order: 'registration',
                           readStatus: 'COMPLETED',
                         ),
                       ],
@@ -375,6 +376,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
         _interestBooksResponseData = _bookRepository.getInterestBooks(
           context: context,
           userId: widget.userId ?? _userId,
+          order: 'registration',
         );
         _myBooksResponseData = _bookRepository.getMyBooks(
           context: context,
@@ -419,6 +421,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
           _interestBooksResponseData = _bookRepository.getInterestBooks(
             context: context,
             userId: widget.userId ?? _userId,
+            order: 'registration',
           );
         }
         if (readStatus == '') {
@@ -437,6 +440,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
           _interestBooksResponseData = _bookRepository.getInterestBooks(
             context: context,
             userId: widget.userId ?? _userId,
+            order: 'registration',
           );
         }
       }),

@@ -17,7 +17,7 @@ class BookDataSource {
   Future<List<BookListResponseData>> getInterestBooks(
     BuildContext context,
     String userId,
-    String? order,
+    String order,
   ) async {
     final dio = await authDio(context);
     final getInterestBooksResponse = await dio.get(
