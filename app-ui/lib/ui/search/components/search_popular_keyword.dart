@@ -29,11 +29,10 @@ class SearchPopularKeyword extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             '인기 검색어',
-            style: TextStyle(
-              fontSize: 15.0,
-              fontWeight: FontWeight.w700,
+            style: commonSubBoldStyle.copyWith(
+              fontSize: 16.0,
             ),
           ),
           const SizedBox(height: 16.0),
