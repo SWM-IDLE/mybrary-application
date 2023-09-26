@@ -177,7 +177,7 @@ class _FollowScreenState extends State<FollowScreen>
   Widget followerScreen(List<Followers> followers) {
     if (followers.isEmpty) {
       return const DataError(
-        errorMessage: '등록된 팔로워가 없습니다.',
+        errorMessage: '팔로워 사용자가 없습니다.',
       );
     }
 
@@ -243,7 +243,7 @@ class _FollowScreenState extends State<FollowScreen>
   Widget followingScreen(List<Followings> followings) {
     if (followings.isEmpty) {
       return const DataError(
-        errorMessage: '등록한 팔로잉이 없습니다.',
+        errorMessage: '팔로잉 중인 사용자가 없습니다.',
       );
     }
 
