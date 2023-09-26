@@ -57,18 +57,19 @@ class _MyBookScreenState extends State<MyBookScreen> {
     _myBooksResponseData = _bookRepository.getMyBooks(
       context: context,
       userId: widget.userId ?? _userId,
-      order: '',
+      order: 'registration',
       readStatus: '',
     );
     _completedBooksResponseData = _bookRepository.getMyBooks(
       context: context,
       userId: widget.userId ?? _userId,
-      order: '',
+      order: 'registration',
       readStatus: 'COMPLETED',
     );
     _interestBooksResponseData = _bookRepository.getInterestBooks(
       context: context,
       userId: widget.userId ?? _userId,
+      order: 'registration',
     );
   }
 
@@ -146,19 +147,19 @@ class _MyBookScreenState extends State<MyBookScreen> {
                         _myBookShelfItem(
                           myBooksBookShelfData: myBooksBookShelfData,
                           status: '마이북',
-                          order: '',
+                          order: 'registration',
                           readStatus: '',
                         ),
                         _myBookShelfItem(
                           myBooksBookShelfData: interestBooksBookShelfData,
                           status: '관심북',
-                          order: '',
+                          order: 'registration',
                           readStatus: '',
                         ),
                         _myBookShelfItem(
                           myBooksBookShelfData: completedBooksBookShelfData,
                           status: '완독북',
-                          order: '',
+                          order: 'registration',
                           readStatus: 'COMPLETED',
                         ),
                       ],
@@ -175,9 +176,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
   }
 
   List<dynamic> _limitedBookShelfData(List<dynamic> myBooksData) {
-    return myBooksData.length > 5
-        ? myBooksData.reversed.toList().sublist(0, 5)
-        : myBooksData.reversed.toList();
+    return myBooksData.length > 5 ? myBooksData.sublist(0, 5) : myBooksData;
   }
 
   Padding _myBookShelfItem({
@@ -375,11 +374,12 @@ class _MyBookScreenState extends State<MyBookScreen> {
         _interestBooksResponseData = _bookRepository.getInterestBooks(
           context: context,
           userId: widget.userId ?? _userId,
+          order: 'registration',
         );
         _myBooksResponseData = _bookRepository.getMyBooks(
           context: context,
           userId: widget.userId ?? _userId,
-          order: '',
+          order: 'registration',
           readStatus: '',
         );
       }),
@@ -413,12 +413,13 @@ class _MyBookScreenState extends State<MyBookScreen> {
           _myBooksResponseData = _bookRepository.getMyBooks(
             context: context,
             userId: widget.userId ?? _userId,
-            order: '',
+            order: 'registration',
             readStatus: '',
           );
           _interestBooksResponseData = _bookRepository.getInterestBooks(
             context: context,
             userId: widget.userId ?? _userId,
+            order: 'registration',
           );
         }
         if (readStatus == '') {
@@ -431,12 +432,13 @@ class _MyBookScreenState extends State<MyBookScreen> {
           _completedBooksResponseData = _bookRepository.getMyBooks(
             context: context,
             userId: widget.userId ?? _userId,
-            order: '',
+            order: 'registration',
             readStatus: 'COMPLETED',
           );
           _interestBooksResponseData = _bookRepository.getInterestBooks(
             context: context,
             userId: widget.userId ?? _userId,
+            order: 'registration',
           );
         }
       }),

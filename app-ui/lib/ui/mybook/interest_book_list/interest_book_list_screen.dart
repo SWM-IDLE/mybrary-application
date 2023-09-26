@@ -30,8 +30,8 @@ class _InterestBookListScreenState extends State<InterestBookListScreen> {
   final _bookRepository = BookRepository();
   late Future<List<BookListResponseData>> _bookList;
   late SortType _sortType;
-  late String _sortTitle = '전체';
-  late String _order = 'all';
+  late String _sortTitle = '최신순';
+  late String _order = 'registration';
 
   final _userId = UserState.userId;
 
@@ -42,8 +42,9 @@ class _InterestBookListScreenState extends State<InterestBookListScreen> {
     _bookList = _bookRepository.getInterestBooks(
       context: context,
       userId: widget.userId ?? _userId,
+      order: 'registration',
     );
-    _sortType = SortType.all;
+    _sortType = SortType.registration;
   }
 
   @override
@@ -153,12 +154,12 @@ class _InterestBookListScreenState extends State<InterestBookListScreen> {
                     onTap: () {
                       bottomState(() {
                         _onTapSortItem(
-                          SortType.all,
+                          SortType.registration,
                         );
                       });
                     },
-                    sortTitle: '전체',
-                    sortItemType: SortType.all,
+                    sortTitle: '최신순',
+                    sortItemType: SortType.registration,
                   ),
                   sortItemRight: _sortItem(
                     onTap: () {
@@ -177,12 +178,12 @@ class _InterestBookListScreenState extends State<InterestBookListScreen> {
                     onTap: () {
                       bottomState(() {
                         _onTapSortItem(
-                          SortType.registration,
+                          SortType.all,
                         );
                       });
                     },
-                    sortTitle: '등록순',
-                    sortItemType: SortType.registration,
+                    sortTitle: '과거순',
+                    sortItemType: SortType.all,
                   ),
                   sortItemRight: _sortItem(
                     onTap: () {
@@ -248,14 +249,14 @@ class _InterestBookListScreenState extends State<InterestBookListScreen> {
                       _sortTitle = '제목순';
                       _order = 'title';
                       break;
-                    case SortType.registration:
+                    case SortType.all:
                       _bookList = _bookRepository.getInterestBooks(
                         context: context,
                         userId: widget.userId ?? _userId,
-                        order: 'registration',
+                        order: 'all',
                       );
-                      _sortTitle = '등록순';
-                      _order = 'registration';
+                      _sortTitle = '과거순';
+                      _order = 'all';
                       break;
                     case SortType.publication:
                       _bookList = _bookRepository.getInterestBooks(
@@ -270,9 +271,10 @@ class _InterestBookListScreenState extends State<InterestBookListScreen> {
                       _bookList = _bookRepository.getInterestBooks(
                         context: context,
                         userId: widget.userId ?? _userId,
+                        order: 'registration',
                       );
-                      _sortTitle = '전체';
-                      _order = 'all';
+                      _sortTitle = '최신순';
+                      _order = 'registration';
                   }
                   Navigator.pop(context);
                 });

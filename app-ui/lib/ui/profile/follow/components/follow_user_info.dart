@@ -27,7 +27,7 @@ class FollowUserInfo extends StatelessWidget {
           width: 16.0,
         ),
         Text(
-          nickname,
+          nickname.length > 15 ? '${nickname.substring(0, 15)}...' : nickname,
           style: followNicknameStyle,
         ),
       ],

@@ -4,11 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/style.dart';
-import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
-import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/profile/profile_edit/profile_edit_screen.dart';
 import 'package:mybrary/ui/setting/components/account_withdrawal.dart';
+import 'package:mybrary/ui/setting/components/login_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -54,6 +53,16 @@ class SettingScreen extends StatelessWidget {
                         );
                       },
                     ),
+                    _settingTab(
+                      tabTitle: '로그인 정보',
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginInfo(),
+                          ),
+                        );
+                      },
+                    ),
                     const SizedBox(height: 24.0),
                     const Text(
                       '서비스 안내',
@@ -79,14 +88,9 @@ class SettingScreen extends StatelessWidget {
                     _settingTab(
                       tabTitle: '1:1 문의하기',
                       onTap: () async {
-                        String url = inquiryLink;
-                        if (await canLaunchUrl(Uri.parse(url))) {
-                          await launchUrl(
-                            Uri.parse(url),
-                            mode: LaunchMode.externalApplication,
-                            webOnlyWindowName: '_self',
-                          );
-                        }
+                        await _connectWebLink(
+                          webLink: inquiryLink,
+                        );
                       },
                     ),
                     const SizedBox(height: 24.0),
@@ -127,11 +131,10 @@ class SettingScreen extends StatelessWidget {
                     const SizedBox(height: 12.0),
                     _settingTab(
                       tabTitle: '리뷰로 응원하기',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => _settingTempPage(),
-                          ),
+                      onTap: () async {
+                        // Todo: 추후 AOS, IOS 별 링크 설정 필요
+                        await _connectWebLink(
+                          webLink: androidAppLink,
                         );
                       },
                     ),
@@ -175,20 +178,17 @@ class SettingScreen extends StatelessWidget {
     );
   }
 
-  SubPageLayout _settingTempPage() {
-    return const SubPageLayout(
-      appBarTitle: '리뷰로 응원하기',
-      child: Align(
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            ErrorPage(
-              errorMessage: '곧 서비스 링크가 열릴 예정이에요!',
-            ),
-          ],
-        ),
-      ),
-    );
+  Future<void> _connectWebLink({
+    required String webLink,
+  }) async {
+    String url = webLink;
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+        webOnlyWindowName: '_self',
+      );
+    }
   }
 
   Future<dynamic> _showLogoutAlert(

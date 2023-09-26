@@ -95,11 +95,6 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8.0),
-            const Text(
-              '#초보 리뷰어',
-              style: commonSubThinStyle,
-            )
           ],
         ),
       ),
