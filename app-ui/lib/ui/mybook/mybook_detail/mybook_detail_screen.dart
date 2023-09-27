@@ -18,6 +18,7 @@ import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_header.dart';
+import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_more.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_record.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_review.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_edit_review.dart';
@@ -270,6 +271,10 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                         reviewId: myBookReviewData.id!,
                         userId: widget.userId,
                       ),
+                    _myBookDetailDivider(),
+                    MyBookDetailMore(
+                      isbn13: myBookInfo.isbn13!,
+                    ),
                     SliverToBoxAdapter(
                       child: SizedBox(
                         height: widget.userId == null ? 70.0 : 30.0,

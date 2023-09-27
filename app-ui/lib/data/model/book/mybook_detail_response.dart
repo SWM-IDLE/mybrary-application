@@ -112,6 +112,7 @@ class Book {
   int? id;
   String? title;
   String? description;
+  String? isbn13;
   List<String>? authors;
   List<String>? translators;
   String? publisher;
@@ -122,6 +123,7 @@ class Book {
     this.id,
     this.title,
     this.description,
+    this.isbn13,
     this.authors,
     this.translators,
     this.publisher,
@@ -134,6 +136,7 @@ class Book {
       id: json['id'],
       title: json['title'],
       description: json['description'],
+      isbn13: json['isbn13'],
       authors:
           json['authors'] != null ? List<String>.from(json['authors']) : null,
       translators: json['translators'] != null
@@ -150,6 +153,7 @@ class Book {
     data['id'] = id;
     data['title'] = title;
     data['description'] = description;
+    data['isbn13'] = isbn13;
     data['authors'] = authors;
     data['translators'] = translators;
     data['publisher'] = publisher;
