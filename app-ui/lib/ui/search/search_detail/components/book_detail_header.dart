@@ -5,8 +5,10 @@ import 'package:mybrary/data/model/search/book_search_detail_response.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
+import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
+import 'package:mybrary/ui/search/search_detail_user_infos/search_detail_user_infos_screen.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
@@ -146,9 +148,24 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                   ),
                 ),
                 const SizedBox(height: 8.0),
-                Text(
-                  '$_newInterestCount 명',
-                  style: bookStatusCountStyle,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SearchDetailUserInfosScreen(
+                          title: '읽고싶어요',
+                          isbn13: widget.isbn13,
+                          userCount: widget.interestCount,
+                          type: SearchDetailUserInfosType.interest,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    '$_newInterestCount 명',
+                    style: bookStatusCountStyle,
+                  ),
                 ),
               ],
             ),

@@ -15,3 +15,9 @@ enum UserInterestType {
   second,
   third,
 }
+
+enum SearchDetailUserInfosType {
+  interest,
+  readComplete,
+  myBook,
+}

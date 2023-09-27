@@ -161,3 +161,21 @@ void commonBottomSheet({
     },
   );
 }
+
+Widget commonDivider() {
+  return const Divider(
+    height: 1,
+    thickness: 1,
+    color: greyF1F2F5,
+  );
+}
+
+Widget commonSliverDivider() {
+  return const SliverToBoxAdapter(
+    child: Divider(
+      height: 1,
+      thickness: 1,
+      color: greyF1F2F5,
+    ),
+  );
+}
