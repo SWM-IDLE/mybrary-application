@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
@@ -208,4 +209,24 @@ void nextToUserProfile({
       (route) => false,
     );
   }
+}
+
+Row commonSubTitle({
+  required String title,
+}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Text(
+        title,
+        style: commonSubTitleStyle,
+      ),
+      SizedBox(
+        child: SvgPicture.asset(
+          'assets/svg/icon/right_arrow.svg',
+        ),
+      ),
+    ],
+  );
 }

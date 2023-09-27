@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class MyBookDetailMore extends StatelessWidget {
   final String isbn13;
@@ -27,20 +26,8 @@ class MyBookDetailMore extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 10.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    '도서 상세보기',
-                    style: commonSubTitleStyle,
-                  ),
-                  SizedBox(
-                    child: SvgPicture.asset(
-                      'assets/svg/icon/right_arrow.svg',
-                    ),
-                  ),
-                ],
+              commonSubTitle(
+                title: '도서 상세보기',
               ),
               const SizedBox(height: 20.0),
             ],
