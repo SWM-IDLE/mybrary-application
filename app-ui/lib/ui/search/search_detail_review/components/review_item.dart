@@ -3,6 +3,8 @@ import 'package:mybrary/data/model/search/book_detail_review_response.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/ui/common/layout/root_tab.dart';
+import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 
 class ReviewItem extends StatefulWidget {
@@ -50,50 +52,74 @@ class _ReviewItemState extends State<ReviewItem> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 16.0,
-                    backgroundColor: greyACACAC,
-                    backgroundImage: NetworkImage(
-                      widget.review.userPictureUrl!,
-                    ),
-                  ),
-                  const SizedBox(width: 12.0),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 2.0),
-                        child: Text(
-                          widget.review.userNickname!,
-                          style: commonSubMediumStyle.copyWith(
-                            fontSize: 14.0,
-                          ),
+              InkWell(
+                onTap: () {
+                  if (_userId != widget.review.userId) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => UserProfileScreen(
+                          userId: widget.review.userId!,
+                          nickname: widget.review.userNickname!,
                         ),
                       ),
-                      const SizedBox(height: 2.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          starRatingRow(
-                            starRating: widget.review.starRating!,
-                            width: 16.0,
-                            height: 16.0,
-                          ),
-                          const SizedBox(width: 8.0),
-                          Text(
-                            '$year.$month.$day',
-                            style: commonSubRegularStyle.copyWith(
-                              fontSize: 12.0,
-                              color: grey777777,
+                    );
+                  }
+                  if (_userId == widget.review.userId!) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (_) => const RootTab(
+                          tapIndex: 3,
+                        ),
+                      ),
+                      (route) => false,
+                    );
+                  }
+                },
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 16.0,
+                      backgroundColor: greyACACAC,
+                      backgroundImage: NetworkImage(
+                        widget.review.userPictureUrl!,
+                      ),
+                    ),
+                    const SizedBox(width: 12.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2.0),
+                          child: Text(
+                            widget.review.userNickname!,
+                            style: commonSubMediumStyle.copyWith(
+                              fontSize: 14.0,
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+                        ),
+                        const SizedBox(height: 2.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            starRatingRow(
+                              starRating: widget.review.starRating!,
+                              width: 16.0,
+                              height: 16.0,
+                            ),
+                            const SizedBox(width: 8.0),
+                            Text(
+                              '$year.$month.$day',
+                              style: commonSubRegularStyle.copyWith(
+                                fontSize: 12.0,
+                                color: grey777777,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               if (_userId == widget.review.userId)
                 InkWell(
