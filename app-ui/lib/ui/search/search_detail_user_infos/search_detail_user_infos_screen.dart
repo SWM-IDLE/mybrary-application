@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/provider/search/search_user_infos_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
+import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
+import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_info.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_layout.dart';
 import 'package:mybrary/ui/search/search_detail_user_infos/components/user_count.dart';
@@ -32,6 +35,8 @@ class SearchDetailUserInfosScreen extends ConsumerStatefulWidget {
 
 class _SearchDetailUserInfosScreenState
     extends ConsumerState<SearchDetailUserInfosScreen> {
+  final _userId = UserState.userId;
+
   @override
   void initState() {
     super.initState();
@@ -39,17 +44,17 @@ class _SearchDetailUserInfosScreenState
     switch (widget.type) {
       case SearchDetailUserInfosType.interest:
         ref
-            .read(searchUserInfosProvider.notifier)
+            .refresh(searchUserInfosProvider.notifier)
             .getInterestBookUserInfos(widget.isbn13);
         break;
       case SearchDetailUserInfosType.readComplete:
         ref
-            .read(searchUserInfosProvider.notifier)
+            .refresh(searchUserInfosProvider.notifier)
             .getReadCompleteBookUserInfos(widget.isbn13);
         break;
-      case SearchDetailUserInfosType.myBook:
+      case SearchDetailUserInfosType.holder:
         ref
-            .read(searchUserInfosProvider.notifier)
+            .refresh(searchUserInfosProvider.notifier)
             .getMyBookUserInfos(widget.isbn13);
         break;
     }
@@ -95,9 +100,33 @@ class _SearchDetailUserInfosScreenState
             delegate: SliverChildBuilderDelegate(
               (context, index) => SearchUserLayout(
                 children: [
-                  SearchUserInfo(
-                    nickname: userInfos[index].nickname!,
-                    profileImageUrl: userInfos[index].profileImageUrl!,
+                  InkWell(
+                    onTap: () {
+                      if (_userId != userInfos[index].userId) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => UserProfileScreen(
+                              userId: userInfos[index].userId!,
+                              nickname: userInfos[index].nickname!,
+                            ),
+                          ),
+                        );
+                      }
+                      if (_userId == userInfos[index].userId!) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (_) => const RootTab(
+                              tapIndex: 3,
+                            ),
+                          ),
+                          (route) => false,
+                        );
+                      }
+                    },
+                    child: SearchUserInfo(
+                      nickname: userInfos[index].nickname!,
+                      profileImageUrl: userInfos[index].profileImageUrl!,
+                    ),
                   ),
                 ],
               ),

@@ -19,5 +19,5 @@ enum UserInterestType {
 enum SearchDetailUserInfosType {
   interest,
   readComplete,
-  myBook,
+  holder,
 }

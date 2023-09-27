@@ -185,9 +185,24 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                   ),
                 ),
                 const SizedBox(height: 8.0),
-                Text(
-                  '${widget.readCount} 명',
-                  style: bookStatusCountStyle,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SearchDetailUserInfosScreen(
+                          title: '완독했어요',
+                          isbn13: widget.isbn13,
+                          userCount: widget.readCount,
+                          type: SearchDetailUserInfosType.readComplete,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    '${widget.readCount} 명',
+                    style: bookStatusCountStyle,
+                  ),
                 ),
               ],
             ),
@@ -208,9 +223,24 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                   ),
                 ),
                 const SizedBox(height: 8.0),
-                Text(
-                  '${widget.newRegistered == true ? widget.holderCount + 1 : widget.holderCount} 명',
-                  style: bookStatusCountStyle,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SearchDetailUserInfosScreen(
+                          title: '소장하고있어요',
+                          isbn13: widget.isbn13,
+                          userCount: widget.holderCount,
+                          type: SearchDetailUserInfosType.holder,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    '${widget.newRegistered == true ? widget.holderCount + 1 : widget.holderCount} 명',
+                    style: bookStatusCountStyle,
+                  ),
                 ),
               ],
             ),
