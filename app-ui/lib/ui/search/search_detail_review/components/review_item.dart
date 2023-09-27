@@ -3,9 +3,8 @@ import 'package:mybrary/data/model/search/book_detail_review_response.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
-import 'package:mybrary/ui/common/layout/root_tab.dart';
-import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class ReviewItem extends StatefulWidget {
   final MyBookReviewList review;
@@ -54,26 +53,12 @@ class _ReviewItemState extends State<ReviewItem> {
             children: [
               InkWell(
                 onTap: () {
-                  if (_userId != widget.review.userId) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => UserProfileScreen(
-                          userId: widget.review.userId!,
-                          nickname: widget.review.userNickname!,
-                        ),
-                      ),
-                    );
-                  }
-                  if (_userId == widget.review.userId!) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (_) => const RootTab(
-                          tapIndex: 3,
-                        ),
-                      ),
-                      (route) => false,
-                    );
-                  }
+                  nextToUserProfile(
+                    context: context,
+                    myUserId: _userId,
+                    userId: widget.review.userId!,
+                    nickname: widget.review.userNickname!,
+                  );
                 },
                 child: Row(
                   children: [

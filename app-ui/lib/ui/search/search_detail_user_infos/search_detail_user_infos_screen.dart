@@ -6,9 +6,7 @@ import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
-import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
-import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_info.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_layout.dart';
 import 'package:mybrary/ui/search/search_detail_user_infos/components/user_count.dart';
@@ -102,26 +100,12 @@ class _SearchDetailUserInfosScreenState
                 children: [
                   InkWell(
                     onTap: () {
-                      if (_userId != userInfos[index].userId) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => UserProfileScreen(
-                              userId: userInfos[index].userId!,
-                              nickname: userInfos[index].nickname!,
-                            ),
-                          ),
-                        );
-                      }
-                      if (_userId == userInfos[index].userId!) {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (_) => const RootTab(
-                              tapIndex: 3,
-                            ),
-                          ),
-                          (route) => false,
-                        );
-                      }
+                      nextToUserProfile(
+                        context: context,
+                        myUserId: _userId,
+                        userId: userInfos[index].userId,
+                        nickname: userInfos[index].nickname,
+                      );
                     },
                     child: SearchUserInfo(
                       nickname: userInfos[index].nickname!,

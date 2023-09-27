@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/ui/common/layout/root_tab.dart';
+import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 
 Widget loadingIndicator() {
   return CircularProgressIndicator(
@@ -178,4 +180,32 @@ Widget commonSliverDivider() {
       color: greyF1F2F5,
     ),
   );
+}
+
+void nextToUserProfile({
+  required BuildContext context,
+  required String myUserId,
+  required String userId,
+  required String nickname,
+}) {
+  if (myUserId != userId) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => UserProfileScreen(
+          userId: userId,
+          nickname: nickname,
+        ),
+      ),
+    );
+  }
+  if (myUserId == userId) {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => const RootTab(
+          tapIndex: 3,
+        ),
+      ),
+      (route) => false,
+    );
+  }
 }
