@@ -117,7 +117,11 @@ class _SearchDetailUserInfosScreenState
               childCount: userInfos.length,
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 30.0)),
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 30.0,
+            ),
+          ),
         ],
       ),
     );

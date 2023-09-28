@@ -169,12 +169,24 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                 ),
               ],
             ),
-            bookStatusColumn(
-              padding: 36.0,
-              children: [
-                InkWell(
-                  onTap: () async {},
-                  child: Column(
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SearchDetailUserInfosScreen(
+                      title: '완독했어요',
+                      isbn13: widget.isbn13,
+                      userCount: widget.readCount,
+                      type: SearchDetailUserInfosType.readComplete,
+                    ),
+                  ),
+                );
+              },
+              child: bookStatusColumn(
+                padding: 36.0,
+                children: [
+                  Column(
                     children: [
                       SvgPicture.asset(
                         'assets/svg/icon/small/${widget.completed ? 'read_green.svg' : 'read.svg'}',
@@ -183,36 +195,33 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                       const Text('완독했어요', style: bookStatusStyle),
                     ],
                   ),
-                ),
-                const SizedBox(height: 8.0),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SearchDetailUserInfosScreen(
-                          title: '완독했어요',
-                          isbn13: widget.isbn13,
-                          userCount: widget.readCount,
-                          type: SearchDetailUserInfosType.readComplete,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text(
+                  const SizedBox(height: 8.0),
+                  Text(
                     '${widget.readCount} 명',
                     style: bookStatusCountStyle,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            bookStatusColumn(
-              padding: 24.0,
-              lastBox: true,
-              children: [
-                InkWell(
-                  onTap: () async {},
-                  child: Column(
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SearchDetailUserInfosScreen(
+                      title: '소장하고있어요',
+                      isbn13: widget.isbn13,
+                      userCount: widget.holderCount,
+                      type: SearchDetailUserInfosType.holder,
+                    ),
+                  ),
+                );
+              },
+              child: bookStatusColumn(
+                padding: 24.0,
+                lastBox: true,
+                children: [
+                  Column(
                     children: [
                       SvgPicture.asset(
                         'assets/svg/icon/small/${widget.newRegistered || widget.registered ? 'holder_green.svg' : 'holder.svg'}',
@@ -221,28 +230,13 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                       const Text('소장하고있어요', style: bookStatusStyle),
                     ],
                   ),
-                ),
-                const SizedBox(height: 8.0),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SearchDetailUserInfosScreen(
-                          title: '소장하고있어요',
-                          isbn13: widget.isbn13,
-                          userCount: widget.holderCount,
-                          type: SearchDetailUserInfosType.holder,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text(
+                  const SizedBox(height: 8.0),
+                  Text(
                     '${widget.newRegistered == true ? widget.holderCount + 1 : widget.holderCount} 명',
                     style: bookStatusCountStyle,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

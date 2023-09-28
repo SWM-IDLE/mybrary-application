@@ -15,9 +15,8 @@ class SearchUserLayout extends StatelessWidget {
         horizontal: 16.0,
         vertical: 8.0,
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children,
       ),
     );
