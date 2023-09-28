@@ -14,6 +14,7 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/components/sliver_loading.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
+import 'package:mybrary/ui/home/components/home_banner.dart';
 import 'package:mybrary/ui/home/components/home_barcode_button.dart';
 import 'package:mybrary/ui/home/components/home_best_seller.dart';
 import 'package:mybrary/ui/home/components/home_book_count.dart';
@@ -23,6 +24,7 @@ import 'package:mybrary/ui/home/components/home_recommend_books.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books_header.dart';
 import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
+import 'package:mybrary/utils/logics/permission_utils.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -127,12 +129,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
       },
       child: DefaultLayout(
+        appBar: _homeAppBar(),
+        extendBodyBehindAppBar: true,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),
           ),
           slivers: [
-            _homeAppBar(),
+            const HomeBanner(),
             const HomeIntro(),
             const HomeBarcodeButton(),
             _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
@@ -173,7 +177,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: SizedBox(
                 height: 30.0,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -212,12 +216,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     List<Widget>? child,
   }) {
     return DefaultLayout(
+      appBar: _homeAppBar(),
+      extendBodyBehindAppBar: true,
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
         slivers: [
-          _homeAppBar(),
+          const HomeBanner(),
           const HomeIntro(),
           const HomeBarcodeButton(),
           _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
@@ -232,16 +238,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  SliverAppBar _homeAppBar() {
-    return SliverAppBar(
+  AppBar _homeAppBar() {
+    return AppBar(
       toolbarHeight: 70.0,
-      backgroundColor: commonWhiteColor,
+      backgroundColor: Colors.transparent,
       elevation: 0,
-      pinned: true,
-      title: SvgPicture.asset('assets/svg/icon/home_logo.svg'),
+      title: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: SvgPicture.asset('assets/svg/icon/mybrary_white.svg'),
+      ),
       titleTextStyle: appBarTitleStyle,
       centerTitle: false,
       foregroundColor: commonBlackColor,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: IconButton(
+            onPressed: () => onIsbnScan(context),
+            icon: SvgPicture.asset('assets/svg/icon/barcode_white.svg'),
+          ),
+        ),
+      ],
     );
   }
 
