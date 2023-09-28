@@ -60,22 +60,30 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        // if (isIOS)
                         OAuthButton(
-                          btnText: 'Google로 시작하기',
+                          btnText: 'Apple로 로그인',
+                          oauthType: 'apple',
+                          btnBackgroundColor: commonBlackColor,
+                          onTap: () => {},
+                        ),
+                        const SizedBox(height: 10.0),
+                        OAuthButton(
+                          btnText: 'Google로 로그인',
                           oauthType: 'google',
                           btnBackgroundColor: greyF1F2F5,
                           onTap: () => oAuthLoginPressed(API.googleLogin),
                         ),
                         const SizedBox(height: 10.0),
                         OAuthButton(
-                          btnText: '네이버로 시작하기',
+                          btnText: '네이버로 로그인',
                           oauthType: 'naver',
                           btnBackgroundColor: naverLoginColor,
                           onTap: () => oAuthLoginPressed(API.naverLogin),
                         ),
                         const SizedBox(height: 10.0),
                         OAuthButton(
-                          btnText: '카카오로 시작하기',
+                          btnText: '카카오로 로그인',
                           oauthType: 'kakao',
                           btnBackgroundColor: kakaoLoginColor,
                           onTap: () => oAuthLoginPressed(API.kakaoLogin),

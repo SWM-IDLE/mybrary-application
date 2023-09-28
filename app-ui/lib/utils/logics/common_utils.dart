@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 Widget loadingIndicator() {
   return CircularProgressIndicator(
@@ -121,7 +120,7 @@ void showInterestBookMessage({
       SnackBar(
         padding: EdgeInsets.symmetric(
           horizontal: 24.0,
-          vertical: Platform.isAndroid ? 22.0 : 16.0,
+          vertical: isAndroid ? 22.0 : 16.0,
         ),
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
