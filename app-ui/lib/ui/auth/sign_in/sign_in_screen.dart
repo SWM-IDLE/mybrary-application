@@ -12,6 +12,7 @@ import 'package:mybrary/ui/auth/components/oauth_button.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/utils/logics/parse_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -60,13 +61,13 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // if (isIOS)
-                        OAuthButton(
-                          btnText: 'Apple로 로그인',
-                          oauthType: 'apple',
-                          btnBackgroundColor: commonBlackColor,
-                          onTap: () => {},
-                        ),
+                        if (isIOS)
+                          OAuthButton(
+                            btnText: 'Apple로 로그인',
+                            oauthType: 'apple',
+                            btnBackgroundColor: commonBlackColor,
+                            onTap: () => {},
+                          ),
                         const SizedBox(height: 10.0),
                         OAuthButton(
                           btnText: 'Google로 로그인',

@@ -8,9 +8,11 @@ import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class HomeBanner extends StatefulWidget {
   final List<BooksModel> bookListByBestSeller;
+  final void Function(String) onTapBook;
 
   const HomeBanner({
     required this.bookListByBestSeller,
+    required this.onTapBook,
     super.key,
   });
 
@@ -27,94 +29,106 @@ class _HomeBannerState extends State<HomeBanner> {
   Widget build(BuildContext context) {
     List<Widget> imageBox = widget.bookListByBestSeller
         .map(
-          (item) => Container(
-            width: mediaQueryWidth(context),
-            decoration: BoxDecoration(
-              color: commonWhiteColor,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x3F000000),
-                  blurRadius: 2,
-                  offset: Offset(1, 1),
-                  spreadRadius: 1,
-                )
+          (book) => InkWell(
+            onTap: () {
+              widget.onTapBook(book.isbn13);
+            },
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  child: Container(
+                    width: mediaQueryWidth(context),
+                    decoration: BoxDecoration(
+                      color: commonWhiteColor,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x3F000000),
+                          blurRadius: 2,
+                          offset: Offset(1, 1),
+                          spreadRadius: 1,
+                        )
+                      ],
+                    ),
+                    child: Container(
+                      width: mediaQueryHeight(context) * 0.1,
+                      padding: const EdgeInsets.only(top: 16.0, left: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: mediaQueryWidth(context) * 0.4,
+                            child: Text(
+                              '세상의 마지막 기차역',
+                              style: commonSubBoldStyle.copyWith(
+                                fontSize: 15.0,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Text(
+                            '무라세 다케시',
+                            style: commonSubRegularStyle.copyWith(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                          Text(
+                            '⭐4.5',
+                            style: commonSubMediumStyle.copyWith(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                          const SizedBox(height: 12.0),
+                          Row(
+                            children: [
+                              const Text(
+                                '베스트셀러 보러가기',
+                                style: commonSubRegularStyle,
+                              ),
+                              const SizedBox(width: 4.0),
+                              SvgPicture.asset(
+                                'assets/svg/icon/right_arrow.svg',
+                                width: 12.0,
+                                height: 12.0,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: -20,
+                  bottom: 10,
+                  child: Padding(
+                    padding:
+                        EdgeInsets.only(left: mediaQueryWidth(context) * 0.5),
+                    child: Container(
+                      width: mediaQueryWidth(context) * 0.28,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: commonWhiteColor,
+                          width: 0.5,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            book.thumbnailUrl,
+                          ),
+                          onError: (exception, stackTrace) => Image.asset(
+                            'assets/img/logo/mybrary.png',
+                            fit: BoxFit.fill,
+                          ),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
-            ),
-            child: Container(
-              width: 150,
-              padding: const EdgeInsets.only(top: 16.0, left: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: mediaQueryWidth(context) * 0.4,
-                    child: Text(
-                      '세상의 마지막 기차역',
-                      style: commonSubBoldStyle.copyWith(
-                        fontSize: 15.0,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Text(
-                    '무라세 다케시',
-                    style: commonSubRegularStyle.copyWith(
-                      fontSize: 12.0,
-                    ),
-                  ),
-                  Text(
-                    '⭐4.5',
-                    style: commonSubMediumStyle.copyWith(
-                      fontSize: 12.0,
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  Row(
-                    children: [
-                      const Text(
-                        '베스트셀러 보러가기',
-                        style: commonSubRegularStyle,
-                      ),
-                      const SizedBox(width: 4.0),
-                      SvgPicture.asset(
-                        'assets/svg/icon/right_arrow.svg',
-                        width: 12.0,
-                        height: 12.0,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        )
-        .toList();
-
-    List<Widget> imageSliders = widget.bookListByBestSeller
-        .map(
-          (item) => Padding(
-            padding: EdgeInsets.only(left: mediaQueryWidth(context) * 0.45),
-            child: Container(
-              width: mediaQueryWidth(context) * 0.28,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: commonWhiteColor,
-                  width: 0.5,
-                ),
-                borderRadius: BorderRadius.circular(8.0),
-                image: DecorationImage(
-                  image: NetworkImage(
-                    item.thumbnailUrl,
-                  ),
-                  onError: (exception, stackTrace) => Image.asset(
-                    'assets/img/logo/mybrary.png',
-                    fit: BoxFit.fill,
-                  ),
-                  fit: BoxFit.fill,
-                ),
-              ),
             ),
           ),
         )
@@ -160,28 +174,13 @@ class _HomeBannerState extends State<HomeBanner> {
             ),
             Positioned(
               width: mediaQueryWidth(context),
-              height: mediaQueryHeight(context) * 0.2,
-              bottom: mediaQueryHeight(context) * 0.04,
+              height: mediaQueryHeight(context) * 0.25,
+              bottom: mediaQueryHeight(context) * 0.02,
               child: CarouselSlider(
                 items: imageBox,
                 carouselController: _controller,
                 options: CarouselOptions(
-                  aspectRatio: 2.6,
-                  enlargeCenterPage: true,
-                  enableInfiniteScroll: false,
-                  autoPlay: true,
-                ),
-              ),
-            ),
-            Positioned(
-              width: mediaQueryWidth(context),
-              height: mediaQueryHeight(context) * 0.19,
-              bottom: mediaQueryHeight(context) * 0.065,
-              child: CarouselSlider(
-                items: imageSliders,
-                carouselController: _controller,
-                options: CarouselOptions(
-                    aspectRatio: 2.0,
+                    aspectRatio: 2.8,
                     enlargeCenterPage: true,
                     enableInfiniteScroll: false,
                     autoPlay: true,
@@ -192,8 +191,27 @@ class _HomeBannerState extends State<HomeBanner> {
                     }),
               ),
             ),
+            // Positioned(
+            //   width: mediaQueryWidth(context),
+            //   height: mediaQueryHeight(context) * 0.19,
+            //   bottom: mediaQueryHeight(context) * 0.065,
+            //   child: CarouselSlider(
+            //     items: imageSliders,
+            //     carouselController: _controller,
+            //     options: CarouselOptions(
+            //         aspectRatio: 2.0,
+            //         enlargeCenterPage: true,
+            //         enableInfiniteScroll: false,
+            //         autoPlay: true,
+            //         onPageChanged: (index, reason) {
+            //           setState(() {
+            //             _current = index;
+            //           });
+            //         }),
+            //   ),
+            // ),
             Positioned(
-              bottom: mediaQueryWidth(context) * 0.03,
+              bottom: mediaQueryWidth(context) * (isAndroid ? 0.03 : 0.05),
               width: mediaQueryWidth(context),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

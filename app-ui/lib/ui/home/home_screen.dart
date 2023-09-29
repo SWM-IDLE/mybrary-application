@@ -138,6 +138,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           slivers: [
             HomeBanner(
               bookListByBestSeller: booksByBestSeller.books,
+              onTapBook: (String isbn13) {
+                _navigateToBookSearchDetailScreen(isbn13);
+              },
             ),
             const HomeIntro(),
             const HomeBarcodeButton(),
@@ -225,8 +228,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           parent: AlwaysScrollableScrollPhysics(),
         ),
         slivers: [
-          const HomeBanner(
-            bookListByBestSeller: [],
+          HomeBanner(
+            bookListByBestSeller: const [],
+            onTapBook: (String isbn13) {},
           ),
           const HomeIntro(),
           const HomeBarcodeButton(),
