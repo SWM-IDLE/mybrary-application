@@ -15,11 +15,8 @@ import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/components/sliver_loading.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/home/components/home_banner.dart';
-import 'package:mybrary/ui/home/components/home_barcode_button.dart';
-import 'package:mybrary/ui/home/components/home_best_seller.dart';
 import 'package:mybrary/ui/home/components/home_book_count.dart';
 import 'package:mybrary/ui/home/components/home_interest_setting_button.dart';
-import 'package:mybrary/ui/home/components/home_intro.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books_header.dart';
 import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
@@ -40,6 +37,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   late List<UserInterests> interests = [];
   late List<BooksModel> _bookListByCategory = [];
 
+  late bool _initAppBarIsVisible = false;
+
+  final ScrollController _homeScrollController = ScrollController();
   final ScrollController _categoryScrollController = ScrollController();
 
   @override
@@ -49,6 +49,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
     ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
     ref.read(recommendationBooksProvider.notifier).getBooksByFirstInterests();
+
+    _homeScrollController.addListener(_changeAppBarComponent);
   }
 
   void _scrollToTop() {
@@ -59,8 +61,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  void _changeAppBarComponent() {
+    setState(() {
+      if (_homeScrollController.offset > 10) {
+        _initAppBarIsVisible = true;
+      } else {
+        _initAppBarIsVisible = false;
+      }
+    });
+  }
+
   @override
   void dispose() {
+    _homeScrollController.dispose();
     _categoryScrollController.dispose();
     super.dispose();
   }
@@ -72,18 +85,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final booksByBestSeller = ref.watch(homeBestSellerProvider);
     final booksByInterests = ref.watch(homeRecommendationBooksProvider);
 
-    if (booksByBestSeller == null) {
-      return _initHomeLayout(
-        todayRegisteredBookCount: todayRegisteredBookCount,
-        child: [const SliverLoading()],
-      );
-    }
-
-    if (booksByInterests == null) {
+    if (booksByBestSeller == null || booksByInterests == null) {
       return _initHomeLayout(
         todayRegisteredBookCount: todayRegisteredBookCount,
         child: [
-          _sliverBestSellerBox(booksByBestSeller),
           const SliverLoading(),
         ],
       );
@@ -132,6 +137,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         appBar: _homeAppBar(),
         extendBodyBehindAppBar: true,
         child: CustomScrollView(
+          controller: _homeScrollController,
           physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),
           ),
@@ -142,10 +148,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 _navigateToBookSearchDetailScreen(isbn13);
               },
             ),
-            const HomeIntro(),
-            const HomeBarcodeButton(),
             _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
-            _sliverBestSellerBox(booksByBestSeller),
             const HomeRecommendBooksHeader(),
             if (booksByInterests.userInterests!.isEmpty)
               HomeInterestSettingButton(
@@ -198,24 +201,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  SliverToBoxAdapter _sliverBestSellerBox(
-      BooksByCategoryModel booksByBestSeller) {
-    return SliverToBoxAdapter(
-      child: Container(
-        height: 258,
-        padding: const EdgeInsets.symmetric(
-          vertical: 16.0,
-        ),
-        child: HomeBestSeller(
-          bookListByBestSeller: booksByBestSeller.books,
-          onTapBook: (String isbn13) {
-            _navigateToBookSearchDetailScreen(isbn13);
-          },
-        ),
-      ),
-    );
-  }
-
   DefaultLayout _initHomeLayout({
     required TodayRegisteredBookCountModel? todayRegisteredBookCount,
     List<Widget>? child,
@@ -232,8 +217,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             bookListByBestSeller: const [],
             onTapBook: (String isbn13) {},
           ),
-          const HomeIntro(),
-          const HomeBarcodeButton(),
           _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
           if (child != null) ...child,
           const SliverToBoxAdapter(
@@ -249,21 +232,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   AppBar _homeAppBar() {
     return AppBar(
       toolbarHeight: 70.0,
-      backgroundColor: Colors.transparent,
+      backgroundColor:
+          _initAppBarIsVisible ? commonWhiteColor : Colors.transparent,
       elevation: 0,
       title: Padding(
         padding: const EdgeInsets.only(left: 8.0),
-        child: SvgPicture.asset('assets/svg/icon/mybrary_white.svg'),
+        child: SvgPicture.asset(
+            'assets/svg/icon/mybrary_${_initAppBarIsVisible ? 'black' : 'white'}.svg'),
       ),
-      titleTextStyle: appBarTitleStyle,
       centerTitle: false,
+      titleTextStyle: appBarTitleStyle,
       foregroundColor: commonBlackColor,
+      bottom: _initAppBarIsVisible
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(0.0),
+              child: Container(
+                height: 1.0,
+                color: Colors.grey.withOpacity(0.3),
+              ),
+            )
+          : null,
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: IconButton(
             onPressed: () => onIsbnScan(context),
-            icon: SvgPicture.asset('assets/svg/icon/barcode_white.svg'),
+            icon: SvgPicture.asset(
+                'assets/svg/icon/barcode_${_initAppBarIsVisible ? 'black' : 'white'}.svg'),
           ),
         ),
       ],

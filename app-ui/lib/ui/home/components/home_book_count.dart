@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class HomeBookCount extends StatelessWidget {
   final int todayRegisteredBookCount;
@@ -13,12 +14,12 @@ class HomeBookCount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(isAndroid ? 24.0 : 20.0),
       child: Column(
         children: [
           _divider(),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

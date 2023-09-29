@@ -101,19 +101,28 @@ class _HomeBannerState extends State<HomeBanner> {
                   ),
                 ),
                 Positioned(
-                  top: -20,
+                  top: isAndroid ? -10 : -16,
                   bottom: 10,
                   child: Padding(
-                    padding:
-                        EdgeInsets.only(left: mediaQueryWidth(context) * 0.5),
+                    padding: EdgeInsets.only(
+                      left:
+                          mediaQueryWidth(context) * (isAndroid ? 0.55 : 0.54),
+                    ),
                     child: Container(
-                      width: mediaQueryWidth(context) * 0.28,
+                      width: mediaQueryWidth(context) * 0.23,
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: commonWhiteColor,
+                          color: greyDDDDDD,
                           width: 0.5,
                         ),
                         borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x3F000000),
+                            blurRadius: 2,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                         image: DecorationImage(
                           image: NetworkImage(
                             book.thumbnailUrl,
@@ -136,12 +145,12 @@ class _HomeBannerState extends State<HomeBanner> {
 
     return SliverToBoxAdapter(
       child: SizedBox(
-        height: mediaQueryHeight(context) * 0.48,
+        height: mediaQueryHeight(context) * 0.43,
         child: Stack(
           children: [
             Container(
               color: primaryColor,
-              height: mediaQueryHeight(context) * 0.32,
+              height: mediaQueryHeight(context) * 0.30,
             ),
             Positioned(
               top: mediaQueryHeight(context) * (isAndroid ? 0.13 : 0.14),
@@ -156,18 +165,10 @@ class _HomeBannerState extends State<HomeBanner> {
                         style: homeBannerTitleLightStyle,
                       ),
                       Text(
-                        '베스트 셀러',
+                        '베스트 셀러 📚',
                         style: homeBannerTitleBoldStyle,
                       ),
-                      Text(
-                        '를',
-                        style: homeBannerTitleLightStyle,
-                      ),
                     ],
-                  ),
-                  Text(
-                    '만나러 가보실까요? 📚',
-                    style: homeBannerTitleLightStyle,
                   ),
                 ],
               ),
@@ -175,7 +176,7 @@ class _HomeBannerState extends State<HomeBanner> {
             Positioned(
               width: mediaQueryWidth(context),
               height: mediaQueryHeight(context) * 0.25,
-              bottom: mediaQueryHeight(context) * 0.02,
+              bottom: 0,
               child: CarouselSlider(
                 items: imageBox,
                 carouselController: _controller,
@@ -191,27 +192,8 @@ class _HomeBannerState extends State<HomeBanner> {
                     }),
               ),
             ),
-            // Positioned(
-            //   width: mediaQueryWidth(context),
-            //   height: mediaQueryHeight(context) * 0.19,
-            //   bottom: mediaQueryHeight(context) * 0.065,
-            //   child: CarouselSlider(
-            //     items: imageSliders,
-            //     carouselController: _controller,
-            //     options: CarouselOptions(
-            //         aspectRatio: 2.0,
-            //         enlargeCenterPage: true,
-            //         enableInfiniteScroll: false,
-            //         autoPlay: true,
-            //         onPageChanged: (index, reason) {
-            //           setState(() {
-            //             _current = index;
-            //           });
-            //         }),
-            //   ),
-            // ),
             Positioned(
-              bottom: mediaQueryWidth(context) * (isAndroid ? 0.03 : 0.05),
+              bottom: mediaQueryWidth(context) * (isAndroid ? 0 : 0.02),
               width: mediaQueryWidth(context),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -10,6 +10,7 @@ class HomeRecommendBooksHeader extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(
           left: 16.0,
+          top: 16.0,
           bottom: 12.0,
         ),
         child: Row(
