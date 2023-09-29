@@ -15,6 +15,7 @@ import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/components/sliver_loading.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/home/components/home_banner.dart';
+import 'package:mybrary/ui/home/components/home_banner_loading.dart';
 import 'package:mybrary/ui/home/components/home_book_count.dart';
 import 'package:mybrary/ui/home/components/home_interest_setting_button.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books.dart';
@@ -46,9 +47,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
 
-    ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
-    ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
-    ref.read(recommendationBooksProvider.notifier).getBooksByFirstInterests();
+    Future.delayed(
+      const Duration(seconds: 1),
+      () {
+        ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
+        ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
+        ref
+            .read(recommendationBooksProvider.notifier)
+            .getBooksByFirstInterests();
+      },
+    );
+
+    // ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
+    // ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
+    // ref.read(recommendationBooksProvider.notifier).getBooksByFirstInterests();
 
     _homeScrollController.addListener(_changeAppBarComponent);
   }
@@ -213,10 +225,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           parent: AlwaysScrollableScrollPhysics(),
         ),
         slivers: [
-          HomeBanner(
-            bookListByBestSeller: const [],
-            onTapBook: (String isbn13) {},
-          ),
+          const HomeBannerLoading(),
           _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
           if (child != null) ...child,
           const SliverToBoxAdapter(
