@@ -136,7 +136,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             parent: AlwaysScrollableScrollPhysics(),
           ),
           slivers: [
-            const HomeBanner(),
+            HomeBanner(
+              bookListByBestSeller: booksByBestSeller.books,
+            ),
             const HomeIntro(),
             const HomeBarcodeButton(),
             _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
@@ -223,7 +225,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           parent: AlwaysScrollableScrollPhysics(),
         ),
         slivers: [
-          const HomeBanner(),
+          const HomeBanner(
+            bookListByBestSeller: [],
+          ),
           const HomeIntro(),
           const HomeBarcodeButton(),
           _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
