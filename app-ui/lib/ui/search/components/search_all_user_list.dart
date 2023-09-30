@@ -4,12 +4,11 @@ import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/search_repository.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/components/single_data_error.dart';
-import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
-import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/ui/search/components/search_loading.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_info.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_layout.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class SearchAllUserList extends StatefulWidget {
   const SearchAllUserList({super.key});
@@ -68,26 +67,12 @@ class _SearchAllUserListState extends State<SearchAllUserList> {
 
                   return InkWell(
                     onTap: () {
-                      if (_userId != searchedUser.userId) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => UserProfileScreen(
-                              userId: searchedUser.userId!,
-                              nickname: searchedUser.nickname!,
-                            ),
-                          ),
-                        );
-                      }
-                      if (_userId == searchedUser.userId!) {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (_) => const RootTab(
-                              tapIndex: 3,
-                            ),
-                          ),
-                          (route) => false,
-                        );
-                      }
+                      moveToUserProfile(
+                        context: context,
+                        myUserId: _userId,
+                        userId: searchedUser.userId!,
+                        nickname: searchedUser.nickname!,
+                      );
                     },
                     child: SearchUserLayout(
                       children: [

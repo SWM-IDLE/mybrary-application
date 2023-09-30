@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/ui/common/layout/root_tab.dart';
+import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 
 Widget loadingIndicator() {
   return CircularProgressIndicator(
@@ -159,5 +162,71 @@ void commonBottomSheet({
         ),
       );
     },
+  );
+}
+
+Widget commonDivider() {
+  return const Divider(
+    height: 1,
+    thickness: 1,
+    color: greyF1F2F5,
+  );
+}
+
+Widget commonSliverDivider() {
+  return const SliverToBoxAdapter(
+    child: Divider(
+      height: 1,
+      thickness: 1,
+      color: greyF1F2F5,
+    ),
+  );
+}
+
+void moveToUserProfile({
+  required BuildContext context,
+  required String myUserId,
+  required String userId,
+  required String nickname,
+}) {
+  if (myUserId != userId) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => UserProfileScreen(
+          userId: userId,
+          nickname: nickname,
+        ),
+      ),
+    );
+  }
+  if (myUserId == userId) {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => const RootTab(
+          tapIndex: 3,
+        ),
+      ),
+      (route) => false,
+    );
+  }
+}
+
+Row commonSubTitle({
+  required String title,
+}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Text(
+        title,
+        style: commonSubTitleStyle,
+      ),
+      SizedBox(
+        child: SvgPicture.asset(
+          'assets/svg/icon/right_arrow.svg',
+        ),
+      ),
+    ],
   );
 }

@@ -9,13 +9,12 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/components/single_data_error.dart';
-import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
-import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/ui/search/components/search_loading.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_book_list_info.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_info.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_layout.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class SearchBookList extends StatefulWidget {
   final String searchKeyword;
@@ -412,26 +411,12 @@ class _SearchBookListState extends State<SearchBookList>
 
             return InkWell(
               onTap: () {
-                if (_userId != searchedUser.userId) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => UserProfileScreen(
-                        userId: searchedUser.userId!,
-                        nickname: searchedUser.nickname!,
-                      ),
-                    ),
-                  );
-                }
-                if (_userId == searchedUser.userId!) {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (_) => const RootTab(
-                        tapIndex: 3,
-                      ),
-                    ),
-                    (route) => false,
-                  );
-                }
+                moveToUserProfile(
+                  context: context,
+                  myUserId: _userId,
+                  userId: searchedUser.userId!,
+                  nickname: searchedUser.nickname!,
+                );
               },
               child: SearchUserLayout(
                 children: [

@@ -166,7 +166,7 @@ const interestDescriptionStyle = TextStyle(
 const followNicknameStyle = TextStyle(
   color: commonBlackColor,
   fontSize: 15.0,
-  fontWeight: FontWeight.w400,
+  fontWeight: FontWeight.w500,
 );
 
 const followButtonTextStyle = TextStyle(
