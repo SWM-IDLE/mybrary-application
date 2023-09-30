@@ -411,7 +411,7 @@ class _SearchBookListState extends State<SearchBookList>
 
             return InkWell(
               onTap: () {
-                nextToUserProfile(
+                moveToUserProfile(
                   context: context,
                   myUserId: _userId,
                   userId: searchedUser.userId!,

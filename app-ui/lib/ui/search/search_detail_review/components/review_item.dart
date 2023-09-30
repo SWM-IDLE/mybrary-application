@@ -53,7 +53,7 @@ class _ReviewItemState extends State<ReviewItem> {
             children: [
               InkWell(
                 onTap: () {
-                  nextToUserProfile(
+                  moveToUserProfile(
                     context: context,
                     myUserId: _userId,
                     userId: widget.review.userId!,

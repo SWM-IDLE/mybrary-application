@@ -67,7 +67,7 @@ class _SearchAllUserListState extends State<SearchAllUserList> {
 
                   return InkWell(
                     onTap: () {
-                      nextToUserProfile(
+                      moveToUserProfile(
                         context: context,
                         myUserId: _userId,
                         userId: searchedUser.userId!,

@@ -183,7 +183,7 @@ Widget commonSliverDivider() {
   );
 }
 
-void nextToUserProfile({
+void moveToUserProfile({
   required BuildContext context,
   required String myUserId,
   required String userId,

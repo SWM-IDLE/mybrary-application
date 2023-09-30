@@ -100,7 +100,7 @@ class _SearchDetailUserInfosScreenState
                 children: [
                   InkWell(
                     onTap: () {
-                      nextToUserProfile(
+                      moveToUserProfile(
                         context: context,
                         myUserId: _userId,
                         userId: userInfos[index].userId,
