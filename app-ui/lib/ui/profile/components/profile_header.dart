@@ -48,6 +48,10 @@ class ProfileHeader extends StatelessWidget {
                   image: NetworkImage(
                     '$profileImageUrl',
                   ),
+                  onError: (exception, stackTrace) => Image.asset(
+                    'assets/img/logo/mybrary.png',
+                    fit: BoxFit.fill,
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),

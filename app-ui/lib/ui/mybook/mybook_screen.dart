@@ -270,6 +270,11 @@ class _MyBookScreenState extends State<MyBookScreen> {
                                           ? myBook.thumbnailUrl!
                                           : myBook.book!.thumbnailUrl!,
                                     ),
+                                    onError: (exception, stackTrace) =>
+                                        Image.asset(
+                                      'assets/img/logo/mybrary.png',
+                                      fit: BoxFit.fill,
+                                    ),
                                     fit: BoxFit.fill,
                                   ),
                                 ),

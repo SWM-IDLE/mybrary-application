@@ -67,6 +67,10 @@ class HomeBestSeller extends StatelessWidget {
                             image: NetworkImage(
                               bookListByBestSeller[index].thumbnailUrl,
                             ),
+                            onError: (exception, stackTrace) => Image.asset(
+                              'assets/img/logo/mybrary.png',
+                              fit: BoxFit.fill,
+                            ),
                             fit: BoxFit.fill,
                           ),
                           borderRadius: BorderRadius.circular(8),

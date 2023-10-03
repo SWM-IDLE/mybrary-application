@@ -39,6 +39,10 @@ class BookList extends StatelessWidget {
                         image: NetworkImage(
                           bookList[index].book!.thumbnailUrl!,
                         ),
+                        onError: (exception, stackTrace) => Image.asset(
+                          'assets/img/logo/mybrary.png',
+                          fit: BoxFit.fill,
+                        ),
                         fit: BoxFit.fill,
                       ),
                       shadows: [

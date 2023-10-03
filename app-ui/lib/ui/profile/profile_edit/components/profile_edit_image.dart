@@ -36,6 +36,10 @@ class ProfileEditImage extends StatelessWidget {
                   : Image.file(
                       File(profileImage!.path),
                     ).image,
+              onError: (exception, stackTrace) => Image.asset(
+                'assets/img/logo/mybrary.png',
+                fit: BoxFit.fill,
+              ),
               fit: BoxFit.cover,
             ),
           ),

@@ -48,7 +48,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
 
     Future.delayed(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 500),
       () {
         ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
         ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
@@ -57,10 +57,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             .getBooksByFirstInterests();
       },
     );
-
-    // ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
-    // ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
-    // ref.read(recommendationBooksProvider.notifier).getBooksByFirstInterests();
 
     _homeScrollController.addListener(_changeAppBarComponent);
   }
@@ -135,7 +131,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: primaryColor,
       onRefresh: () {
         return Future.delayed(
-          const Duration(seconds: 1),
+          const Duration(milliseconds: 500),
           () {
             ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
             ref.refresh(bestSellerProvider.notifier).getBooksByBestSeller();
