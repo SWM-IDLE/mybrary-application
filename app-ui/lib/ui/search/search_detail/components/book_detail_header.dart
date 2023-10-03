@@ -114,7 +114,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             bookStatusColumn(
-              padding: 32.0,
+              padding: 30.0,
               children: [
                 InkWell(
                   onTap: () async {
@@ -153,7 +153,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
               ],
             ),
             bookStatusColumn(
-              padding: 36.0,
+              padding: 34.0,
               children: [
                 InkWell(
                   onTap: () async {},
@@ -175,7 +175,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
               ],
             ),
             bookStatusColumn(
-              padding: 24.0,
+              padding: 22.0,
               lastBox: true,
               children: [
                 InkWell(

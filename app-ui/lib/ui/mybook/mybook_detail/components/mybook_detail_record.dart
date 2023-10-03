@@ -10,7 +10,8 @@ class MyBookDetailRecord extends StatelessWidget {
   final String startDateOfPossession;
   final String meaningTagColorCode;
   final String meaningTagQuote;
-  final String? userId;
+  final String? currentUserId;
+  final String originUserId;
   final void Function()? onTapRecord;
 
   const MyBookDetailRecord({
@@ -21,7 +22,8 @@ class MyBookDetailRecord extends StatelessWidget {
     required this.startDateOfPossession,
     required this.meaningTagColorCode,
     required this.meaningTagQuote,
-    this.userId,
+    required this.originUserId,
+    this.currentUserId,
     this.onTapRecord,
     super.key,
   });
@@ -107,7 +109,9 @@ class MyBookDetailRecord extends StatelessWidget {
           style: bookDetailSubStyle,
         ),
         InkWell(
-          onTap: userId != null ? onTapRecord : null,
+          onTap: currentUserId == null || currentUserId == originUserId
+              ? onTapRecord
+              : null,
           child: Text(
             itemDescription,
             style: bookDetailInfoStyle.copyWith(color: colorCode),

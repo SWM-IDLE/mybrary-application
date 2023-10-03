@@ -242,7 +242,8 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                       meaningTagColorCode: _newMeaningTagColorCode ?? colorCode,
                       meaningTagQuote: _newMeaningTagQuote ??
                           myBookDetailData.meaningTag!.quote!,
-                      userId: widget.userId ?? _userId,
+                      currentUserId: widget.userId,
+                      originUserId: _userId,
                       onTapRecord: () =>
                           _showMyBookRecordEdit(context, colorCode, dateTime),
                     ),
