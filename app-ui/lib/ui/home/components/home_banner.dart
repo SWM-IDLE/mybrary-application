@@ -60,32 +60,37 @@ class _HomeBannerState extends State<HomeBanner> {
                           SizedBox(
                             width: mediaQueryWidth(context) * 0.4,
                             child: Text(
-                              '세상의 마지막 기차역',
+                              book.title!,
                               style: commonSubBoldStyle.copyWith(
-                                fontSize: 15.0,
+                                fontSize: 15,
+                                height: 1.2,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Text(
-                            '무라세 다케시',
+                            book.authors!.length > 15
+                                ? '${book.authors!.substring(0, 15)}...'
+                                : book.authors!,
                             style: commonSubRegularStyle.copyWith(
-                              fontSize: 12.0,
+                              fontSize: 11.0,
                             ),
                           ),
                           Text(
-                            '⭐4.5',
+                            '⭐${book.aladinStarRating}',
                             style: commonSubMediumStyle.copyWith(
-                              fontSize: 12.0,
+                              fontSize: 11.0,
                             ),
                           ),
-                          const SizedBox(height: 12.0),
+                          const SizedBox(height: 8.0),
                           Row(
                             children: [
-                              const Text(
+                              Text(
                                 '베스트셀러 보러가기',
-                                style: commonSubRegularStyle,
+                                style: commonSubRegularStyle.copyWith(
+                                  fontSize: 12.0,
+                                ),
                               ),
                               const SizedBox(width: 4.0),
                               SvgPicture.asset(

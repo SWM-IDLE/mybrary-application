@@ -21,12 +21,18 @@ Map<String, dynamic> _$BooksByCategoryModelToJson(
     };
 
 BooksModel _$BooksModelFromJson(Map<String, dynamic> json) => BooksModel(
+      title: json['title'] as String?,
+      authors: json['authors'] as String?,
+      aladinStarRating: (json['aladinStarRating'] as num?)?.toDouble(),
       thumbnailUrl: json['thumbnailUrl'] as String,
       isbn13: json['isbn13'] as String,
     );
 
 Map<String, dynamic> _$BooksModelToJson(BooksModel instance) =>
     <String, dynamic>{
+      'title': instance.title,
+      'authors': instance.authors,
+      'aladinStarRating': instance.aladinStarRating,
       'thumbnailUrl': instance.thumbnailUrl,
       'isbn13': instance.isbn13,
     };

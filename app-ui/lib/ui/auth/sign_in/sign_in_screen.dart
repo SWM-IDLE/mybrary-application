@@ -66,7 +66,11 @@ class _SignInScreenState extends State<SignInScreen> {
                             btnText: 'Apple로 로그인',
                             oauthType: 'apple',
                             btnBackgroundColor: commonBlackColor,
-                            onTap: () => {},
+                            onTap: () => {
+                              signInOAuth(
+                                'https://f97d-1-235-157-76.ngrok-free.app/oauth2/authorization/apple',
+                              )
+                            },
                           ),
                         const SizedBox(height: 10.0),
                         OAuthButton(
