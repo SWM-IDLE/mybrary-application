@@ -56,8 +56,9 @@ class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
           MyBookRegisteredListModel book =
               homeBookCountList.myBookRegisteredList[index];
 
-          String bookTitle =
-              book.title.length > 30 ? book.title.substring(0, 30) : book.title;
+          String bookTitle = book.title.length > 40
+              ? '${book.title.substring(0, 40)}...'
+              : book.title;
 
           return Column(
             children: [
