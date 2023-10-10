@@ -165,10 +165,13 @@ void commonBottomSheet({
   );
 }
 
-Widget commonDivider() {
-  return const Divider(
-    height: 1,
-    thickness: 1,
+Widget commonDivider({
+  double? dividerHeight,
+  double? dividerThickness,
+}) {
+  return Divider(
+    height: dividerHeight ?? 1,
+    thickness: dividerThickness ?? 1,
     color: greyF1F2F5,
   );
 }

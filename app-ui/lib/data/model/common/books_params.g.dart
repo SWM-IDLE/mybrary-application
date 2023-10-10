@@ -7,9 +7,11 @@ part of 'books_params.dart';
 // **************************************************************************
 
 BooksParams _$BooksParamsFromJson(Map<String, dynamic> json) => BooksParams(
-      type: json['type'] as String,
+      type: json['type'] as String?,
       page: json['page'] as String?,
       categoryId: json['categoryId'] as int?,
+      start: json['start'] as String?,
+      end: json['end'] as String?,
     );
 
 Map<String, dynamic> _$BooksParamsToJson(BooksParams instance) =>
@@ -17,4 +19,6 @@ Map<String, dynamic> _$BooksParamsToJson(BooksParams instance) =>
       'type': instance.type,
       'page': instance.page,
       'categoryId': instance.categoryId,
+      'start': instance.start,
+      'end': instance.end,
     };
