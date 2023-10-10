@@ -46,111 +46,44 @@ class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
       );
     }
 
-    return _initLayout(
-      child: ListView.builder(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        itemCount: homeBookCountList.totalCount,
-        itemBuilder: (context, index) {
-          MyBookRegisteredListModel book =
-              homeBookCountList.myBookRegisteredList[index];
+    return RefreshIndicator(
+      color: commonWhiteColor,
+      backgroundColor: primaryColor,
+      onRefresh: () {
+        return Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            ref
+                .refresh(homeBookServiceProvider.notifier)
+                .getTodayRegisteredBookList();
+          },
+        );
+      },
+      child: _initLayout(
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          itemCount: homeBookCountList.totalCount,
+          itemBuilder: (context, index) {
+            MyBookRegisteredListModel book =
+                homeBookCountList.myBookRegisteredList[index];
 
-          String bookTitle = book.title.length > 40
-              ? '${book.title.substring(0, 40)}...'
-              : book.title;
+            String bookTitle = book.title.length > 40
+                ? '${book.title.substring(0, 40)}...'
+                : book.title;
 
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 12.0,
-                ),
-                child: Row(
-                  children: [
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            moveToBookDetail(
-                              context: context,
-                              isbn13: book.isbn13,
-                            );
-                          },
-                          child: Container(
-                            width: 70,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: greyF1F2F5,
-                                width: 1,
-                              ),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  book.thumbnailUrl,
-                                ),
-                                onError: (exception, stackTrace) => Image.asset(
-                                  'assets/img/logo/mybrary.png',
-                                  fit: BoxFit.fill,
-                                ),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: -10,
-                          right: -10,
-                          child: InkWell(
-                            onTap: () {
-                              moveToUserProfile(
-                                context: context,
-                                myUserId: _userId,
-                                userId: book.userId,
-                                nickname: book.nickname,
-                              );
-                            },
-                            child: CircleAvatar(
-                              radius: 22.0,
-                              backgroundColor: greyACACAC,
-                              backgroundImage: NetworkImage(
-                                book.profileImageUrl,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(width: 20.0),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 12.0,
+                  ),
+                  child: Row(
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              moveToUserProfile(
-                                context: context,
-                                myUserId: _userId,
-                                userId: book.userId,
-                                nickname: book.nickname,
-                              );
-                            },
-                            child: Text.rich(
-                              TextSpan(
-                                text: book.nickname,
-                                style: todayRegisteredBookNickname,
-                                children: const [
-                                  TextSpan(
-                                    text: '님이',
-                                    style: todayRegisteredBookIntroduction,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 4.0),
                           InkWell(
                             onTap: () {
                               moveToBookDetail(
@@ -158,32 +91,114 @@ class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
                                 isbn13: book.isbn13,
                               );
                             },
-                            child: Text(
-                              '「 $bookTitle 」',
-                              style: commonSubBoldStyle.copyWith(
-                                fontSize: 15.0,
+                            child: Container(
+                              width: 70,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: greyF1F2F5,
+                                  width: 1,
+                                ),
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    book.thumbnailUrl,
+                                  ),
+                                  onError: (exception, stackTrace) =>
+                                      Image.asset(
+                                    'assets/img/logo/mybrary.png',
+                                    fit: BoxFit.fill,
+                                  ),
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 4.0),
-                          const Text(
-                            '을(를) 마이북에 추가했어요!',
-                            style: todayRegisteredBookIntroduction,
-                          ),
+                          Positioned(
+                            bottom: -10,
+                            right: -10,
+                            child: InkWell(
+                              onTap: () {
+                                moveToUserProfile(
+                                  context: context,
+                                  myUserId: _userId,
+                                  userId: book.userId,
+                                  nickname: book.nickname,
+                                );
+                              },
+                              child: CircleAvatar(
+                                radius: 22.0,
+                                backgroundColor: greyACACAC,
+                                backgroundImage: NetworkImage(
+                                  book.profileImageUrl,
+                                ),
+                              ),
+                            ),
+                          )
                         ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 20.0),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                moveToUserProfile(
+                                  context: context,
+                                  myUserId: _userId,
+                                  userId: book.userId,
+                                  nickname: book.nickname,
+                                );
+                              },
+                              child: Text.rich(
+                                TextSpan(
+                                  text: book.nickname,
+                                  style: todayRegisteredBookNickname,
+                                  children: const [
+                                    TextSpan(
+                                      text: '님이',
+                                      style: todayRegisteredBookIntroduction,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4.0),
+                            InkWell(
+                              onTap: () {
+                                moveToBookDetail(
+                                  context: context,
+                                  isbn13: book.isbn13,
+                                );
+                              },
+                              child: Text(
+                                '「 $bookTitle 」',
+                                style: commonSubBoldStyle.copyWith(
+                                  fontSize: 15.0,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4.0),
+                            const Text(
+                              '을(를) 마이북에 추가했어요!',
+                              style: todayRegisteredBookIntroduction,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              commonDivider(
-                dividerThickness: 5,
-              ),
-              const SizedBox(height: 12),
-            ],
-          );
-        },
+                const SizedBox(height: 24),
+                commonDivider(
+                  dividerThickness: 5,
+                ),
+                const SizedBox(height: 12),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
