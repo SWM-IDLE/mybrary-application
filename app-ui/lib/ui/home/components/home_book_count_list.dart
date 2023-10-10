@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/home/today_registered_book_count_model.dart';
 import 'package:mybrary/data/provider/home/home_book_count_list_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
@@ -18,6 +19,8 @@ class HomeBookCountList extends ConsumerStatefulWidget {
 }
 
 class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
+  final _userId = UserState.userId;
+
   @override
   void initState() {
     super.initState();
@@ -53,22 +56,28 @@ class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
           MyBookRegisteredListModel book =
               homeBookCountList.myBookRegisteredList[index];
 
-          return InkWell(
-            onTap: () {},
-            child: Column(
-              children: [
-                if (index != 0) const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 4.0,
-                  ),
-                  child: Row(
-                    children: [
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
+          String bookTitle =
+              book.title.length > 30 ? book.title.substring(0, 30) : book.title;
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 12.0,
+                ),
+                child: Row(
+                  children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            moveToBookDetail(
+                              context: context,
+                              isbn13: book.isbn13,
+                            );
+                          },
+                          child: Container(
                             width: 70,
                             height: 100,
                             decoration: BoxDecoration(
@@ -88,9 +97,19 @@ class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
                               ),
                             ),
                           ),
-                          Positioned(
-                            bottom: -10,
-                            right: -10,
+                        ),
+                        Positioned(
+                          bottom: -10,
+                          right: -10,
+                          child: InkWell(
+                            onTap: () {
+                              moveToUserProfile(
+                                context: context,
+                                myUserId: _userId,
+                                userId: book.userId,
+                                nickname: book.nickname,
+                              );
+                            },
                             child: CircleAvatar(
                               radius: 22.0,
                               backgroundColor: greyACACAC,
@@ -98,54 +117,70 @@ class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
                                 book.profileImageUrl,
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(width: 20.0),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        height: 100,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              top: 0,
-                              child: Text(
-                                book.title,
-                                style: commonSubMediumStyle.copyWith(
-                                  fontSize: 14.0,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(width: 20.0),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              moveToUserProfile(
+                                context: context,
+                                myUserId: _userId,
+                                userId: book.userId,
+                                nickname: book.nickname,
+                              );
+                            },
+                            child: Text.rich(
+                              TextSpan(
+                                text: book.nickname,
+                                style: todayRegisteredBookNickname,
+                                children: const [
+                                  TextSpan(
+                                    text: '님이',
+                                    style: todayRegisteredBookIntroduction,
+                                  ),
+                                ],
                               ),
                             ),
-                            if (book.nickname.length > 10)
-                              Positioned(
-                                bottom: 0,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: userDescription(book: book),
-                                ),
-                              )
-                            else
-                              Positioned(
-                                bottom: 0,
-                                child: Row(
-                                  children: userDescription(book: book),
-                                ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          InkWell(
+                            onTap: () {
+                              moveToBookDetail(
+                                context: context,
+                                isbn13: book.isbn13,
+                              );
+                            },
+                            child: Text(
+                              '「 $bookTitle 」',
+                              style: commonSubBoldStyle.copyWith(
+                                fontSize: 15.0,
                               ),
-                          ],
-                        ),
+                            ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          const Text(
+                            '을(를) 마이북에 추가했어요!',
+                            style: todayRegisteredBookIntroduction,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                commonDivider(
-                  dividerHeight: 4,
-                  dividerThickness: 4,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 24),
+              commonDivider(
+                dividerThickness: 5,
+              ),
+              const SizedBox(height: 12),
+            ],
           );
         },
       ),
@@ -156,23 +191,8 @@ class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
     required Widget child,
   }) {
     return SubPageLayout(
-      appBarTitle: '실시간 마이북 등록',
+      appBarTitle: '오늘 마이북에 담긴 책',
       child: child,
     );
-  }
-
-  List<Widget> userDescription({
-    required MyBookRegisteredListModel book,
-  }) {
-    return [
-      Text(
-        book.nickname,
-        style: todayRegisteredBookNickname,
-      ),
-      const Text(
-        '님이 마이북에 도서를 추가했어요!',
-        style: todayRegisteredBookIntroduction,
-      ),
-    ];
   }
 }
