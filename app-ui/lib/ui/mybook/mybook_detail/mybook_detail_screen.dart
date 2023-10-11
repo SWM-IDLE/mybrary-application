@@ -401,7 +401,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                         _myBookRecordInput(
                           context: context,
                           controller: _meaningTagQuoteController,
-                          hintText: '내 삶을 돌아보게 만든 책',
+                          hintText: '내 삶을 돌아보게 만든 책 (최대 15자까지)',
                         ),
                         const SizedBox(height: 16.0),
                         const Text(
@@ -550,7 +550,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
   }) {
     return TextFormField(
       controller: controller,
-      maxLength: 20,
+      maxLength: 15,
       style: commonSubMediumStyle,
       scrollPadding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,

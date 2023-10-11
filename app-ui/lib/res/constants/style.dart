@@ -231,6 +231,20 @@ const categoryCircularTextStyle = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const todayRegisteredBookNickname = TextStyle(
+  color: primaryColor,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w500,
+  height: 1.5,
+);
+
+const todayRegisteredBookIntroduction = TextStyle(
+  color: grey262626,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w400,
+  height: 1.5,
+);
+
 // book search page style
 const searchBookTitleStyle = TextStyle(
   color: grey262626,

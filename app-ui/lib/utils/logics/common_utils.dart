@@ -6,6 +6,7 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
+import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 
 Widget loadingIndicator() {
   return CircularProgressIndicator(
@@ -165,10 +166,13 @@ void commonBottomSheet({
   );
 }
 
-Widget commonDivider() {
-  return const Divider(
-    height: 1,
-    thickness: 1,
+Widget commonDivider({
+  double? dividerHeight,
+  double? dividerThickness,
+}) {
+  return Divider(
+    height: dividerHeight ?? 1,
+    thickness: dividerThickness ?? 1,
     color: greyF1F2F5,
   );
 }
@@ -209,6 +213,17 @@ void moveToUserProfile({
       (route) => false,
     );
   }
+}
+
+void moveToBookDetail({
+  required BuildContext context,
+  required String isbn13,
+}) {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) => SearchDetailScreen(isbn13: isbn13),
+    ),
+  );
 }
 
 Row commonSubTitle({
