@@ -201,38 +201,51 @@ class _FollowScreenState extends State<FollowScreen>
           itemCount: followers.length,
           itemBuilder: (context, index) {
             Followers follower = followers[index];
+            String followerUserId = follower.userId!;
 
-            return FollowLayout(
-              children: [
-                FollowUserInfo(
-                  nickname: follower.nickname!,
-                  profileImageUrl: follower.profileImageUrl!,
-                ),
-                if (widget.userId == null)
-                  ElevatedButton(
-                    onPressed: () => onPressedDeleteFollowerUser(
-                      context: context,
-                      follower: follower,
-                      followers: followers,
-                      index: index,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: greyDDDDDD,
-                      shape: followButtonRoundStyle,
-                      minimumSize: const Size(60.0, 10.0),
-                      splashFactory: NoSplash.splashFactory,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
-                    ),
-                    child: const Text(
-                      '삭제',
-                      style: followButtonTextStyle,
+            return InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => UserProfileScreen(
+                      userId: followerUserId,
+                      nickname: follower.nickname!,
                     ),
                   ),
-              ],
+                );
+              },
+              child: FollowLayout(
+                children: [
+                  FollowUserInfo(
+                    nickname: follower.nickname!,
+                    profileImageUrl: follower.profileImageUrl!,
+                  ),
+                  if (widget.userId == null)
+                    ElevatedButton(
+                      onPressed: () => onPressedDeleteFollowerUser(
+                        context: context,
+                        follower: follower,
+                        followers: followers,
+                        index: index,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: greyDDDDDD,
+                        shape: followButtonRoundStyle,
+                        minimumSize: const Size(60.0, 10.0),
+                        splashFactory: NoSplash.splashFactory,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                      ),
+                      child: const Text(
+                        '삭제',
+                        style: followButtonTextStyle,
+                      ),
+                    ),
+                ],
+              ),
             );
           },
         ),
