@@ -50,7 +50,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
-        ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
+        ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
         ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
         ref
             .read(recommendationBooksProvider.notifier)
