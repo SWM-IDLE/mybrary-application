@@ -1,7 +1,9 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
+import 'package:mybrary/utils/logics/future_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,6 +14,21 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   var _opacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(
+      const Duration(seconds: 1),
+      () async {
+        FirebaseRemoteConfig remoteConfig = await getAppVersionConfig();
+
+        String minAppVersion = remoteConfig.getString('min_version');
+        String latestAppVersion = remoteConfig.getString('latest_version');
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
