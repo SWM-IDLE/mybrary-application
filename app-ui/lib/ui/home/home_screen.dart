@@ -8,6 +8,7 @@ import 'package:mybrary/data/model/home/today_registered_book_count_model.dart';
 import 'package:mybrary/data/provider/home/home_bestseller_provider.dart';
 import 'package:mybrary/data/provider/home/home_provider.dart';
 import 'package:mybrary/data/provider/home/home_recommendation_books_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/home_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
@@ -23,6 +24,7 @@ import 'package:mybrary/ui/home/components/home_recommend_books.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books_header.dart';
 import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -47,6 +49,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
     ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
     ref.read(recommendationBooksProvider.notifier).getBooksByFirstInterests();
+
+    if (UserState.update!) {
+      Future.delayed(
+        Duration.zero,
+        () => commonShowConfirmOrCancelDialog(
+          context: context,
+          title: '새로운 버전 출시',
+          content: '업데이트를 통해\n새로운 기능을 만나보세요 !',
+          leftButtonText: '나중에',
+          leftButtonOnTap: () {
+            Navigator.pop(context);
+          },
+          rightButtonText: '업데이트',
+          rightButtonOnTap: () {},
+          confirmButtonColor: primaryColor,
+          confirmButtonText: commonWhiteColor,
+        ),
+      );
+    }
   }
 
   void _scrollToTop() {

@@ -23,6 +23,7 @@ import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_record.
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_review.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_edit_review.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class MyBookDetailScreen extends StatefulWidget {
   final int myBookId;
@@ -920,14 +921,14 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                       actions: [
                         Row(
                           children: [
-                            _confirmButton(
+                            confirmButton(
                               onTap: () {
                                 Navigator.of(context).pop();
                               },
                               buttonText: '취소',
                               isCancel: true,
                             ),
-                            _confirmButton(
+                            confirmButton(
                               onTap: () {
                                 _bookRepository.deleteMyBook(
                                   context: context,
@@ -954,6 +955,8 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                               },
                               buttonText: '삭제',
                               isCancel: false,
+                              confirmButtonColor: commonRedColor,
+                              confirmButtonText: commonWhiteColor,
                             ),
                           ],
                         ),
@@ -980,37 +983,6 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
           height: 1,
           thickness: 6,
           color: greyF1F2F5,
-        ),
-      ),
-    );
-  }
-
-  Widget _confirmButton({
-    required GestureTapCallback? onTap,
-    required String buttonText,
-    required bool isCancel,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            height: 46.0,
-            decoration: BoxDecoration(
-              color: isCancel ? greyF1F2F5 : commonRedColor,
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: Center(
-              child: Text(
-                buttonText,
-                style: commonSubBoldStyle.copyWith(
-                  color: isCancel ? commonBlackColor : commonWhiteColor,
-                  fontSize: 14.0,
-                ),
-              ),
-            ),
-          ),
         ),
       ),
     );

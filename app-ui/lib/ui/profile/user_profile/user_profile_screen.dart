@@ -436,6 +436,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               },
                               buttonText: '신고하기',
                               isCancel: false,
+                              confirmButtonColor: commonRedColor,
+                              confirmButtonText: commonWhiteColor,
                             ),
                           ],
                         ),

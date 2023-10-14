@@ -8,6 +8,7 @@ import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/profile/profile_edit/profile_edit_screen.dart';
 import 'package:mybrary/ui/setting/components/account_withdrawal.dart';
 import 'package:mybrary/ui/setting/components/login_info.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -216,14 +217,14 @@ class SettingScreen extends StatelessWidget {
           actions: [
             Row(
               children: [
-                _confirmButton(
+                confirmButton(
                   onTap: () {
                     Navigator.of(context).pop();
                   },
                   buttonText: '취소',
                   isCancel: true,
                 ),
-                _confirmButton(
+                confirmButton(
                   onTap: () async {
                     await secureStorage.deleteAll();
 
@@ -236,6 +237,8 @@ class SettingScreen extends StatelessWidget {
                   },
                   buttonText: '로그아웃',
                   isCancel: false,
+                  confirmButtonColor: commonRedColor,
+                  confirmButtonText: commonWhiteColor,
                 ),
               ],
             ),
@@ -268,37 +271,6 @@ class SettingScreen extends StatelessWidget {
               'assets/svg/icon/profile_menu_arrow.svg',
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _confirmButton({
-    required GestureTapCallback? onTap,
-    required String buttonText,
-    required bool isCancel,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            height: 46.0,
-            decoration: BoxDecoration(
-              color: isCancel ? greyF1F2F5 : commonRedColor,
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: Center(
-              child: Text(
-                buttonText,
-                style: commonSubBoldStyle.copyWith(
-                  color: isCancel ? commonBlackColor : commonWhiteColor,
-                  fontSize: 14.0,
-                ),
-              ),
-            ),
-          ),
         ),
       ),
     );

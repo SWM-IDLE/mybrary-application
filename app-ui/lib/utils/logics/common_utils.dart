@@ -88,6 +88,8 @@ Widget confirmButton({
   required GestureTapCallback? onTap,
   required String buttonText,
   required bool isCancel,
+  Color? confirmButtonColor = greyF1F2F5,
+  Color? confirmButtonText = commonBlackColor,
 }) {
   return Expanded(
     child: Padding(
@@ -97,14 +99,14 @@ Widget confirmButton({
         child: Container(
           height: 46.0,
           decoration: BoxDecoration(
-            color: isCancel ? greyF1F2F5 : commonRedColor,
+            color: isCancel ? greyF1F2F5 : confirmButtonColor,
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Center(
             child: Text(
               buttonText,
               style: commonSubBoldStyle.copyWith(
-                color: isCancel ? commonBlackColor : commonWhiteColor,
+                color: isCancel ? commonBlackColor : confirmButtonText,
                 fontSize: 14.0,
               ),
             ),
@@ -243,5 +245,107 @@ Row commonSubTitle({
         ),
       ),
     ],
+  );
+}
+
+void commonShowConfirmOrCancelDialog({
+  required BuildContext context,
+  required String title,
+  required String content,
+  required String leftButtonText,
+  required void Function()? leftButtonOnTap,
+  required String rightButtonText,
+  required void Function()? rightButtonOnTap,
+  required Color confirmButtonColor,
+  required Color confirmButtonText,
+}) async {
+  await showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(
+          title,
+          style: commonSubBoldStyle,
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          content,
+          style: confirmButtonTextStyle,
+          textAlign: TextAlign.center,
+        ),
+        contentPadding: const EdgeInsets.all(16.0),
+        actionsAlignment: MainAxisAlignment.center,
+        buttonPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+        actions: [
+          Row(
+            children: [
+              confirmButton(
+                onTap: () {
+                  leftButtonOnTap!();
+                },
+                buttonText: leftButtonText,
+                isCancel: true,
+              ),
+              confirmButton(
+                onTap: () {
+                  rightButtonOnTap!();
+                },
+                buttonText: rightButtonText,
+                isCancel: false,
+                confirmButtonColor: confirmButtonColor,
+                confirmButtonText: confirmButtonText,
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void commonShowConfirmDialog({
+  required BuildContext context,
+  required String content,
+  required String confirmButtonText,
+  required Color confirmButtonColor,
+  required Color confirmButtonTextColor,
+  required void Function()? confirmButtonOnTap,
+}) async {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) => AlertDialog(
+      elevation: 0,
+      content: Text(
+        content,
+        textAlign: TextAlign.center,
+      ),
+      contentTextStyle: commonDialogMessageStyle,
+      contentPadding: const EdgeInsets.only(
+        top: 24.0,
+        bottom: 12.0,
+      ),
+      actions: [
+        Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor: confirmButtonColor,
+                foregroundColor: confirmButtonTextColor,
+              ),
+              onPressed: () {
+                confirmButtonOnTap!();
+              },
+              child: Text(
+                confirmButtonText,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
   );
 }
