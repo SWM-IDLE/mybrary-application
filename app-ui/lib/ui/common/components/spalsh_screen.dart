@@ -1,7 +1,6 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/utils/logics/future_utils.dart';
@@ -34,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (lastUpdateCheck == null ||
         nowDateTime.isAfter(
           DateTime.parse(lastUpdateCheck).add(
-            const Duration(minutes: 1),
+            const Duration(days: 1),
           ),
         )) {
       checkForUpdateAndShowUpdateAlert();
@@ -50,30 +49,26 @@ class _SplashScreenState extends State<SplashScreen> {
     String latestAppVersion = remoteConfig.getString('latest_version');
     String currAppVersion = packageInfo.version;
 
-    print('앱 최소 버전: $minAppVersion');
-    print('앱 최신 버전: $latestAppVersion');
-    print('앱 현재 버전: $currAppVersion');
-
     prefs.setString('lastUpdateCheck', DateTime.now().toIso8601String());
 
     if (parseAppVersion(currAppVersion) == parseAppVersion(latestAppVersion)) {
-      UserState.localStorage.setBool('update', false);
-      UserState.localStorage.setBool('forceUpdate', false);
+      prefs.setBool('update', false);
+      prefs.setBool('forceUpdate', false);
       return;
     }
 
     if (parseAppVersion(minAppVersion) > parseAppVersion(currAppVersion)) {
-      UserState.localStorage.setBool('forceUpdate', true);
+      prefs.setBool('forceUpdate', true);
       return;
     }
 
     if (parseAppVersion(latestAppVersion) > parseAppVersion(currAppVersion)) {
-      UserState.localStorage.setBool('update', true);
+      prefs.setBool('update', true);
       return;
     }
 
-    UserState.localStorage.setBool('update', false);
-    UserState.localStorage.setBool('forceUpdate', false);
+    prefs.setBool('update', false);
+    prefs.setBool('forceUpdate', false);
   }
 
   @override
