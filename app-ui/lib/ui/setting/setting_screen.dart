@@ -89,7 +89,7 @@ class SettingScreen extends StatelessWidget {
                     _settingTab(
                       tabTitle: '1:1 문의하기',
                       onTap: () async {
-                        await _connectWebLink(
+                        await connectWebLink(
                           webLink: inquiryLink,
                         );
                       },
@@ -134,7 +134,7 @@ class SettingScreen extends StatelessWidget {
                       tabTitle: '리뷰로 응원하기',
                       onTap: () async {
                         // Todo: 추후 AOS, IOS 별 링크 설정 필요
-                        await _connectWebLink(
+                        await connectWebLink(
                           webLink: androidAppLink,
                         );
                       },
@@ -177,19 +177,6 @@ class SettingScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _connectWebLink({
-    required String webLink,
-  }) async {
-    String url = webLink;
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(
-        Uri.parse(url),
-        mode: LaunchMode.externalApplication,
-        webOnlyWindowName: '_self',
-      );
-    }
   }
 
   Future<dynamic> _showLogoutAlert(

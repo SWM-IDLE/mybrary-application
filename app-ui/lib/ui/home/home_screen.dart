@@ -11,6 +11,7 @@ import 'package:mybrary/data/provider/home/home_recommendation_books_provider.da
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/home_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
+import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/components/sliver_loading.dart';
@@ -50,24 +51,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
     ref.read(recommendationBooksProvider.notifier).getBooksByFirstInterests();
 
-    if (UserState.update!) {
-      Future.delayed(
-        Duration.zero,
-        () => commonShowConfirmOrCancelDialog(
-          context: context,
-          title: '새로운 버전 출시',
-          content: '업데이트를 통해\n새로운 기능을 만나보세요 !',
-          leftButtonText: '나중에',
-          leftButtonOnTap: () {
-            Navigator.pop(context);
-          },
-          rightButtonText: '업데이트',
-          rightButtonOnTap: () {},
-          confirmButtonColor: primaryColor,
-          confirmButtonText: commonWhiteColor,
-        ),
-      );
+    if (UserState.update == false && UserState.forceUpdate == false) {
+      return;
     }
+
+    if (UserState.update == true) {
+      return _showUpdateAlert();
+    }
+
+    if (UserState.forceUpdate == true) {
+      return _showForceUpdateAlert();
+    }
+  }
+
+  void _showUpdateAlert() {
+    Future.delayed(
+      Duration.zero,
+      () => commonShowConfirmOrCancelDialog(
+        context: context,
+        title: '새로운 버전 출시',
+        content: '업데이트를 통해\n새로운 기능을 만나보세요 !',
+        leftButtonText: '나중에',
+        leftButtonOnTap: () {
+          Navigator.pop(context);
+          UserState.localStorage.setBool('update', false);
+        },
+        rightButtonText: '업데이트',
+        rightButtonOnTap: () async {
+          await connectWebLink(
+            webLink: androidAppLink,
+          );
+        },
+        confirmButtonColor: primaryColor,
+        confirmButtonText: commonWhiteColor,
+      ),
+    );
+  }
+
+  void _showForceUpdateAlert() {
+    Future.delayed(
+      Duration.zero,
+      () => commonShowConfirmDialog(
+        context: context,
+        title: '업데이트 필요',
+        content: '중요한 변경으로 인해\n업데이트가 꼭 필요해요!',
+        confirmButtonColor: primaryColor,
+        confirmButtonText: '업데이트하러 가기 :)',
+        confirmButtonTextColor: commonWhiteColor,
+        confirmButtonOnTap: () async {
+          await connectWebLink(
+            webLink: androidAppLink,
+          );
+        },
+      ),
+    );
   }
 
   void _scrollToTop() {

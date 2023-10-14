@@ -258,6 +258,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         )) {
       return commonShowConfirmDialog(
         context: context,
+        title: '확인 필요',
         content: '닉네임을 다시 한 번 확인해주세요.',
         confirmButtonText: '확인',
         confirmButtonColor: primaryColor,

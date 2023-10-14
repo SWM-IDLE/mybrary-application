@@ -7,6 +7,7 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Widget loadingIndicator() {
   return CircularProgressIndicator(
@@ -306,6 +307,7 @@ void commonShowConfirmOrCancelDialog({
 
 void commonShowConfirmDialog({
   required BuildContext context,
+  required String title,
   required String content,
   required String confirmButtonText,
   required Color confirmButtonColor,
@@ -316,16 +318,19 @@ void commonShowConfirmDialog({
     barrierDismissible: false,
     context: context,
     builder: (context) => AlertDialog(
-      elevation: 0,
-      content: Text(
-        content,
+      title: Text(
+        title,
+        style: commonSubBoldStyle,
         textAlign: TextAlign.center,
       ),
-      contentTextStyle: commonDialogMessageStyle,
-      contentPadding: const EdgeInsets.only(
-        top: 24.0,
-        bottom: 12.0,
+      content: Text(
+        content,
+        style: confirmButtonTextStyle,
+        textAlign: TextAlign.center,
       ),
+      contentPadding: const EdgeInsets.all(16.0),
+      actionsAlignment: MainAxisAlignment.center,
+      buttonPadding: const EdgeInsets.symmetric(horizontal: 8.0),
       actions: [
         Center(
           child: SizedBox(
@@ -348,4 +353,17 @@ void commonShowConfirmDialog({
       ],
     ),
   );
+}
+
+Future<void> connectWebLink({
+  required String webLink,
+}) async {
+  String url = webLink;
+  if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalApplication,
+      webOnlyWindowName: '_self',
+    );
+  }
 }
