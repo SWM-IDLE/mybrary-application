@@ -82,25 +82,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return DefaultLayout(
       backgroundColor: primaryColor,
-      child: Stack(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            color: primaryColor,
-            child: Center(
-              child: AnimatedOpacity(
-                opacity: _opacity,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.fastOutSlowIn,
-                child: SvgPicture.asset(
-                  'assets/svg/icon/mybrary_logo.svg',
-                  width: size.width * 0.13,
-                  height: size.width * 0.13,
-                ),
-              ),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        color: primaryColor,
+        child: Center(
+          child: AnimatedOpacity(
+            opacity: _opacity,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.fastOutSlowIn,
+            child: SvgPicture.asset(
+              'assets/svg/icon/mybrary_logo.svg',
+              width: size.width * 0.13,
+              height: size.width * 0.13,
             ),
           ),
-        ],
+        ),
       ),
     );
   }
