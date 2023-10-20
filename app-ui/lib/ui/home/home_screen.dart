@@ -11,7 +11,6 @@ import 'package:mybrary/data/provider/home/home_recommendation_books_provider.da
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/home_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
-import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/components/sliver_loading.dart';
@@ -77,11 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           UserState.localStorage.setBool('update', false);
         },
         confirmButtonText: '업데이트',
-        confirmButtonOnTap: () async {
-          await connectWebLink(
-            webLink: androidAppLink,
-          );
-        },
+        confirmButtonOnTap: () => connectAppStoreLink(),
         confirmButtonColor: primaryColor,
         confirmButtonTextColor: commonWhiteColor,
       ),
@@ -98,11 +93,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         confirmButtonColor: primaryColor,
         confirmButtonText: '업데이트하러 가기 :)',
         confirmButtonTextColor: commonWhiteColor,
-        confirmButtonOnTap: () async {
-          await connectWebLink(
-            webLink: androidAppLink,
-          );
-        },
+        confirmButtonOnTap: () => connectAppStoreLink(),
       ),
     );
   }
