@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/res/constants/color.dart';
+import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Widget loadingIndicator() {
   return CircularProgressIndicator(
@@ -88,6 +90,8 @@ Widget confirmButton({
   required GestureTapCallback? onTap,
   required String buttonText,
   required bool isCancel,
+  Color? confirmButtonColor = greyF1F2F5,
+  Color? confirmButtonText = commonBlackColor,
 }) {
   return Expanded(
     child: Padding(
@@ -97,14 +101,14 @@ Widget confirmButton({
         child: Container(
           height: 46.0,
           decoration: BoxDecoration(
-            color: isCancel ? greyF1F2F5 : commonRedColor,
+            color: isCancel ? greyF1F2F5 : confirmButtonColor,
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Center(
             child: Text(
               buttonText,
               style: commonSubBoldStyle.copyWith(
-                color: isCancel ? commonBlackColor : commonWhiteColor,
+                color: isCancel ? commonBlackColor : confirmButtonText,
                 fontSize: 14.0,
               ),
             ),
@@ -244,4 +248,131 @@ Row commonSubTitle({
       ),
     ],
   );
+}
+
+void commonShowConfirmOrCancelDialog({
+  required BuildContext context,
+  required String title,
+  required String content,
+  required String cancelButtonText,
+  required void Function()? cancelButtonOnTap,
+  required String confirmButtonText,
+  required void Function()? confirmButtonOnTap,
+  required Color confirmButtonColor,
+  required Color confirmButtonTextColor,
+}) async {
+  await showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(
+          title,
+          style: commonSubBoldStyle,
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          content,
+          style: confirmButtonTextStyle,
+          textAlign: TextAlign.center,
+        ),
+        contentPadding: const EdgeInsets.all(16.0),
+        actionsAlignment: MainAxisAlignment.center,
+        buttonPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+        actions: [
+          Row(
+            children: [
+              confirmButton(
+                onTap: () {
+                  cancelButtonOnTap!();
+                },
+                buttonText: cancelButtonText,
+                isCancel: true,
+              ),
+              confirmButton(
+                onTap: () {
+                  confirmButtonOnTap!();
+                },
+                buttonText: confirmButtonText,
+                isCancel: false,
+                confirmButtonColor: confirmButtonColor,
+                confirmButtonText: confirmButtonTextColor,
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void commonShowConfirmDialog({
+  required BuildContext context,
+  required String title,
+  required String content,
+  required String confirmButtonText,
+  required Color confirmButtonColor,
+  required Color confirmButtonTextColor,
+  required void Function()? confirmButtonOnTap,
+}) async {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(
+        title,
+        style: commonSubBoldStyle,
+        textAlign: TextAlign.center,
+      ),
+      content: Text(
+        content,
+        style: confirmButtonTextStyle,
+        textAlign: TextAlign.center,
+      ),
+      contentPadding: const EdgeInsets.all(16.0),
+      actionsAlignment: MainAxisAlignment.center,
+      buttonPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+      actions: [
+        Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor: confirmButtonColor,
+                foregroundColor: confirmButtonTextColor,
+              ),
+              onPressed: () {
+                confirmButtonOnTap!();
+              },
+              child: Text(
+                confirmButtonText,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Future<void> connectWebLink({
+  required String webLink,
+}) async {
+  String url = webLink;
+  if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalApplication,
+      webOnlyWindowName: '_self',
+    );
+  }
+}
+
+void connectAppStoreLink() async {
+  if (Platform.isAndroid) {
+    await connectWebLink(
+      webLink: androidAppLink,
+    );
+  }
 }

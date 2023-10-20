@@ -217,6 +217,8 @@ class _SearchDetailReviewScreenState extends State<SearchDetailReviewScreen> {
                   },
                   buttonText: '삭제하기',
                   isCancel: false,
+                  confirmButtonColor: commonRedColor,
+                  confirmButtonText: commonWhiteColor,
                 ),
               ],
             ),

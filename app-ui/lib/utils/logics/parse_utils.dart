@@ -35,3 +35,7 @@ String _decodeBase64(String str) {
   }
   return utf8.decode(base64Url.decode(output));
 }
+
+int parseAppVersion(String version) {
+  return int.parse(version.split('.').join());
+}
