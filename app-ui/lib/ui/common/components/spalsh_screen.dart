@@ -52,8 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
     prefs.setString('lastUpdateCheck', DateTime.now().toIso8601String());
 
     if (parseAppVersion(currAppVersion) == parseAppVersion(latestAppVersion)) {
-      prefs.setBool('update', false);
-      prefs.setBool('forceUpdate', false);
+      _notUpdate(prefs);
       return;
     }
 
@@ -67,6 +66,10 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
 
+    _notUpdate(prefs);
+  }
+
+  void _notUpdate(SharedPreferences prefs) {
     prefs.setBool('update', false);
     prefs.setBool('forceUpdate', false);
   }

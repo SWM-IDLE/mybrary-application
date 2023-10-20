@@ -71,19 +71,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         context: context,
         title: '새로운 버전 출시',
         content: '업데이트를 통해\n새로운 기능을 만나보세요 !',
-        leftButtonText: '나중에',
-        leftButtonOnTap: () {
+        cancelButtonText: '나중에',
+        cancelButtonOnTap: () {
           Navigator.pop(context);
           UserState.localStorage.setBool('update', false);
         },
-        rightButtonText: '업데이트',
-        rightButtonOnTap: () async {
+        confirmButtonText: '업데이트',
+        confirmButtonOnTap: () async {
           await connectWebLink(
             webLink: androidAppLink,
           );
         },
         confirmButtonColor: primaryColor,
-        confirmButtonText: commonWhiteColor,
+        confirmButtonTextColor: commonWhiteColor,
       ),
     );
   }

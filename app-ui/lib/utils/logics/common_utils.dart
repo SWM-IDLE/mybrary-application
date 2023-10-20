@@ -253,12 +253,12 @@ void commonShowConfirmOrCancelDialog({
   required BuildContext context,
   required String title,
   required String content,
-  required String leftButtonText,
-  required void Function()? leftButtonOnTap,
-  required String rightButtonText,
-  required void Function()? rightButtonOnTap,
+  required String cancelButtonText,
+  required void Function()? cancelButtonOnTap,
+  required String confirmButtonText,
+  required void Function()? confirmButtonOnTap,
   required Color confirmButtonColor,
-  required Color confirmButtonText,
+  required Color confirmButtonTextColor,
 }) async {
   await showDialog(
     barrierDismissible: false,
@@ -283,19 +283,19 @@ void commonShowConfirmOrCancelDialog({
             children: [
               confirmButton(
                 onTap: () {
-                  leftButtonOnTap!();
+                  cancelButtonOnTap!();
                 },
-                buttonText: leftButtonText,
+                buttonText: cancelButtonText,
                 isCancel: true,
               ),
               confirmButton(
                 onTap: () {
-                  rightButtonOnTap!();
+                  confirmButtonOnTap!();
                 },
-                buttonText: rightButtonText,
+                buttonText: confirmButtonText,
                 isCancel: false,
                 confirmButtonColor: confirmButtonColor,
-                confirmButtonText: confirmButtonText,
+                confirmButtonText: confirmButtonTextColor,
               ),
             ],
           ),
