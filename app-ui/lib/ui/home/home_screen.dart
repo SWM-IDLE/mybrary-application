@@ -12,7 +12,6 @@ import 'package:mybrary/data/repository/home_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
-import 'package:mybrary/ui/common/components/sliver_loading.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/home/components/home_banner.dart';
 import 'package:mybrary/ui/home/components/home_banner_loading.dart';
@@ -94,11 +93,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final booksByInterests = ref.watch(homeRecommendationBooksProvider);
 
     if (booksByBestSeller == null || booksByInterests == null) {
-      return _initHomeLayout(
-        todayRegisteredBookCount: todayRegisteredBookCount,
-        child: [
-          const SliverLoading(),
-        ],
+      return DefaultLayout(
+        appBar: _homeAppBar(),
+        extendBodyBehindAppBar: true,
+        child: const CustomScrollView(
+          physics: BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          slivers: [
+            HomeBannerLoading(),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 30.0,
+              ),
+            ),
+          ],
+        ),
       );
     }
 
@@ -205,31 +215,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return SliverToBoxAdapter(
       child: HomeBookCount(
         todayRegisteredBookCount: todayRegisteredBookCount?.count ?? 0,
-      ),
-    );
-  }
-
-  DefaultLayout _initHomeLayout({
-    required TodayRegisteredBookCountModel? todayRegisteredBookCount,
-    List<Widget>? child,
-  }) {
-    return DefaultLayout(
-      appBar: _homeAppBar(),
-      extendBodyBehindAppBar: true,
-      child: CustomScrollView(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        slivers: [
-          const HomeBannerLoading(),
-          _sliverTodayRegisteredBookCountBox(todayRegisteredBookCount),
-          if (child != null) ...child,
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 30.0,
-            ),
-          ),
-        ],
       ),
     );
   }

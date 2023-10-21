@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
@@ -112,8 +112,10 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       final url = Uri.parse('$api?redirect_url=$mybraryUrlScheme');
 
-      final result = await FlutterWebAuth.authenticate(
-          url: url.toString(), callbackUrlScheme: mybraryUrlScheme);
+      final result = await FlutterWebAuth2.authenticate(
+        url: url.toString(),
+        callbackUrlScheme: mybraryUrlScheme,
+      );
 
       final accessToken =
           Uri.parse(result).queryParameters[accessTokenHeaderKey];
@@ -136,7 +138,7 @@ class _SignInScreenState extends State<SignInScreen> {
           (route) => false,
         );
       }
-    } catch (e) {
+    } on PlatformException catch (e) {
       showSignInFailDialog(e.toString());
     }
   }
