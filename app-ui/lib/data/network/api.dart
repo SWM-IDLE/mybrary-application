@@ -61,7 +61,7 @@ Map<API, String> apiMap = {
   API.naverLogin: "/user-service/oauth2/authorization/naver",
   API.kakaoLogin: "/user-service/oauth2/authorization/kakao",
   API.googleLogin: "/user-service/oauth2/authorization/google",
-  API.appleLogin: "/oauth2/authorization/apple",
+  API.appleLogin: "/user-service/oauth2/authorization/apple",
   API.getRefreshToken: "/user-service/auth/v1/refresh",
   // user-service
   API.getUserProfile: "/user-service/api/v1/users", // /{userId}/profile",

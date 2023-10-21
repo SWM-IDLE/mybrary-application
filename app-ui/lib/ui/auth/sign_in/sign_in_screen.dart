@@ -66,32 +66,28 @@ class _SignInScreenState extends State<SignInScreen> {
                             btnText: 'Apple로 로그인',
                             oauthType: 'apple',
                             btnBackgroundColor: commonBlackColor,
-                            onTap: () => {
-                              signInOAuth(
-                                'https://f97d-1-235-157-76.ngrok-free.app/oauth2/authorization/apple',
-                              )
-                            },
+                            onTap: () => onTapOAuthLoginButton(API.appleLogin),
                           ),
                         const SizedBox(height: 10.0),
                         OAuthButton(
                           btnText: 'Google로 로그인',
                           oauthType: 'google',
                           btnBackgroundColor: greyF1F2F5,
-                          onTap: () => oAuthLoginPressed(API.googleLogin),
+                          onTap: () => onTapOAuthLoginButton(API.googleLogin),
                         ),
                         const SizedBox(height: 10.0),
                         OAuthButton(
                           btnText: '네이버로 로그인',
                           oauthType: 'naver',
                           btnBackgroundColor: naverLoginColor,
-                          onTap: () => oAuthLoginPressed(API.naverLogin),
+                          onTap: () => onTapOAuthLoginButton(API.naverLogin),
                         ),
                         const SizedBox(height: 10.0),
                         OAuthButton(
                           btnText: '카카오로 로그인',
                           oauthType: 'kakao',
                           btnBackgroundColor: kakaoLoginColor,
-                          onTap: () => oAuthLoginPressed(API.kakaoLogin),
+                          onTap: () => onTapOAuthLoginButton(API.kakaoLogin),
                         ),
                         const SizedBox(height: 70.0),
                       ],
@@ -106,7 +102,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void oAuthLoginPressed(API api) {
+  void onTapOAuthLoginButton(API api) {
     signInOAuth(getApi(api));
   }
 
