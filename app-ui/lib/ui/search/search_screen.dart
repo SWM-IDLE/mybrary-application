@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
+import 'package:mybrary/ui/search/components/search_all_user_list.dart';
 import 'package:mybrary/ui/search/components/search_popular_keyword.dart';
 import 'package:mybrary/ui/search/search_book_list/search_book_list.dart';
 import 'package:mybrary/utils/logics/permission_utils.dart';
@@ -155,6 +156,54 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _searchAllUserListBox() {
+    return Padding(
+      padding: const EdgeInsets.all(18.0),
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const SearchAllUserList(),
+            ),
+          );
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                Text(
+                  '현재',
+                  style: commonMainRegularStyle.copyWith(
+                    fontSize: 16.0,
+                  ),
+                ),
+                Text(
+                  ' 마이브러리',
+                  style: commonSubBoldStyle.copyWith(
+                    fontSize: 16.0,
+                  ),
+                ),
+                Text(
+                  '의 사용자는?',
+                  style: commonMainRegularStyle.copyWith(
+                    fontSize: 16.0,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              child: SvgPicture.asset(
+                'assets/svg/icon/right_arrow.svg',
+              ),
+            ),
+          ],
         ),
       ),
     );

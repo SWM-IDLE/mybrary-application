@@ -9,9 +9,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mybrary/provider/user_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/res/variable/global_navigator_variable.dart';
 import 'package:mybrary/ui/auth/find_pw/find_password_screen.dart';
 import 'package:mybrary/ui/auth/sign_in/sign_in_screen.dart';
 import 'package:mybrary/ui/auth/sign_up/sign_up_screen.dart';
@@ -77,6 +78,7 @@ class MyApp extends StatelessWidget {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
               ),
+              navigatorKey: GlobalNavigatorVariable.navigatorKey,
               navigatorObservers: [
                 FirebaseAnalyticsObserver(analytics: analytics)
               ],

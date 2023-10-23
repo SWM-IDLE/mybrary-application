@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:mybrary/data/model/book/mybooks_response.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
@@ -14,6 +12,7 @@ import 'package:mybrary/ui/mybook/mybook_detail/mybook_detail_screen.dart';
 import 'package:mybrary/ui/mybook/mybook_list/components/book_list.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class MyBookListScreen extends StatefulWidget {
   final String? userId;
@@ -37,8 +36,8 @@ class _MyBookListScreenState extends State<MyBookListScreen> {
   final _bookRepository = BookRepository();
   late Future<List<MyBooksResponseData>> _bookList;
   late SortType _sortType;
-  late String _sortTitle = '전체';
-  late String _order = 'all';
+  late String _sortTitle = '최신순';
+  late String _order = 'registration';
 
   final _userId = UserState.userId;
 
@@ -52,7 +51,7 @@ class _MyBookListScreenState extends State<MyBookListScreen> {
       order: widget.order,
       readStatus: widget.readStatus,
     );
-    _sortType = SortType.all;
+    _sortType = SortType.registration;
   }
 
   @override
@@ -186,12 +185,12 @@ class _MyBookListScreenState extends State<MyBookListScreen> {
                     onTap: () {
                       bottomState(() {
                         _onTapSortItem(
-                          SortType.all,
+                          SortType.registration,
                         );
                       });
                     },
-                    sortTitle: '전체',
-                    sortItemType: SortType.all,
+                    sortTitle: '최신순',
+                    sortItemType: SortType.registration,
                   ),
                   sortItemRight: _sortItem(
                     onTap: () {
@@ -210,12 +209,12 @@ class _MyBookListScreenState extends State<MyBookListScreen> {
                     onTap: () {
                       bottomState(() {
                         _onTapSortItem(
-                          SortType.registration,
+                          SortType.all,
                         );
                       });
                     },
-                    sortTitle: '등록순',
-                    sortItemType: SortType.registration,
+                    sortTitle: '과거순',
+                    sortItemType: SortType.all,
                   ),
                   sortItemRight: _sortItem(
                     onTap: () {
@@ -242,7 +241,7 @@ class _MyBookListScreenState extends State<MyBookListScreen> {
     return Padding(
       padding: EdgeInsets.only(
         top: 16.0,
-        bottom: Platform.isIOS ? 32.0 : 0.0,
+        bottom: isIOS ? 32.0 : 0.0,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -282,15 +281,15 @@ class _MyBookListScreenState extends State<MyBookListScreen> {
                       _sortTitle = '제목순';
                       _order = 'title';
                       break;
-                    case SortType.registration:
+                    case SortType.all:
                       _bookList = _bookRepository.getMyBooks(
                         context: context,
                         userId: widget.userId ?? _userId,
-                        order: 'registration',
+                        order: 'all',
                         readStatus: widget.readStatus,
                       );
-                      _sortTitle = '등록순';
-                      _order = 'registration';
+                      _sortTitle = '과거순';
+                      _order = 'all';
                       break;
                     case SortType.publication:
                       _bookList = _bookRepository.getMyBooks(
@@ -306,11 +305,11 @@ class _MyBookListScreenState extends State<MyBookListScreen> {
                       _bookList = _bookRepository.getMyBooks(
                         context: context,
                         userId: widget.userId ?? _userId,
-                        order: 'all',
+                        order: 'registration',
                         readStatus: widget.readStatus,
                       );
-                      _sortTitle = '전체';
-                      _order = 'all';
+                      _sortTitle = '최신순';
+                      _order = 'registration';
                   }
                   Navigator.pop(context);
                 });

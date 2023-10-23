@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/profile_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
@@ -157,6 +157,8 @@ class _AccountWithdrawalState extends State<AccountWithdrawal> {
                                 },
                                 buttonText: '탈퇴하기',
                                 isCancel: false,
+                                confirmButtonColor: commonRedColor,
+                                confirmButtonText: commonWhiteColor,
                               ),
                             ],
                           ),

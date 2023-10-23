@@ -166,7 +166,7 @@ const interestDescriptionStyle = TextStyle(
 const followNicknameStyle = TextStyle(
   color: commonBlackColor,
   fontSize: 15.0,
-  fontWeight: FontWeight.w400,
+  fontWeight: FontWeight.w500,
 );
 
 const followButtonTextStyle = TextStyle(
@@ -181,6 +181,13 @@ final disableAnimationButtonStyle = ButtonStyle(
   elevation: MaterialStateProperty.all(0.0),
   splashFactory: NoSplash.splashFactory,
   overlayColor: MaterialStateProperty.all(Colors.transparent),
+);
+
+final disableTextButtonStyle = TextButton.styleFrom(
+  splashFactory: NoSplash.splashFactory,
+  minimumSize: Size.zero,
+  padding: EdgeInsets.zero,
+  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
 );
 
 final followButtonRoundStyle = RoundedRectangleBorder(
@@ -212,6 +219,32 @@ const bottomButtonTextStyle = TextStyle(
 );
 
 // home page style
+final homeBannerTitleBoldStyle = TextStyle(
+  color: commonWhiteColor,
+  fontSize: 22.0,
+  fontWeight: FontWeight.w700,
+  shadows: [
+    Shadow(
+      color: commonBlackColor.withOpacity(0.2),
+      blurRadius: 6,
+      offset: const Offset(0, 4),
+    ),
+  ],
+);
+
+final homeBannerTitleLightStyle = TextStyle(
+  color: commonWhiteColor,
+  fontSize: 22.0,
+  fontWeight: FontWeight.w300,
+  shadows: [
+    Shadow(
+      color: commonBlackColor.withOpacity(0.2),
+      blurRadius: 6,
+      offset: const Offset(0, 4),
+    ),
+  ],
+);
+
 const todayRegisteredBookTextStyle = TextStyle(
   color: grey262626,
   fontSize: 13.0,
@@ -222,6 +255,20 @@ const categoryCircularTextStyle = TextStyle(
   color: grey262626,
   fontSize: 14.0,
   fontWeight: FontWeight.w400,
+);
+
+const todayRegisteredBookNickname = TextStyle(
+  color: primaryColor,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w500,
+  height: 1.5,
+);
+
+const todayRegisteredBookIntroduction = TextStyle(
+  color: grey262626,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w400,
+  height: 1.5,
 );
 
 // book search page style

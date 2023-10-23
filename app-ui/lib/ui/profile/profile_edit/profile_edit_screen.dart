@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mybrary/data/model/profile/profile_response.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/profile_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
@@ -14,6 +14,7 @@ import 'package:mybrary/ui/common/components/single_data_error.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/profile/profile_edit/components/profile_edit_body.dart';
 import 'package:mybrary/ui/profile/profile_edit/components/profile_edit_image.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 import 'package:mybrary/utils/logics/validate_utils.dart';
 
 class ProfileEditScreen extends StatefulWidget {
@@ -197,30 +198,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     Navigator.of(context).pop();
   }
 
-  void _showValidationFailedMessage(BuildContext context) {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => AlertDialog(
-        elevation: 0,
-        content: const Text(
-          '닉네임을 다시 한 번 확인해주세요.',
-          textAlign: TextAlign.center,
-        ),
-        contentTextStyle: commonDialogMessageStyle,
-        contentPadding: const EdgeInsets.only(
-          top: 24.0,
-          bottom: 12.0,
-        ),
-        actions: [
-          Center(
-            child: confirmButton(),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _profileImageMenuBottomSheet() {
     showModalBottomSheet(
       shape: bottomSheetStyle,
@@ -271,23 +248,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     );
   }
 
-  Widget confirmButton() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.6,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: primaryColor,
-          foregroundColor: commonWhiteColor,
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: const Text('확인'),
-      ),
-    );
-  }
-
   void _saveUserProfile() async {
     if (_nicknameController.text == '' ||
         checkAuthValidator(
@@ -296,7 +256,17 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           2,
           20,
         )) {
-      return _showValidationFailedMessage(context);
+      return commonShowConfirmDialog(
+        context: context,
+        title: '확인 필요',
+        content: '닉네임을 다시 한 번 확인해주세요.',
+        confirmButtonText: '확인',
+        confirmButtonColor: primaryColor,
+        confirmButtonTextColor: commonWhiteColor,
+        confirmButtonOnTap: () {
+          Navigator.pop(context);
+        },
+      );
     } else {
       await _profileRepository.updateProfileData(
         context: context,
@@ -318,6 +288,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           },
         );
 
+        if (!mounted) return;
         await _profileRepository.updateProfileImage(
           context: context,
           userId: _userId,

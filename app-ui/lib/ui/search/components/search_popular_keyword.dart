@@ -4,14 +4,14 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/search/search_book_list/search_book_list.dart';
 
 const List<String> popularSearchKeyword = [
-  '돈의 속성',
-  '코스모스',
-  '미움 받을 용기',
-  '데미안',
-  '어린왕자',
-  '봉주르뚜르',
-  '함께 자라기',
-  '나미야',
+  '일론 머스크',
+  '푸바오',
+  'Disney',
+  '역행자',
+  '히가시노 게이고',
+  '퓨처 셀프',
+  '1%를 읽는 힘',
+  '엘리멘탈',
 ];
 
 class SearchPopularKeyword extends StatelessWidget {
@@ -29,11 +29,10 @@ class SearchPopularKeyword extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             '인기 검색어',
-            style: TextStyle(
-              fontSize: 15.0,
-              fontWeight: FontWeight.w700,
+            style: commonSubBoldStyle.copyWith(
+              fontSize: 16.0,
             ),
           ),
           const SizedBox(height: 16.0),

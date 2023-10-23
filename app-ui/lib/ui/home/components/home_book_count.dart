@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
+import 'package:mybrary/ui/home/components/home_book_count_list.dart';
 
 class HomeBookCount extends StatelessWidget {
   final int todayRegisteredBookCount;
@@ -13,12 +15,12 @@ class HomeBookCount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(isAndroid ? 24.0 : 20.0),
       child: Column(
         children: [
           _divider(),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -26,41 +28,50 @@ class HomeBookCount extends StatelessWidget {
                   '오늘 마이브러리에 등록된 책!',
                   style: todayRegisteredBookTextStyle,
                 ),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 2.0,
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const HomeBookCountList(),
                       ),
-                      decoration: ShapeDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment(0.00, -1.00),
-                          end: Alignment(0, 1),
-                          colors: [
-                            homeTodayRegisteredBookColorTop,
-                            homeTodayRegisteredBookColorCenter,
-                            homeTodayRegisteredBookColorBottom,
-                          ],
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 2.0,
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                        decoration: ShapeDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment(0.00, -1.00),
+                            end: Alignment(0, 1),
+                            colors: [
+                              homeTodayRegisteredBookColorTop,
+                              homeTodayRegisteredBookColorCenter,
+                              homeTodayRegisteredBookColorBottom,
+                            ],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                        child: Text(
+                          todayRegisteredBookCount.toString().padLeft(6, '0'),
+                          style: todayRegisteredBookTextStyle.copyWith(
+                            color: commonWhiteColor,
+                            letterSpacing: 2.0,
+                          ),
                         ),
                       ),
-                      child: Text(
-                        todayRegisteredBookCount.toString().padLeft(6, '0'),
-                        style: todayRegisteredBookTextStyle.copyWith(
-                          color: commonWhiteColor,
-                          letterSpacing: 2.0,
-                        ),
+                      const SizedBox(width: 4.0),
+                      const Text(
+                        '권',
+                        style: todayRegisteredBookTextStyle,
                       ),
-                    ),
-                    const SizedBox(width: 4.0),
-                    const Text(
-                      '권',
-                      style: todayRegisteredBookTextStyle,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

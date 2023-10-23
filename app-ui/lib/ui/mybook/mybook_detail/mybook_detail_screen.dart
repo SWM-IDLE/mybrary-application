@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,8 +6,8 @@ import 'package:mybrary/data/model/book/mybook_common_data.dart';
 import 'package:mybrary/data/model/book/mybook_detail_response.dart';
 import 'package:mybrary/data/model/book/mybook_record_reponse.dart';
 import 'package:mybrary/data/model/book/mybook_review_response.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/bottom_button.dart';
@@ -18,10 +16,13 @@ import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_header.dart';
+import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_more.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_record.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_review.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_edit_review.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class MyBookDetailScreen extends StatefulWidget {
   final int myBookId;
@@ -242,10 +243,15 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                       meaningTagColorCode: _newMeaningTagColorCode ?? colorCode,
                       meaningTagQuote: _newMeaningTagQuote ??
                           myBookDetailData.meaningTag!.quote!,
+                      currentUserId: widget.userId,
+                      originUserId: _userId,
+                      onTapRecord: () =>
+                          _showMyBookRecordEdit(context, colorCode, dateTime),
                     ),
                     _myBookDetailDivider(),
                     if (myBookReviewData == null)
                       _hasNoReview(
+                        hasData: false,
                         thumbnailUrl: myBookInfo.thumbnailUrl!,
                         title: myBookInfo.title!,
                         authors: myBookInfo.authors!,
@@ -254,6 +260,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                       ),
                     if (myBookReviewData != null)
                       MyBookDetailReview(
+                        hasData: true,
                         content: myBookReviewData.content!,
                         starRating: myBookReviewData.starRating!,
                         createdAt: myBookReviewData.createdAt!,
@@ -265,9 +272,14 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                         reviewId: myBookReviewData.id!,
                         userId: widget.userId,
                       ),
+                    _myBookDetailDivider(),
+                    MyBookDetailMore(
+                      isbn13: myBookInfo.isbn13!,
+                    ),
                     SliverToBoxAdapter(
-                      child:
-                          SizedBox(height: widget.userId == null ? 30.0 : 70.0),
+                      child: SizedBox(
+                        height: widget.userId == null ? 70.0 : 30.0,
+                      ),
                     ),
                   ],
                 ),
@@ -390,7 +402,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                         _myBookRecordInput(
                           context: context,
                           controller: _meaningTagQuoteController,
-                          hintText: '내 삶을 돌아보게 만든 책',
+                          hintText: '내 삶을 돌아보게 만든 책 (최대 15자까지)',
                         ),
                         const SizedBox(height: 16.0),
                         const Text(
@@ -539,7 +551,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
   }) {
     return TextFormField(
       controller: controller,
-      maxLength: 20,
+      maxLength: 15,
       style: commonSubMediumStyle,
       scrollPadding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -617,7 +629,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
     return Padding(
       padding: EdgeInsets.only(
         top: 16.0,
-        bottom: Platform.isIOS ? 32.0 : 0.0,
+        bottom: isIOS ? 32.0 : 0.0,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -627,24 +639,6 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
-                _bookRepository
-                    .getMyBookDetail(
-                      context: context,
-                      userId: _userId,
-                      myBookId: widget.myBookId,
-                    )
-                    .then(
-                      (data) => {
-                        setState(() {
-                          _meaningTagQuoteController.text =
-                              data.meaningTag!.quote!;
-                          _originalReadStatus = data.readStatus!;
-                          _originalShowable = data.showable!;
-                          _originalShareable = data.shareable!;
-                          _originalExchangeable = data.exchangeable!;
-                        }),
-                      },
-                    );
               },
               child: Container(
                 color: greyDDDDDD,
@@ -720,6 +714,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
     required List<String> authors,
     required double starRating,
     required TextEditingController contentController,
+    required bool hasData,
   }) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -739,6 +734,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                   InkWell(
                     onTap: () async {
                       _nextToMyBookReview(
+                        hasData: false,
                         thumbnailUrl: thumbnailUrl,
                         title: title,
                         authors: authors,
@@ -794,6 +790,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
 
   void _nextToMyBookReview({
     required bool isCreateReview,
+    required bool hasData,
     required String thumbnailUrl,
     required String title,
     required List<String> authors,
@@ -806,6 +803,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => MyBookEditReview(
+          hasData: hasData,
           isCreateReview: isCreateReview,
           thumbnailUrl: thumbnailUrl,
           title: title,
@@ -865,6 +863,8 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
       foregroundColor: commonBlackColor,
       actions: [
         IconButton(
+          padding: EdgeInsets.only(right: widget.userId == null ? 2.0 : 8.0),
+          constraints: const BoxConstraints(),
           visualDensity: VisualDensity.compact,
           onPressed: () {
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
@@ -879,7 +879,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
         ),
         if (widget.userId == null)
           Padding(
-            padding: const EdgeInsets.only(right: 12.0),
+            padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
               visualDensity: VisualDensity.compact,
               onPressed: () async {
@@ -921,14 +921,14 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                       actions: [
                         Row(
                           children: [
-                            _confirmButton(
+                            confirmButton(
                               onTap: () {
                                 Navigator.of(context).pop();
                               },
                               buttonText: '취소',
                               isCancel: true,
                             ),
-                            _confirmButton(
+                            confirmButton(
                               onTap: () {
                                 _bookRepository.deleteMyBook(
                                   context: context,
@@ -955,6 +955,8 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                               },
                               buttonText: '삭제',
                               isCancel: false,
+                              confirmButtonColor: commonRedColor,
+                              confirmButtonText: commonWhiteColor,
                             ),
                           ],
                         ),
@@ -963,8 +965,9 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                   },
                 );
               },
-              icon: SvgPicture.asset(
-                'assets/svg/icon/small/book_remove.svg',
+              icon: const Icon(
+                Icons.playlist_remove_outlined,
+                size: 28.0,
               ),
             ),
           ),
@@ -980,37 +983,6 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
           height: 1,
           thickness: 6,
           color: greyF1F2F5,
-        ),
-      ),
-    );
-  }
-
-  Widget _confirmButton({
-    required GestureTapCallback? onTap,
-    required String buttonText,
-    required bool isCancel,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            height: 46.0,
-            decoration: BoxDecoration(
-              color: isCancel ? greyF1F2F5 : primaryColor,
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: Center(
-              child: Text(
-                buttonText,
-                style: commonSubBoldStyle.copyWith(
-                  color: isCancel ? commonBlackColor : commonWhiteColor,
-                  fontSize: 14.0,
-                ),
-              ),
-            ),
-          ),
         ),
       ),
     );

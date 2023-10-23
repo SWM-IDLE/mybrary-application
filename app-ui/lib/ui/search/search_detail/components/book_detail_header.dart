@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:html/parser.dart';
 import 'package:mybrary/data/model/search/book_search_detail_response.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
+import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
+import 'package:mybrary/ui/search/search_detail_user_infos/search_detail_user_infos_screen.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
@@ -83,6 +85,10 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
             ],
             image: DecorationImage(
               image: NetworkImage(widget.thumbnail),
+              onError: (exception, stackTrace) => Image.asset(
+                'assets/img/logo/mybrary.png',
+                fit: BoxFit.fill,
+              ),
               fit: BoxFit.fill,
             ),
           ),
@@ -114,7 +120,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             bookStatusColumn(
-              padding: 32.0,
+              padding: 30.0,
               children: [
                 InkWell(
                   onTap: () async {
@@ -146,18 +152,45 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                   ),
                 ),
                 const SizedBox(height: 8.0),
-                Text(
-                  '$_newInterestCount 명',
-                  style: bookStatusCountStyle,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SearchDetailUserInfosScreen(
+                          title: '읽고싶어요',
+                          isbn13: widget.isbn13,
+                          userCount: widget.interestCount,
+                          type: SearchDetailUserInfosType.interest,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    '$_newInterestCount 명',
+                    style: bookStatusCountStyle,
+                  ),
                 ),
               ],
             ),
-            bookStatusColumn(
-              padding: 36.0,
-              children: [
-                InkWell(
-                  onTap: () async {},
-                  child: Column(
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SearchDetailUserInfosScreen(
+                      title: '완독했어요',
+                      isbn13: widget.isbn13,
+                      userCount: widget.readCount,
+                      type: SearchDetailUserInfosType.readComplete,
+                    ),
+                  ),
+                );
+              },
+              child: bookStatusColumn(
+                padding: 36.0,
+                children: [
+                  Column(
                     children: [
                       SvgPicture.asset(
                         'assets/svg/icon/small/${widget.completed ? 'read_green.svg' : 'read.svg'}',
@@ -166,21 +199,33 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                       const Text('완독했어요', style: bookStatusStyle),
                     ],
                   ),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  '${widget.readCount} 명',
-                  style: bookStatusCountStyle,
-                ),
-              ],
+                  const SizedBox(height: 8.0),
+                  Text(
+                    '${widget.readCount} 명',
+                    style: bookStatusCountStyle,
+                  ),
+                ],
+              ),
             ),
-            bookStatusColumn(
-              padding: 24.0,
-              lastBox: true,
-              children: [
-                InkWell(
-                  onTap: () async {},
-                  child: Column(
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SearchDetailUserInfosScreen(
+                      title: '소장하고있어요',
+                      isbn13: widget.isbn13,
+                      userCount: widget.holderCount,
+                      type: SearchDetailUserInfosType.holder,
+                    ),
+                  ),
+                );
+              },
+              child: bookStatusColumn(
+                padding: 24.0,
+                lastBox: true,
+                children: [
+                  Column(
                     children: [
                       SvgPicture.asset(
                         'assets/svg/icon/small/${widget.newRegistered || widget.registered ? 'holder_green.svg' : 'holder.svg'}',
@@ -189,13 +234,13 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                       const Text('소장하고있어요', style: bookStatusStyle),
                     ],
                   ),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  '${widget.newRegistered == true ? widget.holderCount + 1 : widget.holderCount} 명',
-                  style: bookStatusCountStyle,
-                ),
-              ],
+                  const SizedBox(height: 8.0),
+                  Text(
+                    '${widget.newRegistered == true ? widget.holderCount + 1 : widget.holderCount} 명',
+                    style: bookStatusCountStyle,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mybrary/data/model/home/book_recommendations_response.dart';
+import 'package:mybrary/data/model/home/books_by_category_model.dart';
 import 'package:mybrary/res/constants/style.dart';
 
 class HomeBestSeller extends StatelessWidget {
-  final List<BookRecommendations> bookListByBestSeller;
+  final List<BooksModel> bookListByBestSeller;
   final void Function(String) onTapBook;
 
   const HomeBestSeller({
@@ -58,14 +58,18 @@ class HomeBestSeller extends StatelessWidget {
                       ),
                     InkWell(
                       onTap: () {
-                        onTapBook(bookListByBestSeller[index].isbn13!);
+                        onTapBook(bookListByBestSeller[index].isbn13);
                       },
                       child: Container(
                         width: 116,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: NetworkImage(
-                              bookListByBestSeller[index].thumbnailUrl!,
+                              bookListByBestSeller[index].thumbnailUrl,
+                            ),
+                            onError: (exception, stackTrace) => Image.asset(
+                              'assets/img/logo/mybrary.png',
+                              fit: BoxFit.fill,
                             ),
                             fit: BoxFit.fill,
                           ),

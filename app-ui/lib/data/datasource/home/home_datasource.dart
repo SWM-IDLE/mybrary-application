@@ -4,31 +4,26 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mybrary/data/model/home/book_list_by_category_response.dart';
 import 'package:mybrary/data/model/home/book_recommendations_response.dart';
-import 'package:mybrary/data/model/home/today_registered_book_count_response.dart';
+import 'package:mybrary/data/model/home/today_registered_book_count_model.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/utils/dios/auth_dio.dart';
 
 class HomeDataSource {
-  Future<TodayRegisteredBookCountResponseData> getTodayRegisteredBookCount(
-      BuildContext context) async {
+  Future<int> getTodayRegisteredBookCount(BuildContext context) async {
     final dio = await authDio(context);
     final getTodayRegisteredBookCountResponse = await dio.get(
       getApi(API.getTodayRegisteredBookCount),
     );
 
     log('오늘의 마이북 등록수 조회 응답값: $getTodayRegisteredBookCountResponse');
-    final TodayRegisteredBookCountResponse result = commonResponseResult(
+    final TodayRegisteredBookCountModel result = commonResponseResult(
       getTodayRegisteredBookCountResponse,
-      () => TodayRegisteredBookCountResponse(
-        status: getTodayRegisteredBookCountResponse.data['status'],
-        message: getTodayRegisteredBookCountResponse.data['message'],
-        data: TodayRegisteredBookCountResponseData.fromJson(
-          getTodayRegisteredBookCountResponse.data['data'],
-        ),
+      () => TodayRegisteredBookCountModel.fromJson(
+        getTodayRegisteredBookCountResponse.data['data'],
       ),
     );
 
-    return result.data!;
+    return result.count;
   }
 
   Future<BookListByCategoryResponseData> getBookListByCategory(

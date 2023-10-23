@@ -436,6 +436,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               },
                               buttonText: '신고하기',
                               isCancel: false,
+                              confirmButtonColor: commonRedColor,
+                              confirmButtonText: commonWhiteColor,
                             ),
                           ],
                         ),
@@ -548,6 +550,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   image: DecorationImage(
                                     image: NetworkImage(
                                       myBook.book!.thumbnailUrl!,
+                                    ),
+                                    onError: (exception, stackTrace) =>
+                                        Image.asset(
+                                      'assets/img/logo/mybrary.png',
+                                      fit: BoxFit.fill,
                                     ),
                                     fit: BoxFit.fill,
                                   ),

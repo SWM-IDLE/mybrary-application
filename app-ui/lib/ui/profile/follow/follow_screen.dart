@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mybrary/data/model/profile/follower_response.dart';
 import 'package:mybrary/data/model/profile/following_response.dart';
 import 'package:mybrary/data/model/profile/profile_common_response.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/follow_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
+import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/components/single_data_error.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/profile/follow/components/follow_layout.dart';
@@ -77,14 +78,8 @@ class _FollowScreenState extends State<FollowScreen>
   void initState() {
     super.initState();
 
-    _followerResponseData = _followRepository.getFollower(
-      context: context,
-      userId: widget.userId ?? _userId,
-    );
-    _followingResponseData = _followRepository.getFollowings(
-      context: context,
-      userId: widget.userId ?? _userId,
-    );
+    _getFollowerList();
+    _getFollowingList();
 
     if (widget.pageType == FollowPageType.follower) {
       _tabController.index = 0;
@@ -131,23 +126,44 @@ class _FollowScreenState extends State<FollowScreen>
                 '팔로잉 ${followings.length - notFollowingUsers.length}',
               ];
 
-              return NestedScrollView(
-                controller: _scrollController,
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return followPageSliverBuilder(
-                    context,
-                    innerBoxIsScrolled,
-                    _followTabs,
-                    _tabController,
+              return RefreshIndicator(
+                color: commonWhiteColor,
+                backgroundColor: primaryColor,
+                onRefresh: () {
+                  return Future.delayed(
+                    const Duration(seconds: 1),
+                    () {
+                      if (_tabController.index == 0) {
+                        _getFollowerList();
+                      }
+
+                      if (_tabController.index == 1) {
+                        _getFollowingList();
+                      }
+                    },
                   );
                 },
-                body: TabBarView(
-                  controller: _tabController,
-                  children: <Widget>[
-                    followerScreen(followers),
-                    followingScreen(followings),
-                  ],
+                child: NestedScrollView(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics(),
+                  ),
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return followPageSliverBuilder(
+                      context,
+                      innerBoxIsScrolled,
+                      _followTabs,
+                      _tabController,
+                    );
+                  },
+                  body: TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      followerScreen(followers),
+                      followingScreen(followings),
+                    ],
+                  ),
                 ),
               );
             }
@@ -158,113 +174,163 @@ class _FollowScreenState extends State<FollowScreen>
     );
   }
 
-  Padding followerScreen(List<Followers> followers) {
-    return Padding(
-      padding: EdgeInsets.only(top: _paddingTopHeight),
-      child: ListView.builder(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        itemCount: followers.length,
-        itemBuilder: (context, index) {
-          Followers follower = followers[index];
+  Widget followerScreen(List<Followers> followers) {
+    if (followers.isEmpty) {
+      return const DataError(
+        errorMessage: '팔로워 사용자가 없습니다.',
+      );
+    }
 
-          return FollowLayout(
-            children: [
-              FollowUserInfo(
-                  nickname: follower.nickname!,
-                  profileImageUrl: follower.profileImageUrl!),
-              if (widget.userId == null)
-                ElevatedButton(
-                  onPressed: () => onPressedDeleteFollowerUser(
-                    context: context,
-                    follower: follower,
-                    followers: followers,
-                    index: index,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: greyDDDDDD,
-                    shape: followButtonRoundStyle,
-                    minimumSize: const Size(60.0, 10.0),
-                    splashFactory: NoSplash.splashFactory,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
+    return RefreshIndicator(
+      color: commonWhiteColor,
+      backgroundColor: primaryColor,
+      onRefresh: () {
+        return Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            _getFollowerList();
+          },
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.only(top: _paddingTopHeight),
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          itemCount: followers.length,
+          itemBuilder: (context, index) {
+            Followers follower = followers[index];
+            String followerUserId = follower.userId!;
+
+            return InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => UserProfileScreen(
+                      userId: followerUserId,
+                      nickname: follower.nickname!,
                     ),
                   ),
-                  child: const Text(
-                    '삭제',
-                    style: followButtonTextStyle,
+                );
+              },
+              child: FollowLayout(
+                children: [
+                  FollowUserInfo(
+                    nickname: follower.nickname!,
+                    profileImageUrl: follower.profileImageUrl!,
                   ),
-                ),
-            ],
-          );
-        },
+                  if (widget.userId == null)
+                    ElevatedButton(
+                      onPressed: () => onPressedDeleteFollowerUser(
+                        context: context,
+                        follower: follower,
+                        followers: followers,
+                        index: index,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: greyDDDDDD,
+                        shape: followButtonRoundStyle,
+                        minimumSize: const Size(60.0, 10.0),
+                        splashFactory: NoSplash.splashFactory,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                      ),
+                      child: const Text(
+                        '삭제',
+                        style: followButtonTextStyle,
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
-  Padding followingScreen(List<Followings> followings) {
-    return Padding(
-      padding: EdgeInsets.only(top: _paddingTopHeight),
-      child: ListView.builder(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        itemCount: followings.length,
-        itemBuilder: (context, index) {
-          Followings following = followings[index];
-          String followingUserId = following.userId!;
+  Widget followingScreen(List<Followings> followings) {
+    if (followings.isEmpty) {
+      return const DataError(
+        errorMessage: '팔로잉 중인 사용자가 없습니다.',
+      );
+    }
 
-          return InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => UserProfileScreen(
-                    userId: followingUserId,
+    return RefreshIndicator(
+      color: commonWhiteColor,
+      backgroundColor: primaryColor,
+      onRefresh: () {
+        return Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            _getFollowingList();
+          },
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.only(top: _paddingTopHeight),
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          itemCount: followings.length,
+          itemBuilder: (context, index) {
+            Followings following = followings[index];
+            String followingUserId = following.userId!;
+
+            return InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => UserProfileScreen(
+                      userId: followingUserId,
+                      nickname: following.nickname!,
+                    ),
+                  ),
+                );
+              },
+              child: FollowLayout(
+                children: [
+                  FollowUserInfo(
                     nickname: following.nickname!,
+                    profileImageUrl: following.profileImageUrl!,
                   ),
-                ),
-              );
-            },
-            child: FollowLayout(
-              children: [
-                FollowUserInfo(
-                  nickname: following.nickname!,
-                  profileImageUrl: following.profileImageUrl!,
-                ),
-                if (widget.userId == null)
-                  ElevatedButton(
-                    onPressed: () => onPressedAddOrDeleteFollowingUser(
-                      followingUserId: followingUserId,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: isFollowing(followingUserId)
-                          ? greyDDDDDD
-                          : primaryColor,
-                      shape: followButtonRoundStyle,
-                      minimumSize: const Size(60.0, 10.0),
-                      splashFactory: NoSplash.splashFactory,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
+                  if (widget.userId == null)
+                    ElevatedButton(
+                      onPressed: () => onPressedAddOrDeleteFollowingUser(
+                        followingUserId: followingUserId,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: isFollowing(followingUserId)
+                            ? greyDDDDDD
+                            : primaryColor,
+                        shape: followButtonRoundStyle,
+                        minimumSize: const Size(60.0, 10.0),
+                        splashFactory: NoSplash.splashFactory,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                      ),
+                      child: Text(
+                        isFollowing(followingUserId) ? '팔로잉' : '팔로우',
+                        style: followButtonTextStyle.copyWith(
+                          color: isFollowing(followingUserId)
+                              ? commonBlackColor
+                              : commonWhiteColor,
+                        ),
                       ),
                     ),
-                    child: Text(
-                      isFollowing(followingUserId) ? '팔로잉' : '팔로우',
-                      style: followButtonTextStyle.copyWith(
-                        color: isFollowing(followingUserId)
-                            ? commonBlackColor
-                            : commonWhiteColor,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -374,6 +440,20 @@ class _FollowScreenState extends State<FollowScreen>
             (String name) => Tab(text: name),
           )
           .toList(),
+    );
+  }
+
+  Future<FollowingResponseData> _getFollowingList() {
+    return _followingResponseData = _followRepository.getFollowings(
+      context: context,
+      userId: widget.userId ?? _userId,
+    );
+  }
+
+  Future<FollowerResponseData> _getFollowerList() {
+    return _followerResponseData = _followRepository.getFollower(
+      context: context,
+      userId: widget.userId ?? _userId,
     );
   }
 }

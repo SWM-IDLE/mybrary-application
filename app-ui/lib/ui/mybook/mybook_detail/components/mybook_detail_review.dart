@@ -3,6 +3,7 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 
 class MyBookDetailReview extends StatelessWidget {
+  final bool hasData;
   final String content;
   final double starRating;
   final String createdAt;
@@ -14,6 +15,7 @@ class MyBookDetailReview extends StatelessWidget {
   final String? userId;
   final void Function({
     required bool isCreateReview,
+    required bool hasData,
     required String thumbnailUrl,
     required String title,
     required List<String> authors,
@@ -24,6 +26,7 @@ class MyBookDetailReview extends StatelessWidget {
   }) nextToMyBookReview;
 
   const MyBookDetailReview({
+    required this.hasData,
     required this.content,
     required this.starRating,
     required this.createdAt,
@@ -58,6 +61,7 @@ class MyBookDetailReview extends StatelessWidget {
                     onTap: () {
                       nextToMyBookReview(
                         isCreateReview: false,
+                        hasData: hasData,
                         thumbnailUrl: thumbnailUrl,
                         title: title,
                         authors: authors,
@@ -103,7 +107,7 @@ class MyBookDetailReview extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 20.0),
+            SizedBox(height: userId == null ? 16.0 : 0.0),
           ],
         ),
       ),

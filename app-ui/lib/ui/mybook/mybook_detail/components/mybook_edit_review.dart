@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class MyBookEditReview extends StatefulWidget {
+  final bool hasData;
   final bool isCreateReview;
   final String thumbnailUrl;
   final String title;
@@ -20,6 +22,7 @@ class MyBookEditReview extends StatefulWidget {
   final int? reviewId;
 
   const MyBookEditReview({
+    required this.hasData,
     required this.isCreateReview,
     required this.thumbnailUrl,
     required this.title,
@@ -85,8 +88,9 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
               textAlign: TextAlign.center,
             ),
             content: const Text(
-              '작성 중인 리뷰가 존재합니다. 저장하지 않고 뒤로 가시겠습니까?',
+              '작성 중인 리뷰가 존재합니다.\n저장하지 않고 뒤로 가시겠습니까?',
               style: confirmButtonTextStyle,
+              textAlign: TextAlign.center,
             ),
             contentPadding: const EdgeInsets.all(16.0),
             actionsAlignment: MainAxisAlignment.center,
@@ -94,19 +98,21 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
             actions: [
               Row(
                 children: [
-                  _confirmButton(
+                  confirmButton(
                     onTap: () {
                       Navigator.of(context).pop(false);
                     },
                     buttonText: '취소',
                     isCancel: true,
                   ),
-                  _confirmButton(
+                  confirmButton(
                     onTap: () {
                       Navigator.of(context).pop(true);
                     },
                     buttonText: '저장없이 뒤로가기',
                     isCancel: false,
+                    confirmButtonColor: primaryColor,
+                    confirmButtonText: commonWhiteColor,
                   ),
                 ],
               ),
@@ -246,6 +252,10 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
           ],
           image: DecorationImage(
             image: NetworkImage(widget.thumbnailUrl),
+            onError: (exception, stackTrace) => Image.asset(
+              'assets/img/logo/mybrary.png',
+              fit: BoxFit.fill,
+            ),
             fit: BoxFit.fill,
           ),
         ),
@@ -265,6 +275,15 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
       backgroundColor: commonWhiteColor,
       foregroundColor: commonBlackColor,
       actions: [
+        if (widget.hasData)
+          TextButton(
+            onPressed: () => _deleteReview(),
+            style: disableTextButtonStyle,
+            child: Text(
+              '삭제',
+              style: saveTextButtonStyle.copyWith(color: commonRedColor),
+            ),
+          ),
         TextButton(
           onPressed: widget.isCreateReview
               ? () async {
@@ -311,34 +330,63 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
     Navigator.pop(context);
   }
 
-  Widget _confirmButton({
-    required GestureTapCallback? onTap,
-    required String buttonText,
-    required bool isCancel,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            height: 46.0,
-            decoration: BoxDecoration(
-              color: isCancel ? greyF1F2F5 : primaryColor,
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: Center(
-              child: Text(
-                buttonText,
-                style: commonSubBoldStyle.copyWith(
-                  color: isCancel ? commonBlackColor : commonWhiteColor,
-                  fontSize: 14.0,
-                ),
-              ),
-            ),
+  void _deleteReview() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '삭제',
+            style: commonSubBoldStyle,
+            textAlign: TextAlign.center,
           ),
-        ),
-      ),
+          content: const Text(
+            '정말 리뷰를 삭제하시겠습니까?',
+            style: confirmButtonTextStyle,
+            textAlign: TextAlign.center,
+          ),
+          contentPadding: const EdgeInsets.only(
+            top: 24.0,
+            bottom: 16.0,
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          buttonPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+          actions: [
+            Row(
+              children: [
+                confirmButton(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  buttonText: '취소',
+                  isCancel: true,
+                ),
+                confirmButton(
+                  onTap: () async {
+                    await _bookRepository.deleteMyBookReview(
+                      context: context,
+                      userId: _userId,
+                      reviewId: widget.reviewId!,
+                    );
+
+                    if (!mounted) return;
+                    showInterestBookMessage(
+                      context: context,
+                      snackBarText: '마이 리뷰가 삭제되었습니다.',
+                    );
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                  buttonText: '삭제하기',
+                  isCancel: false,
+                  confirmButtonColor: commonRedColor,
+                  confirmButtonText: commonWhiteColor,
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

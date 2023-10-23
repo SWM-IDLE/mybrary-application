@@ -6,10 +6,10 @@ import 'package:mybrary/data/model/profile/my_interests_response.dart';
 import 'package:mybrary/data/model/profile/profile_common_response.dart';
 import 'package:mybrary/data/model/profile/profile_image_response.dart';
 import 'package:mybrary/data/model/profile/profile_response.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/follow_repository.dart';
 import 'package:mybrary/data/repository/interests_repository.dart';
 import 'package:mybrary/data/repository/profile_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
@@ -183,15 +183,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _profileMenuBottomSheet() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 28.0,
-        vertical: 32.0,
-      ),
+      padding: const EdgeInsets.all(32.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _profileMenuTab('👤  프로필 편집', const ProfileEditScreen()),
+          const SizedBox(height: 12.0),
           _profileMenuTab('🔗️️  설정', const SettingScreen()),
         ],
       ),
@@ -199,26 +197,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _profileMenuTab(String tabText, Widget screen) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: TextButton(
-        style: commonMenuButtonStyle,
-        onPressed: () {
-          _onPressedProfileMenu(screen);
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              tabText,
-              style: bottomSheetMenuTextStyle,
-            ),
-            SvgPicture.asset(
-              'assets/svg/icon/profile_menu_arrow.svg',
-            ),
-          ],
-        ),
+    return TextButton(
+      style: commonMenuButtonStyle,
+      onPressed: () {
+        _onPressedProfileMenu(screen);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            tabText,
+            style: bottomSheetMenuTextStyle,
+          ),
+          SvgPicture.asset(
+            'assets/svg/icon/profile_menu_arrow.svg',
+          ),
+        ],
       ),
     );
   }

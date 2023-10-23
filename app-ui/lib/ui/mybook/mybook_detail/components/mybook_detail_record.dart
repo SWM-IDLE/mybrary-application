@@ -10,6 +10,9 @@ class MyBookDetailRecord extends StatelessWidget {
   final String startDateOfPossession;
   final String meaningTagColorCode;
   final String meaningTagQuote;
+  final String? currentUserId;
+  final String originUserId;
+  final void Function()? onTapRecord;
 
   const MyBookDetailRecord({
     required this.readStatus,
@@ -19,6 +22,9 @@ class MyBookDetailRecord extends StatelessWidget {
     required this.startDateOfPossession,
     required this.meaningTagColorCode,
     required this.meaningTagQuote,
+    required this.originUserId,
+    this.currentUserId,
+    this.onTapRecord,
     super.key,
   });
 
@@ -53,7 +59,7 @@ class MyBookDetailRecord extends StatelessWidget {
               style: commonSubBoldStyle,
             ),
             const SizedBox(height: 20.0),
-            detailItem(
+            _detailItem(
               itemTitle: '나에게 이 책은',
               itemDescription:
                   meaningTagQuote == '' ? '어떤 의미인가요?' : meaningTagQuote,
@@ -64,22 +70,22 @@ class MyBookDetailRecord extends StatelessWidget {
                     ),
             ),
             const SizedBox(height: 15.0),
-            detailItem(
+            _detailItem(
               itemTitle: '독서 상태',
               itemDescription: readStatusText,
             ),
             const SizedBox(height: 15.0),
-            detailItem(
+            _detailItem(
               itemTitle: '교환/나눔',
               itemDescription: shareOrExchange,
             ),
             const SizedBox(height: 15.0),
-            detailItem(
+            _detailItem(
               itemTitle: '공개 여부',
               itemDescription: showable ? '공개' : '비공개',
             ),
             const SizedBox(height: 15.0),
-            detailItem(
+            _detailItem(
               itemTitle: '소장일',
               itemDescription: startDateOfPossession,
             ),
@@ -90,7 +96,7 @@ class MyBookDetailRecord extends StatelessWidget {
     );
   }
 
-  Row detailItem({
+  Row _detailItem({
     required String itemTitle,
     required String itemDescription,
     Color? colorCode,
@@ -102,9 +108,14 @@ class MyBookDetailRecord extends StatelessWidget {
           itemTitle,
           style: bookDetailSubStyle,
         ),
-        Text(
-          itemDescription,
-          style: bookDetailInfoStyle.copyWith(color: colorCode),
+        InkWell(
+          onTap: currentUserId == null || currentUserId == originUserId
+              ? onTapRecord
+              : null,
+          child: Text(
+            itemDescription,
+            style: bookDetailInfoStyle.copyWith(color: colorCode),
+          ),
         ),
       ],
     );

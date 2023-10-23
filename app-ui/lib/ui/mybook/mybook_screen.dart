@@ -5,9 +5,9 @@ import 'package:mybrary/data/model/book/mybook_common_data.dart';
 import 'package:mybrary/data/model/book/mybooks_response.dart';
 import 'package:mybrary/data/model/profile/profile_image_response.dart';
 import 'package:mybrary/data/model/profile/profile_response.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
 import 'package:mybrary/data/repository/profile_repository.dart';
-import 'package:mybrary/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
@@ -57,18 +57,19 @@ class _MyBookScreenState extends State<MyBookScreen> {
     _myBooksResponseData = _bookRepository.getMyBooks(
       context: context,
       userId: widget.userId ?? _userId,
-      order: '',
+      order: 'registration',
       readStatus: '',
     );
     _completedBooksResponseData = _bookRepository.getMyBooks(
       context: context,
       userId: widget.userId ?? _userId,
-      order: '',
+      order: 'registration',
       readStatus: 'COMPLETED',
     );
     _interestBooksResponseData = _bookRepository.getInterestBooks(
       context: context,
       userId: widget.userId ?? _userId,
+      order: 'registration',
     );
   }
 
@@ -146,19 +147,19 @@ class _MyBookScreenState extends State<MyBookScreen> {
                         _myBookShelfItem(
                           myBooksBookShelfData: myBooksBookShelfData,
                           status: '마이북',
-                          order: '',
+                          order: 'registration',
                           readStatus: '',
                         ),
                         _myBookShelfItem(
                           myBooksBookShelfData: interestBooksBookShelfData,
                           status: '관심북',
-                          order: '',
+                          order: 'registration',
                           readStatus: '',
                         ),
                         _myBookShelfItem(
                           myBooksBookShelfData: completedBooksBookShelfData,
                           status: '완독북',
-                          order: '',
+                          order: 'registration',
                           readStatus: 'COMPLETED',
                         ),
                       ],
@@ -175,9 +176,7 @@ class _MyBookScreenState extends State<MyBookScreen> {
   }
 
   List<dynamic> _limitedBookShelfData(List<dynamic> myBooksData) {
-    return myBooksData.length > 5
-        ? myBooksData.reversed.toList().sublist(0, 5)
-        : myBooksData.reversed.toList();
+    return myBooksData.length > 5 ? myBooksData.sublist(0, 5) : myBooksData;
   }
 
   Padding _myBookShelfItem({
@@ -270,6 +269,11 @@ class _MyBookScreenState extends State<MyBookScreen> {
                                       status == '관심북'
                                           ? myBook.thumbnailUrl!
                                           : myBook.book!.thumbnailUrl!,
+                                    ),
+                                    onError: (exception, stackTrace) =>
+                                        Image.asset(
+                                      'assets/img/logo/mybrary.png',
+                                      fit: BoxFit.fill,
                                     ),
                                     fit: BoxFit.fill,
                                   ),
@@ -375,11 +379,12 @@ class _MyBookScreenState extends State<MyBookScreen> {
         _interestBooksResponseData = _bookRepository.getInterestBooks(
           context: context,
           userId: widget.userId ?? _userId,
+          order: 'registration',
         );
         _myBooksResponseData = _bookRepository.getMyBooks(
           context: context,
           userId: widget.userId ?? _userId,
-          order: '',
+          order: 'registration',
           readStatus: '',
         );
       }),
@@ -413,12 +418,13 @@ class _MyBookScreenState extends State<MyBookScreen> {
           _myBooksResponseData = _bookRepository.getMyBooks(
             context: context,
             userId: widget.userId ?? _userId,
-            order: '',
+            order: 'registration',
             readStatus: '',
           );
           _interestBooksResponseData = _bookRepository.getInterestBooks(
             context: context,
             userId: widget.userId ?? _userId,
+            order: 'registration',
           );
         }
         if (readStatus == '') {
@@ -431,12 +437,13 @@ class _MyBookScreenState extends State<MyBookScreen> {
           _completedBooksResponseData = _bookRepository.getMyBooks(
             context: context,
             userId: widget.userId ?? _userId,
-            order: '',
+            order: 'registration',
             readStatus: 'COMPLETED',
           );
           _interestBooksResponseData = _bookRepository.getInterestBooks(
             context: context,
             userId: widget.userId ?? _userId,
+            order: 'registration',
           );
         }
       }),

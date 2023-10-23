@@ -48,6 +48,10 @@ class ProfileHeader extends StatelessWidget {
                   image: NetworkImage(
                     '$profileImageUrl',
                   ),
+                  onError: (exception, stackTrace) => Image.asset(
+                    'assets/img/logo/mybrary.png',
+                    fit: BoxFit.fill,
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -95,11 +99,6 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8.0),
-            const Text(
-              '#초보 리뷰어',
-              style: commonSubThinStyle,
-            )
           ],
         ),
       ),

@@ -42,6 +42,10 @@ class MyBookDetailHeader extends StatelessWidget {
               ],
               image: DecorationImage(
                 image: NetworkImage(thumbnail),
+                onError: (exception, stackTrace) => Image.asset(
+                  'assets/img/logo/mybrary.png',
+                  fit: BoxFit.fill,
+                ),
                 fit: BoxFit.fill,
               ),
             ),

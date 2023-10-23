@@ -14,7 +14,7 @@ class BookRepository {
   Future<List<BookListResponseData>> getInterestBooks({
     required BuildContext context,
     required String userId,
-    String? order,
+    required String order,
   }) {
     return _bookDataSource.getInterestBooks(context, userId, order);
   }

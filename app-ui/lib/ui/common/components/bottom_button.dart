@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class BottomButton extends StatelessWidget {
   final bool isScrollingDown;
@@ -16,7 +15,7 @@ class BottomButton extends StatelessWidget {
     super.key,
   });
 
-  final double _bottomInset = Platform.isAndroid ? 0 : 12;
+  final double _bottomInset = isAndroid ? 0 : 12;
 
   @override
   Widget build(BuildContext context) {
