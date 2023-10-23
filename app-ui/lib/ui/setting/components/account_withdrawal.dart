@@ -157,6 +157,8 @@ class _AccountWithdrawalState extends State<AccountWithdrawal> {
                                 },
                                 buttonText: '탈퇴하기',
                                 isCancel: false,
+                                confirmButtonColor: commonRedColor,
+                                confirmButtonText: commonWhiteColor,
                               ),
                             ],
                           ),

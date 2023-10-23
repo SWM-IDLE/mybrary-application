@@ -8,6 +8,7 @@ import 'package:mybrary/data/model/home/today_registered_book_count_model.dart';
 import 'package:mybrary/data/provider/home/home_bestseller_provider.dart';
 import 'package:mybrary/data/provider/home/home_provider.dart';
 import 'package:mybrary/data/provider/home/home_recommendation_books_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/home_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
@@ -22,6 +23,8 @@ import 'package:mybrary/ui/home/components/home_recommend_books_header.dart';
 import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/utils/logics/permission_utils.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
+
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -58,6 +61,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
 
     _homeScrollController.addListener(_changeAppBarComponent);
+
+    if (UserState.update == false && UserState.forceUpdate == false) {
+      return;
+    }
+
+    if (UserState.update == true) {
+      return _showUpdateAlert();
+    }
+
+    if (UserState.forceUpdate == true) {
+      return _showForceUpdateAlert();
+    }
+  }
+
+  void _showUpdateAlert() {
+    Future.delayed(
+      Duration.zero,
+      () => commonShowConfirmOrCancelDialog(
+        context: context,
+        title: '새로운 버전 출시',
+        content: '업데이트를 통해\n새로운 기능을 만나보세요 !',
+        cancelButtonText: '나중에',
+        cancelButtonOnTap: () {
+          Navigator.pop(context);
+          UserState.localStorage.setBool('update', false);
+        },
+        confirmButtonText: '업데이트',
+        confirmButtonOnTap: () => connectAppStoreLink(),
+        confirmButtonColor: primaryColor,
+        confirmButtonTextColor: commonWhiteColor,
+      ),
+    );
+  }
+
+  void _showForceUpdateAlert() {
+    Future.delayed(
+      Duration.zero,
+      () => commonShowConfirmDialog(
+        context: context,
+        title: '업데이트 필요',
+        content: '중요한 변경으로 인해\n업데이트가 꼭 필요해요!',
+        confirmButtonColor: primaryColor,
+        confirmButtonText: '업데이트하러 가기 :)',
+        confirmButtonTextColor: commonWhiteColor,
+        confirmButtonOnTap: () => connectAppStoreLink(),
+      ),
+    );
   }
 
   void _scrollToTop() {

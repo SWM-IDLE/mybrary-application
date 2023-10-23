@@ -98,19 +98,21 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
             actions: [
               Row(
                 children: [
-                  _confirmButton(
+                  confirmButton(
                     onTap: () {
                       Navigator.of(context).pop(false);
                     },
                     buttonText: '취소',
                     isCancel: true,
                   ),
-                  _confirmButton(
+                  confirmButton(
                     onTap: () {
                       Navigator.of(context).pop(true);
                     },
                     buttonText: '저장없이 뒤로가기',
                     isCancel: false,
+                    confirmButtonColor: primaryColor,
+                    confirmButtonText: commonWhiteColor,
                   ),
                 ],
               ),
@@ -328,37 +330,6 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
     Navigator.pop(context);
   }
 
-  Widget _confirmButton({
-    required GestureTapCallback? onTap,
-    required String buttonText,
-    required bool isCancel,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            height: 46.0,
-            decoration: BoxDecoration(
-              color: isCancel ? greyF1F2F5 : commonRedColor,
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: Center(
-              child: Text(
-                buttonText,
-                style: commonSubBoldStyle.copyWith(
-                  color: isCancel ? commonBlackColor : commonWhiteColor,
-                  fontSize: 14.0,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   void _deleteReview() async {
     await showDialog(
       context: context,
@@ -408,6 +379,8 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
                   },
                   buttonText: '삭제하기',
                   isCancel: false,
+                  confirmButtonColor: commonRedColor,
+                  confirmButtonText: commonWhiteColor,
                 ),
               ],
             ),

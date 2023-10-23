@@ -31,6 +31,14 @@ final homeUserServiceRepositoryProvider = Provider<HomeNewRepository>((ref) {
 abstract class HomeNewRepository {
   factory HomeNewRepository(Dio dio, {String baseUrl}) = _HomeNewRepository;
 
+  @GET('/mybooks')
+  Future<CommonModel<TodayRegisteredBookListModel>> getTodayRegisteredBookList({
+    @Queries() BooksParams? booksParams = const BooksParams(
+      start: '',
+      end: '',
+    ),
+  });
+
   @GET('/mybooks/today-registration-count')
   Future<CommonModel<TodayRegisteredBookCountModel>>
       getTodayRegisteredBookCount();

@@ -18,10 +18,12 @@ import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_header.dart';
+import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_more.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_record.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_review.dart';
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_edit_review.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class MyBookDetailScreen extends StatefulWidget {
   final int myBookId;
@@ -271,6 +273,10 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                         reviewId: myBookReviewData.id!,
                         userId: widget.userId,
                       ),
+                    _myBookDetailDivider(),
+                    MyBookDetailMore(
+                      isbn13: myBookInfo.isbn13!,
+                    ),
                     SliverToBoxAdapter(
                       child: SizedBox(
                         height: widget.userId == null ? 70.0 : 30.0,
@@ -397,7 +403,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                         _myBookRecordInput(
                           context: context,
                           controller: _meaningTagQuoteController,
-                          hintText: '내 삶을 돌아보게 만든 책',
+                          hintText: '내 삶을 돌아보게 만든 책 (최대 15자까지)',
                         ),
                         const SizedBox(height: 16.0),
                         const Text(
@@ -546,7 +552,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
   }) {
     return TextFormField(
       controller: controller,
-      maxLength: 20,
+      maxLength: 15,
       style: commonSubMediumStyle,
       scrollPadding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -916,14 +922,14 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                       actions: [
                         Row(
                           children: [
-                            _confirmButton(
+                            confirmButton(
                               onTap: () {
                                 Navigator.of(context).pop();
                               },
                               buttonText: '취소',
                               isCancel: true,
                             ),
-                            _confirmButton(
+                            confirmButton(
                               onTap: () {
                                 _bookRepository.deleteMyBook(
                                   context: context,
@@ -950,6 +956,8 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
                               },
                               buttonText: '삭제',
                               isCancel: false,
+                              confirmButtonColor: commonRedColor,
+                              confirmButtonText: commonWhiteColor,
                             ),
                           ],
                         ),
@@ -976,37 +984,6 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
           height: 1,
           thickness: 6,
           color: greyF1F2F5,
-        ),
-      ),
-    );
-  }
-
-  Widget _confirmButton({
-    required GestureTapCallback? onTap,
-    required String buttonText,
-    required bool isCancel,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            height: 46.0,
-            decoration: BoxDecoration(
-              color: isCancel ? greyF1F2F5 : commonRedColor,
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: Center(
-              child: Text(
-                buttonText,
-                style: commonSubBoldStyle.copyWith(
-                  color: isCancel ? commonBlackColor : commonWhiteColor,
-                  fontSize: 14.0,
-                ),
-              ),
-            ),
-          ),
         ),
       ),
     );

@@ -166,7 +166,7 @@ const interestDescriptionStyle = TextStyle(
 const followNicknameStyle = TextStyle(
   color: commonBlackColor,
   fontSize: 15.0,
-  fontWeight: FontWeight.w400,
+  fontWeight: FontWeight.w500,
 );
 
 const followButtonTextStyle = TextStyle(
@@ -255,6 +255,20 @@ const categoryCircularTextStyle = TextStyle(
   color: grey262626,
   fontSize: 14.0,
   fontWeight: FontWeight.w400,
+);
+
+const todayRegisteredBookNickname = TextStyle(
+  color: primaryColor,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w500,
+  height: 1.5,
+);
+
+const todayRegisteredBookIntroduction = TextStyle(
+  color: grey262626,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w400,
+  height: 1.5,
 );
 
 // book search page style

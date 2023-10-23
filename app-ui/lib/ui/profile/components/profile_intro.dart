@@ -4,6 +4,7 @@ import 'package:mybrary/data/model/profile/my_interests_response.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/profile/my_badge/my_badge_screen.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class ProfileIntro extends StatelessWidget {
   final String? introduction;
@@ -54,21 +55,7 @@ class ProfileIntro extends StatelessWidget {
             onTap: () {
               onTapMyInterests();
             },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  '마이 관심사',
-                  style: commonSubTitleStyle,
-                ),
-                SizedBox(
-                  child: SvgPicture.asset(
-                    'assets/svg/icon/right_arrow.svg',
-                  ),
-                ),
-              ],
-            ),
+            child: commonSubTitle(title: '마이 관심사'),
           ),
           const SizedBox(height: 12.0),
           Text(
@@ -86,21 +73,7 @@ class ProfileIntro extends StatelessWidget {
                 ),
               );
             },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  '마이 뱃지',
-                  style: commonSubTitleStyle,
-                ),
-                SizedBox(
-                  child: SvgPicture.asset(
-                    'assets/svg/icon/right_arrow.svg',
-                  ),
-                ),
-              ],
-            ),
+            child: commonSubTitle(title: '마이 뱃지'),
           ),
           const SizedBox(height: 12.0),
           SizedBox(
