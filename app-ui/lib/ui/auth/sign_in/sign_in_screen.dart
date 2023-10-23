@@ -122,12 +122,16 @@ class _SignInScreenState extends State<SignInScreen> {
       final refreshToken =
           Uri.parse(result).queryParameters[refreshTokenHeaderKey];
 
-      final jwtPayload = parseJwt(accessToken!);
+      if (accessToken == null || refreshToken == null) {
+        return showSignInFailDialog();
+      }
+
+      final jwtPayload = parseJwt(accessToken);
 
       await secureStorage.write(key: accessTokenKey, value: accessToken);
       await secureStorage.write(key: refreshTokenKey, value: refreshToken);
 
-      if (accessToken.isNotEmpty && refreshToken != null) {
+      if (accessToken.isNotEmpty && refreshToken.isNotEmpty) {
         UserState.localStorage.setString('userId', jwtPayload['loginId']);
 
         if (!mounted) return;
@@ -139,11 +143,11 @@ class _SignInScreenState extends State<SignInScreen> {
         );
       }
     } on PlatformException catch (e) {
-      showSignInFailDialog(e.toString());
+      showSignInFailDialog();
     }
   }
 
-  void showSignInFailDialog(String errMessage) {
+  void showSignInFailDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
