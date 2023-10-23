@@ -186,15 +186,17 @@ class _HomeBannerState extends State<HomeBanner> {
                 items: imageBox,
                 carouselController: _controller,
                 options: CarouselOptions(
-                    aspectRatio: 2.8,
-                    enlargeCenterPage: true,
-                    enableInfiniteScroll: false,
-                    autoPlay: true,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _current = index;
-                      });
-                    }),
+                  scrollPhysics: const BouncingScrollPhysics(),
+                  aspectRatio: 2.8,
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: false,
+                  autoPlay: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _current = index;
+                    });
+                  },
+                ),
               ),
             ),
             Positioned(
