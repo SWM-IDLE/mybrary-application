@@ -551,6 +551,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     image: NetworkImage(
                                       myBook.book!.thumbnailUrl!,
                                     ),
+                                    onError: (exception, stackTrace) =>
+                                        Image.asset(
+                                      'assets/img/logo/mybrary.png',
+                                      fit: BoxFit.fill,
+                                    ),
                                     fit: BoxFit.fill,
                                   ),
                                 ),

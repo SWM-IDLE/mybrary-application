@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/res/constants/color.dart';
@@ -8,6 +6,7 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Widget loadingIndicator() {
@@ -129,7 +128,7 @@ void showInterestBookMessage({
       SnackBar(
         padding: EdgeInsets.symmetric(
           horizontal: 24.0,
-          vertical: Platform.isAndroid ? 22.0 : 16.0,
+          vertical: isAndroid ? 22.0 : 16.0,
         ),
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -370,7 +369,7 @@ Future<void> connectWebLink({
 }
 
 void connectAppStoreLink() async {
-  if (Platform.isAndroid) {
+  if (isAndroid) {
     await connectWebLink(
       webLink: androidAppLink,
     );

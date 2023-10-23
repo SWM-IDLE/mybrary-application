@@ -16,10 +16,16 @@ class BooksByCategoryModel {
 
 @JsonSerializable()
 class BooksModel {
+  final String? title;
+  final String? authors;
+  final double? aladinStarRating;
   final String thumbnailUrl;
   final String isbn13;
 
   BooksModel({
+    required this.title,
+    required this.authors,
+    required this.aladinStarRating,
     required this.thumbnailUrl,
     required this.isbn13,
   });

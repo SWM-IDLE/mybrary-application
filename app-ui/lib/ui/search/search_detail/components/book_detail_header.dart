@@ -85,6 +85,10 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
             ],
             image: DecorationImage(
               image: NetworkImage(widget.thumbnail),
+              onError: (exception, stackTrace) => Image.asset(
+                'assets/img/logo/mybrary.png',
+                fit: BoxFit.fill,
+              ),
               fit: BoxFit.fill,
             ),
           ),
@@ -116,7 +120,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             bookStatusColumn(
-              padding: 32.0,
+              padding: 30.0,
               children: [
                 InkWell(
                   onTap: () async {

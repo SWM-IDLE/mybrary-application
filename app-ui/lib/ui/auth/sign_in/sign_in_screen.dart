@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
@@ -12,6 +12,7 @@ import 'package:mybrary/ui/auth/components/oauth_button.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/utils/logics/parse_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -60,25 +61,33 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        if (isIOS)
+                          OAuthButton(
+                            btnText: 'Apple로 로그인',
+                            oauthType: 'apple',
+                            btnBackgroundColor: commonBlackColor,
+                            onTap: () => onTapOAuthLoginButton(API.appleLogin),
+                          ),
+                        const SizedBox(height: 10.0),
                         OAuthButton(
-                          btnText: 'Google로 시작하기',
+                          btnText: 'Google로 로그인',
                           oauthType: 'google',
                           btnBackgroundColor: greyF1F2F5,
-                          onTap: () => oAuthLoginPressed(API.googleLogin),
+                          onTap: () => onTapOAuthLoginButton(API.googleLogin),
                         ),
                         const SizedBox(height: 10.0),
                         OAuthButton(
-                          btnText: '네이버로 시작하기',
+                          btnText: '네이버로 로그인',
                           oauthType: 'naver',
                           btnBackgroundColor: naverLoginColor,
-                          onTap: () => oAuthLoginPressed(API.naverLogin),
+                          onTap: () => onTapOAuthLoginButton(API.naverLogin),
                         ),
                         const SizedBox(height: 10.0),
                         OAuthButton(
-                          btnText: '카카오로 시작하기',
+                          btnText: '카카오로 로그인',
                           oauthType: 'kakao',
                           btnBackgroundColor: kakaoLoginColor,
-                          onTap: () => oAuthLoginPressed(API.kakaoLogin),
+                          onTap: () => onTapOAuthLoginButton(API.kakaoLogin),
                         ),
                         const SizedBox(height: 70.0),
                       ],
@@ -93,7 +102,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void oAuthLoginPressed(API api) {
+  void onTapOAuthLoginButton(API api) {
     signInOAuth(getApi(api));
   }
 
@@ -103,20 +112,26 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       final url = Uri.parse('$api?redirect_url=$mybraryUrlScheme');
 
-      final result = await FlutterWebAuth.authenticate(
-          url: url.toString(), callbackUrlScheme: mybraryUrlScheme);
+      final result = await FlutterWebAuth2.authenticate(
+        url: url.toString(),
+        callbackUrlScheme: mybraryUrlScheme,
+      );
 
       final accessToken =
           Uri.parse(result).queryParameters[accessTokenHeaderKey];
       final refreshToken =
           Uri.parse(result).queryParameters[refreshTokenHeaderKey];
 
-      final jwtPayload = parseJwt(accessToken!);
+      if (accessToken == null || refreshToken == null) {
+        return showSignInFailDialog();
+      }
+
+      final jwtPayload = parseJwt(accessToken);
 
       await secureStorage.write(key: accessTokenKey, value: accessToken);
       await secureStorage.write(key: refreshTokenKey, value: refreshToken);
 
-      if (accessToken.isNotEmpty && refreshToken != null) {
+      if (accessToken.isNotEmpty && refreshToken.isNotEmpty) {
         UserState.localStorage.setString('userId', jwtPayload['loginId']);
 
         if (!mounted) return;
@@ -127,12 +142,12 @@ class _SignInScreenState extends State<SignInScreen> {
           (route) => false,
         );
       }
-    } catch (e) {
-      showSignInFailDialog(e.toString());
+    } on PlatformException catch (e) {
+      showSignInFailDialog();
     }
   }
 
-  void showSignInFailDialog(String errMessage) {
+  void showSignInFailDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

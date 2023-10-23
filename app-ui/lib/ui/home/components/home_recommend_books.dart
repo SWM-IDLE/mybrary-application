@@ -100,6 +100,10 @@ class HomeRecommendBooks extends StatelessWidget {
                             image: NetworkImage(
                               bookListByCategory[index].thumbnailUrl,
                             ),
+                            onError: (exception, stackTrace) => Image.asset(
+                              'assets/img/logo/mybrary.png',
+                              fit: BoxFit.fill,
+                            ),
                             fit: BoxFit.fill,
                           ),
                           borderRadius: BorderRadius.circular(8),

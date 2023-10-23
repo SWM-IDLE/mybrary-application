@@ -132,12 +132,7 @@ class SettingScreen extends StatelessWidget {
                     const SizedBox(height: 12.0),
                     _settingTab(
                       tabTitle: '리뷰로 응원하기',
-                      onTap: () async {
-                        // Todo: 추후 AOS, IOS 별 링크 설정 필요
-                        await connectWebLink(
-                          webLink: androidAppLink,
-                        );
-                      },
+                      onTap: () => connectAppStoreLink(),
                     ),
                     _settingTab(
                       tabTitle: '로그아웃',

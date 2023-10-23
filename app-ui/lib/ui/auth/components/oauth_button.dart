@@ -42,7 +42,9 @@ class OAuthButton extends StatelessWidget {
               child: Text(
                 btnText,
                 style: commonSubRegularStyle.copyWith(
-                  color: oauthType == 'naver' ? commonWhiteColor : grey262626,
+                  color: oauthType == 'naver' || oauthType == 'apple'
+                      ? commonWhiteColor
+                      : grey262626,
                   fontSize: 16.0,
                 ),
                 textAlign: TextAlign.center,

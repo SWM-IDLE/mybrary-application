@@ -252,6 +252,10 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
           ],
           image: DecorationImage(
             image: NetworkImage(widget.thumbnailUrl),
+            onError: (exception, stackTrace) => Image.asset(
+              'assets/img/logo/mybrary.png',
+              fit: BoxFit.fill,
+            ),
             fit: BoxFit.fill,
           ),
         ),

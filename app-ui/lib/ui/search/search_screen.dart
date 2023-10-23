@@ -150,10 +150,6 @@ class _SearchScreenState extends State<SearchScreen> {
                               _bookSearchKeywordController,
                         ),
                       ),
-                      const SizedBox(
-                        height: 8.0,
-                      ),
-                      _searchAllUserListBox(),
                     ],
                   ),
                 ),

@@ -219,6 +219,32 @@ const bottomButtonTextStyle = TextStyle(
 );
 
 // home page style
+final homeBannerTitleBoldStyle = TextStyle(
+  color: commonWhiteColor,
+  fontSize: 22.0,
+  fontWeight: FontWeight.w700,
+  shadows: [
+    Shadow(
+      color: commonBlackColor.withOpacity(0.2),
+      blurRadius: 6,
+      offset: const Offset(0, 4),
+    ),
+  ],
+);
+
+final homeBannerTitleLightStyle = TextStyle(
+  color: commonWhiteColor,
+  fontSize: 22.0,
+  fontWeight: FontWeight.w300,
+  shadows: [
+    Shadow(
+      color: commonBlackColor.withOpacity(0.2),
+      blurRadius: 6,
+      offset: const Offset(0, 4),
+    ),
+  ],
+);
+
 const todayRegisteredBookTextStyle = TextStyle(
   color: grey262626,
   fontSize: 13.0,

@@ -12,16 +12,14 @@ const String headerJsonValue = "application/json";
 const String androidAppLink =
     'https://play.google.com/store/apps/details?id=kr.mybrary.mybrary';
 const String noticeAndUpdateLink =
-    'https://ribbon-soil-e35.notion.site/66ab3cd94b0a4f89af6c8d2ec24056fd?pvs=4';
+    'https://notice.mybrary.kr/66ab3cd9-4b0a-4f89-af6c-8d2ec24056fd';
 const String mybraryGuideLink =
-    'https://ribbon-soil-e35.notion.site/bd2a401fb2f2475ca9569b3a897c23a6?pvs=4';
+    'https://notice.mybrary.kr/bd2a401f-b2f2-475c-a956-9b3a897c23a6';
 const String inquiryLink = 'https://open.kakao.com/me/mybrary';
-const String mybraryTermsLink =
-    'https://ribbon-soil-e35.notion.site/5e1396e7e23340d79cd4922e228fa192?pvs=4';
-const String mybraryPrivacyLink =
-    'https://ribbon-soil-e35.notion.site/6ff721bd27824f729b97417d769041ce?pvs=4';
+const String mybraryTermsLink = 'https://notice.mybrary.kr/terms-of-use';
+const String mybraryPrivacyLink = 'https://notice.mybrary.kr/privacy-policy';
 const String openSourceLicenseLink =
-    'https://ribbon-soil-e35.notion.site/de54830fb0fc45c69794373ec8f83ef7?pvs=4';
+    'https://notice.mybrary.kr/de54830f-b0fc-45c6-9794-373ec8f83ef7';
 
 // 기타 상수
 const List<Map<String, String>> badgeSvg = [
