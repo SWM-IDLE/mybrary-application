@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:mybrary/data/model/book/book_list_response.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
@@ -13,6 +11,7 @@ import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/mybook/interest_book_list/components/interest_book_list.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class InterestBookListScreen extends StatefulWidget {
   final String? userId;
@@ -210,7 +209,7 @@ class _InterestBookListScreenState extends State<InterestBookListScreen> {
     return Padding(
       padding: EdgeInsets.only(
         top: 16.0,
-        bottom: Platform.isIOS ? 32.0 : 0.0,
+        bottom: isIOS ? 32.0 : 0.0,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

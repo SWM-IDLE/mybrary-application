@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/res/constants/color.dart';
@@ -371,7 +369,7 @@ Future<void> connectWebLink({
 }
 
 void connectAppStoreLink() async {
-  if (Platform.isAndroid) {
+  if (isAndroid) {
     await connectWebLink(
       webLink: androidAppLink,
     );

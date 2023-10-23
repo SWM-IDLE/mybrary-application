@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -24,6 +22,7 @@ import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_detail_review.
 import 'package:mybrary/ui/mybook/mybook_detail/components/mybook_edit_review.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class MyBookDetailScreen extends StatefulWidget {
   final int myBookId;
@@ -630,7 +629,7 @@ class _MyBookDetailScreenState extends State<MyBookDetailScreen> {
     return Padding(
       padding: EdgeInsets.only(
         top: 16.0,
-        bottom: Platform.isIOS ? 32.0 : 0.0,
+        bottom: isIOS ? 32.0 : 0.0,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
