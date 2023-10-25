@@ -17,12 +17,12 @@ class _LoginInfoState extends ConsumerState<LoginInfo> {
   void initState() {
     super.initState();
 
-    ref.read(profileProvider.notifier).getUserEmail();
+    ref.read(profileEmailProvider.notifier).getUserEmail();
   }
 
   @override
   Widget build(BuildContext context) {
-    final profileEmail = ref.watch(profileEmailProvider);
+    final profileEmail = ref.watch(userEmailProvider);
 
     if (profileEmail == null) {
       return const SubPageLayout(
