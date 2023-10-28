@@ -24,7 +24,7 @@ dependencies:
   # barcode scan
   mobile_scanner: ^3.3.0 # minSdkVersion 21
   # permission
-  permission_handler: ^10.4.2
+  permission_handler: ^11.0.1
   # image
   flutter_svg: ^2.0.7
   image_picker: ^1.0.1
