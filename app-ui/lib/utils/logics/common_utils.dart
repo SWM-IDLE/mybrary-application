@@ -374,4 +374,9 @@ void connectAppStoreLink() async {
       webLink: androidAppLink,
     );
   }
+  if (isIOS) {
+    await connectWebLink(
+      webLink: iosAppLink,
+    );
+  }
 }

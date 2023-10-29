@@ -11,6 +11,8 @@ const String headerJsonValue = "application/json";
 // 설정 페이지 내 링크 관련 상수
 const String androidAppLink =
     'https://play.google.com/store/apps/details?id=kr.mybrary.mybrary';
+const String iosAppLink =
+    'https://apps.apple.com/kr/app/%EB%A7%88%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC/id6470614390';
 const String noticeAndUpdateLink =
     'https://notice.mybrary.kr/66ab3cd9-4b0a-4f89-af6c-8d2ec24056fd';
 const String mybraryGuideLink =
