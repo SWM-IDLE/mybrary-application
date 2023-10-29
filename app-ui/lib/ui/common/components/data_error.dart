@@ -15,9 +15,11 @@ class DataError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 1.5,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(
             icon ?? Icons.info,
@@ -30,6 +32,7 @@ class DataError extends StatelessWidget {
             style: commonSubMediumStyle.copyWith(
               color: grey777777,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
