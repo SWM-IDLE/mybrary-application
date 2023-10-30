@@ -66,6 +66,7 @@ flutter:
     - assets/svg/icon/
     - assets/svg/icon/small/
     - assets/svg/badge/
+    - assets/svg/nav/
     - .env
 
   fonts:
