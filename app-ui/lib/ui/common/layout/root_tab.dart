@@ -5,24 +5,29 @@ import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/home/home_screen.dart';
 import 'package:mybrary/ui/mybook/mybook_screen.dart';
 import 'package:mybrary/ui/profile/profile_screen.dart';
+import 'package:mybrary/ui/recommend/recommend_screen.dart';
 import 'package:mybrary/ui/search/search_screen.dart';
 
 const bottomNavigationBarItemList = [
   {
     'label': '홈',
-    'iconPath': 'assets/svg/icon/home.svg',
+    'iconPath': 'assets/svg/nav/home.svg',
+  },
+  {
+    'label': '추천',
+    'iconPath': 'assets/svg/nav/recommend.svg',
   },
   {
     'label': '검색',
-    'iconPath': 'assets/svg/icon/search.svg',
+    'iconPath': 'assets/svg/nav/search.svg',
   },
   {
     'label': '마이북',
-    'iconPath': 'assets/svg/icon/mybrary.svg',
+    'iconPath': 'assets/svg/nav/mybook.svg',
   },
   {
     'label': '프로필',
-    'iconPath': 'assets/svg/icon/profile.svg',
+    'iconPath': 'assets/svg/nav/profile.svg',
   },
 ];
 
@@ -48,7 +53,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
     super.initState();
 
     tabController = TabController(
-      length: 4,
+      length: 5,
       vsync: this,
       animationDuration: Duration.zero,
     );
@@ -90,11 +95,11 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           backgroundColor: commonWhiteColor,
           selectedItemColor: commonBlackColor,
           unselectedItemColor: greyACACAC,
-          selectedFontSize: 12,
+          selectedFontSize: 13,
           selectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w500,
           ),
-          unselectedFontSize: 12,
+          unselectedFontSize: 13,
           type: BottomNavigationBarType.fixed,
           onTap: (int index) {
             tabController.animateTo(index);
@@ -132,6 +137,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         controller: tabController,
         children: const [
           HomeScreen(),
+          RecommendScreen(),
           SearchScreen(),
           MyBookScreen(),
           ProfileScreen(),
