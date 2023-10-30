@@ -7,6 +7,7 @@ import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
+import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
@@ -46,19 +47,23 @@ class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
       );
     }
 
-    return RefreshIndicator(
-      color: commonWhiteColor,
-      backgroundColor: primaryColor,
-      onRefresh: () {
-        return Future.delayed(
-          const Duration(seconds: 1),
-          () {
-            ref
-                .refresh(homeBookServiceProvider.notifier)
-                .getTodayRegisteredBookList();
-          },
-        );
-      },
+    if (homeBookCountList.totalCount == 0) {
+      return refreshHomeBookCountList(
+        child: _initLayout(
+          child: const SingleChildScrollView(
+            physics: BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            child: DataError(
+              icon: Icons.emoji_people_rounded,
+              errorMessage: '오늘 마이북에 담긴 책이 아직 없어요!\n직접 마이북에 한번 담아볼까요?',
+            ),
+          ),
+        ),
+      );
+    }
+
+    return refreshHomeBookCountList(
       child: _initLayout(
         child: ListView.builder(
           physics: const BouncingScrollPhysics(
@@ -208,6 +213,26 @@ class _HomeBookCountListState extends ConsumerState<HomeBookCountList> {
   }) {
     return SubPageLayout(
       appBarTitle: '오늘 마이북에 담긴 책',
+      child: child,
+    );
+  }
+
+  RefreshIndicator refreshHomeBookCountList({
+    required Widget child,
+  }) {
+    return RefreshIndicator(
+      color: commonWhiteColor,
+      backgroundColor: primaryColor,
+      onRefresh: () {
+        return Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            ref
+                .refresh(homeBookServiceProvider.notifier)
+                .getTodayRegisteredBookList();
+          },
+        );
+      },
       child: child,
     );
   }

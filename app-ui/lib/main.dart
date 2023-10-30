@@ -23,6 +23,7 @@ import 'package:mybrary/ui/home/home_screen.dart';
 import 'package:mybrary/ui/profile/profile_edit/profile_edit_screen.dart';
 import 'package:mybrary/ui/search/search_isbn_scan/search_isbn_scan_screen.dart';
 import 'package:mybrary/ui/search/search_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   runZonedGuarded<Future<void>>(() async {
@@ -110,12 +111,14 @@ class Init {
     await Future.delayed(const Duration(milliseconds: 1000));
 
     const secureStorage = FlutterSecureStorage();
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await UserState.init();
 
     final accessToken = await secureStorage.read(key: accessTokenKey);
     final refreshToken = await secureStorage.read(key: refreshTokenKey);
+    final userId = sharedPreferences.getString('userId');
 
-    if (accessToken == null || refreshToken == null) {
+    if (accessToken == null || refreshToken == null || userId == null) {
       return const SignInScreen();
     }
 
