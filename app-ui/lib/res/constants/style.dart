@@ -432,6 +432,33 @@ const recommendBookEditStyle = TextStyle(
   height: 1.2,
 );
 
+const recommendTitleStyle = TextStyle(
+  color: grey151816,
+  fontSize: 15.0,
+  fontWeight: FontWeight.w700,
+  letterSpacing: -1,
+);
+
+const recommendSubStyle = TextStyle(
+  color: grey8D8D8D,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w500,
+  letterSpacing: -1,
+);
+
+const recommendEditStyle = TextStyle(
+  color: grey8D8D8D,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w400,
+);
+
+const recommendEmptyKeywordStyle = TextStyle(
+  color: grey8D8D8D,
+  fontSize: 12.0,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -1,
+);
+
 // padding
 final double paddingTopHeight =
     Size.fromHeight(const SliverAppBar().toolbarHeight).height * 2;

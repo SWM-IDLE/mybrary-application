@@ -172,11 +172,12 @@ void commonBottomSheet({
 Widget commonDivider({
   double? dividerHeight,
   double? dividerThickness,
+  Color? dividerColor,
 }) {
   return Divider(
     height: dividerHeight ?? 1,
     thickness: dividerThickness ?? 1,
-    color: greyF1F2F5,
+    color: dividerColor ?? greyF1F2F5,
   );
 }
 
