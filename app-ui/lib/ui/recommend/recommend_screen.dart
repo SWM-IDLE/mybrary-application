@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
+import 'package:mybrary/ui/recommend/myRecommend/my_recommend_screen.dart';
 
 class RecommendScreen extends StatefulWidget {
   const RecommendScreen({super.key});
@@ -13,21 +14,21 @@ class RecommendScreen extends StatefulWidget {
 
 class _RecommendScreenState extends State<RecommendScreen> {
   final ScrollController _recommendScrollController = ScrollController();
-  late bool _initAppBarIsVisible = false;
+  late bool _isVisibleAppBar = false;
 
   @override
   void initState() {
     super.initState();
 
-    _recommendScrollController.addListener(_changeAppBarComponent);
+    _recommendScrollController.addListener(_changeAppBarState);
   }
 
-  void _changeAppBarComponent() {
+  void _changeAppBarState() {
     setState(() {
-      if (_recommendScrollController.offset > 10) {
-        _initAppBarIsVisible = true;
+      if (_recommendScrollController.position.hasPixels) {
+        _isVisibleAppBar = true;
       } else {
-        _initAppBarIsVisible = false;
+        _isVisibleAppBar = false;
       }
     });
   }
@@ -48,7 +49,7 @@ class _RecommendScreenState extends State<RecommendScreen> {
         ),
         slivers: [
           _recommendAppBar(),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Text('추천 화면입니다.'),
           ),
           SliverToBoxAdapter(
@@ -64,7 +65,7 @@ class _RecommendScreenState extends State<RecommendScreen> {
     return SliverAppBar(
       toolbarHeight: 70.0,
       backgroundColor: commonWhiteColor,
-      elevation: _initAppBarIsVisible ? 0.5 : 0,
+      elevation: _isVisibleAppBar ? 0.5 : 0,
       title: Padding(
         padding: const EdgeInsets.only(left: 8.0),
         child: SvgPicture.asset('assets/svg/icon/mybrary_black.svg'),
@@ -77,7 +78,13 @@ class _RecommendScreenState extends State<RecommendScreen> {
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const MyRecommendScreen(),
+                ),
+              );
+            },
             icon: SvgPicture.asset('assets/svg/icon/add_button.svg'),
           ),
         ),

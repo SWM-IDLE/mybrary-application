@@ -14,12 +14,14 @@ const Color commonLessGreyColor = Color(0xFFBEC2C6);
 
 // Common Grey Color
 const Color greyF1F2F5 = Color(0xFFF1F2F5);
+const Color greyF4F4F4 = Color(0xFFF4F4F4);
 const Color greyDDDDDD = Color(0xFFDDDDDD);
 const Color greyACACAC = Color(0xFFACACAC);
 const Color grey999999 = Color(0xFF999999);
 const Color grey777777 = Color(0xFF777777);
 const Color grey555555 = Color(0xFF555555);
 const Color grey262626 = Color(0xFF262626);
+const Color grey151816 = Color(0xFF151816);
 
 // Component Color
 const Color inputHintColor = Color(0xFF999999);

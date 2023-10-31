@@ -7,11 +7,15 @@ class BookList extends StatelessWidget {
   final List<MyBooksResponseData> bookList;
   final void Function(int, String)? onTapMyBookDetail;
   final String readStatus;
+  final bool isNotMyBook;
+  final void Function(MyBooksResponseData)? onTapBookComponent;
 
   const BookList({
     required this.bookList,
     required this.readStatus,
+    required this.isNotMyBook,
     this.onTapMyBookDetail,
+    this.onTapBookComponent,
     super.key,
   });
 
@@ -22,37 +26,45 @@ class BookList extends StatelessWidget {
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (context, index) => InkWell(
-            onTap: () => onTapMyBookDetail!(
-              bookList[index].id!,
-              readStatus,
-            ),
+            onTap: () {
+              if (isNotMyBook) {
+                return onTapBookComponent!(bookList[index]);
+              }
+              onTapMyBookDetail!(
+                bookList[index].id!,
+                readStatus,
+              );
+            },
             child: Column(
               children: [
                 Expanded(
                   flex: 3,
-                  child: Container(
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          bookList[index].book!.thumbnailUrl!,
+                  child: Hero(
+                    tag: bookList[index].id!,
+                    child: Container(
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        onError: (exception, stackTrace) => Image.asset(
-                          'assets/img/logo/mybrary.png',
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            bookList[index].book!.thumbnailUrl!,
+                          ),
+                          onError: (exception, stackTrace) => Image.asset(
+                            'assets/img/logo/mybrary.png',
+                            fit: BoxFit.fill,
+                          ),
                           fit: BoxFit.fill,
                         ),
-                        fit: BoxFit.fill,
+                        shadows: [
+                          BoxShadow(
+                            color: commonBlackColor.withOpacity(0.3),
+                            blurRadius: 2,
+                            offset: const Offset(1, 1),
+                            spreadRadius: 1,
+                          )
+                        ],
                       ),
-                      shadows: [
-                        BoxShadow(
-                          color: commonBlackColor.withOpacity(0.3),
-                          blurRadius: 2,
-                          offset: const Offset(1, 1),
-                          spreadRadius: 1,
-                        )
-                      ],
                     ),
                   ),
                 ),
