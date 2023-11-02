@@ -104,10 +104,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         confirmButtonColor: primaryColor,
         confirmButtonText: '업데이트하러 가기 :)',
         confirmButtonTextColor: commonWhiteColor,
-        confirmButtonOnTap: () {
-          connectAppStoreLink();
-          UserState.localStorage.setBool('update', false);
-        },
+        confirmButtonOnTap: () => connectAppStoreLink(),
       ),
     );
   }
