@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return lastUpdateCheck == null ||
         nowDateTime.isAfter(
           DateTime.parse(lastUpdateCheck).add(
-            const Duration(minutes: 1),
+            const Duration(days: 1),
           ),
         );
   }
