@@ -4,8 +4,8 @@ Future<FirebaseRemoteConfig> getAppVersionConfig() async {
   FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.instance;
 
   await remoteConfig.setConfigSettings(RemoteConfigSettings(
-    fetchTimeout: const Duration(days: 1),
-    minimumFetchInterval: const Duration(days: 1),
+    fetchTimeout: const Duration(minutes: 1),
+    minimumFetchInterval: const Duration(minutes: 1),
   ));
   await remoteConfig.fetchAndActivate();
 
