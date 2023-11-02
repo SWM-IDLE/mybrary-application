@@ -10,5 +10,9 @@ double mediaQueryWidth(BuildContext context) {
   return MediaQuery.of(context).size.width;
 }
 
+double bottomInset(BuildContext context) {
+  return MediaQuery.of(context).viewInsets.bottom;
+}
+
 final bool isAndroid = Platform.isAndroid;
 final bool isIOS = Platform.isIOS;
