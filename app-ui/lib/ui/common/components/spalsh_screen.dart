@@ -22,51 +22,56 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    checkForUpdate();
+    checkForUpdateAlert();
   }
 
-  void checkForUpdate() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final lastUpdateCheck = prefs.getString('lastUpdateCheck');
-    final nowDateTime = DateTime.now();
-
-    if (lastUpdateCheck == null ||
-        nowDateTime.isAfter(
-          DateTime.parse(lastUpdateCheck).add(
-            const Duration(days: 1),
-          ),
-        )) {
-      checkForUpdateAndShowUpdateAlert();
-    }
-  }
-
-  void checkForUpdateAndShowUpdateAlert() async {
+  void checkForUpdateAlert() async {
     FirebaseRemoteConfig remoteConfig = await getAppVersionConfig();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final lastUpdateCheck = prefs.getString('lastUpdateCheck');
+    final nowDateTime = DateTime.now();
 
     String minAppVersion = remoteConfig.getString('min_version');
     String latestAppVersion = remoteConfig.getString('latest_version');
     String currAppVersion = packageInfo.version;
 
-    prefs.setString('lastUpdateCheck', DateTime.now().toIso8601String());
-
     if (parseAppVersion(currAppVersion) == parseAppVersion(latestAppVersion)) {
+      _updateLastCheckTime(prefs);
       _notUpdate(prefs);
       return;
     }
 
-    if (parseAppVersion(minAppVersion) > parseAppVersion(currAppVersion)) {
-      prefs.setBool('forceUpdate', true);
-      return;
-    }
+    if (_isAfterLastUpdateCheckTime(lastUpdateCheck, nowDateTime)) {
+      _updateLastCheckTime(prefs);
 
-    if (parseAppVersion(latestAppVersion) > parseAppVersion(currAppVersion)) {
-      prefs.setBool('update', true);
-      return;
-    }
+      if (parseAppVersion(minAppVersion) > parseAppVersion(currAppVersion)) {
+        prefs.setBool('forceUpdate', true);
+        return;
+      }
 
-    _notUpdate(prefs);
+      if (parseAppVersion(latestAppVersion) > parseAppVersion(currAppVersion)) {
+        prefs.setBool('update', true);
+        return;
+      }
+
+      _notUpdate(prefs);
+    }
+  }
+
+  bool _isAfterLastUpdateCheckTime(
+      String? lastUpdateCheck, DateTime nowDateTime) {
+    return lastUpdateCheck == null ||
+        nowDateTime.isAfter(
+          DateTime.parse(lastUpdateCheck).add(
+            const Duration(days: 1),
+          ),
+        );
+  }
+
+  void _updateLastCheckTime(SharedPreferences prefs) {
+    prefs.setString('lastUpdateCheck', DateTime.now().toIso8601String());
   }
 
   void _notUpdate(SharedPreferences prefs) {
