@@ -40,7 +40,9 @@ class RecommendScreen extends StatefulWidget {
 }
 
 class _RecommendScreenState extends State<RecommendScreen> {
+  final GlobalKey _recommendKeywordWidgetKey = GlobalKey();
   final ScrollController _recommendScrollController = ScrollController();
+
   late bool _isVisibleAppBar = false;
 
   @override
@@ -79,12 +81,18 @@ class _RecommendScreenState extends State<RecommendScreen> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) => Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 32.0,
-                  vertical: index == 0 ? 12.0 : 24.0,
+                padding: EdgeInsets.only(
+                  left: 32.0,
+                  right: 32.0,
+                  top: index == 0 ? 12.0 : 24.0,
+                  bottom: index == recommendScreenData.length - 1 ? 24.0 : 12.0,
                 ),
                 child: Container(
-                  height: 580,
+                  width: MediaQuery.of(context).size.width,
+                  height: 580 +
+                      (_getRecommendKeywordWidgetHeight() == null
+                          ? 0
+                          : _getRecommendKeywordWidgetHeight()!.height * 0.3),
                   decoration: ShapeDecoration(
                     color: commonWhiteColor,
                     shape: RoundedRectangleBorder(
@@ -211,6 +219,7 @@ class _RecommendScreenState extends State<RecommendScreen> {
                           vertical: 24.0,
                         ),
                         child: Column(
+                          key: _recommendKeywordWidgetKey,
                           children: [
                             Wrap(
                               spacing: 6.0,
@@ -256,6 +265,46 @@ class _RecommendScreenState extends State<RecommendScreen> {
                         dividerColor: greyF7F7F7,
                         dividerThickness: 4,
                       ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 24.0,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: SvgPicture.asset(
+                                    'assets/svg/icon/left_quote.svg'),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6.0,
+                                  ),
+                                  child: Text(
+                                    recommendScreenData[index].content,
+                                    style: recommendFeedHeaderStyle.copyWith(
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.8,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: SvgPicture.asset(
+                                    'assets/svg/icon/right_quote.svg'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -297,5 +346,15 @@ class _RecommendScreenState extends State<RecommendScreen> {
         ),
       ],
     );
+  }
+
+  Size? _getRecommendKeywordWidgetHeight() {
+    if (_recommendKeywordWidgetKey.currentContext != null) {
+      final RenderBox renderBox = _recommendKeywordWidgetKey.currentContext!
+          .findRenderObject() as RenderBox;
+      Size size = renderBox.size;
+      return size;
+    }
+    return null;
   }
 }
