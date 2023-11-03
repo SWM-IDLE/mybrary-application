@@ -466,6 +466,20 @@ const recommendFeedHeaderStyle = TextStyle(
   letterSpacing: -1,
 );
 
+const recommendFeedBookTitleStyle = TextStyle(
+  color: grey151816,
+  fontSize: 16.0,
+  fontWeight: FontWeight.w700,
+  letterSpacing: -1,
+);
+
+const recommendFeedBookSubStyle = TextStyle(
+  color: grey555555,
+  fontSize: 14.0,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -1,
+);
+
 // padding
 final double paddingTopHeight =
     Size.fromHeight(const SliverAppBar().toolbarHeight).height * 2;

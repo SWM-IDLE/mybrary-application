@@ -144,6 +144,118 @@ class _RecommendScreenState extends State<RecommendScreen> {
                         dividerColor: greyF7F7F7,
                         dividerThickness: 4,
                       ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32.0,
+                          vertical: 20.0,
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 100,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                color: greyF4F4F4,
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(8),
+                                  bottomRight: Radius.circular(8),
+                                ),
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    recommendScreenData[index].thumbnailUrl,
+                                  ),
+                                  onError: (exception, stackTrace) =>
+                                      Image.asset(
+                                    'assets/img/logo/mybrary.png',
+                                    fit: BoxFit.fill,
+                                  ),
+                                  fit: BoxFit.fill,
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x33000000),
+                                    blurRadius: 10,
+                                    offset: Offset(4, 4),
+                                    spreadRadius: 0,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 16.0),
+                            Text(
+                              recommendScreenData[index].title,
+                              style: recommendFeedBookTitleStyle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4.0),
+                            Text(
+                              recommendScreenData[index]
+                                  .authors
+                                  .map((author) => author)
+                                  .join(', '),
+                              style: recommendFeedBookSubStyle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      commonDivider(
+                        dividerColor: greyF7F7F7,
+                        dividerThickness: 4,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 24.0,
+                        ),
+                        child: Column(
+                          children: [
+                            Wrap(
+                              spacing: 6.0,
+                              runSpacing: 6.0,
+                              alignment: WrapAlignment.center,
+                              children: recommendScreenData[index]
+                                  .recommendationTargetNames
+                                  .map(
+                                (recommendKeyword) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0,
+                                      vertical: 8.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: circularGreenColor,
+                                      borderRadius: BorderRadius.circular(6.0),
+                                    ),
+                                    child: Text(
+                                      recommendKeyword,
+                                      style: recommendSubStyle.copyWith(
+                                        fontSize: 14.0,
+                                        color: primaryColor,
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              '에게 추천',
+                              style: recommendTitleStyle.copyWith(
+                                fontSize: 14.0,
+                                color: primaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      commonDivider(
+                        dividerColor: greyF7F7F7,
+                        dividerThickness: 4,
+                      ),
                     ],
                   ),
                 ),

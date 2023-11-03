@@ -31,6 +31,7 @@ const Color inputHintColor = Color(0xFF999999);
 const Color inputBorderColor = Color(0xFFDDDDDD);
 const Color circularTextColor = Color(0xFF3E3E3E);
 const Color circularBorderColor = Color(0xFFCECECE);
+const Color circularGreenColor = Color(0xFFEBFFEE);
 
 // Auth Color
 const Color loginPrimaryColor = Color(0xFFCDE7BE);
