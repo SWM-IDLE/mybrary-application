@@ -459,6 +459,13 @@ const recommendEmptyKeywordStyle = TextStyle(
   letterSpacing: -1,
 );
 
+const recommendFeedHeaderStyle = TextStyle(
+  color: grey151816,
+  fontSize: 14.0,
+  fontWeight: FontWeight.w700,
+  letterSpacing: -1,
+);
+
 // padding
 final double paddingTopHeight =
     Size.fromHeight(const SliverAppBar().toolbarHeight).height * 2;

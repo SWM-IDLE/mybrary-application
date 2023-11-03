@@ -1,7 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/data/model/book/mybooks_response.dart';
+import 'package:mybrary/data/model/recommend/my_recommend_model.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
@@ -10,14 +13,14 @@ import 'package:mybrary/ui/mybook/mybook_list/mybook_list_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 import 'package:mybrary/utils/logics/ui_utils.dart';
 
-class MyRecommendScreen extends StatefulWidget {
+class MyRecommendScreen extends ConsumerStatefulWidget {
   const MyRecommendScreen({super.key});
 
   @override
-  State<MyRecommendScreen> createState() => _MyRecommendScreenState();
+  ConsumerState<MyRecommendScreen> createState() => _MyRecommendScreenState();
 }
 
-class _MyRecommendScreenState extends State<MyRecommendScreen> {
+class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
   final _userId = UserState.userId;
 
   final TextEditingController _recommendKeywordListController =
@@ -66,7 +69,16 @@ class _MyRecommendScreenState extends State<MyRecommendScreen> {
       appBarTitle: '마이 추천',
       appBarActions: [
         TextButton(
-          onPressed: () async {},
+          onPressed: () async {
+            ref.watch(myRecommendProvider.notifier).createRecommendFeed(
+                  userId: _userId,
+                  body: MyRecommendModel(
+                    myBookId: _bookId,
+                    content: _recommendContentController.text,
+                    recommendationTargetNames: _recommendKeywordList,
+                  ),
+                );
+          },
           style: disableAnimationButtonStyle,
           child: const Text(
             '저장',
