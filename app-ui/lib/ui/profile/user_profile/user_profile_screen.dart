@@ -359,7 +359,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         _isFollowing = false;
       });
       if (!mounted) return;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '팔로우를 취소했어요.',
       );
@@ -373,7 +373,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         _isFollowing = true;
       });
       if (!mounted) return;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '사용자를 팔로우했어요.',
       );
@@ -427,7 +427,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ),
                             confirmButton(
                               onTap: () {
-                                showInterestBookMessage(
+                                showCommonSnackBarMessage(
                                   context: context,
                                   snackBarText: '신고가 정상적으로 접수되었습니다.',
                                 );

@@ -118,7 +118,7 @@ Widget confirmButton({
   );
 }
 
-void showInterestBookMessage({
+void showCommonSnackBarMessage({
   required BuildContext context,
   required String snackBarText,
   Widget? snackBarAction,

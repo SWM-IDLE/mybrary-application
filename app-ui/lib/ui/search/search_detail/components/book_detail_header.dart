@@ -282,7 +282,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
     if (!interested && onTapInterestBook) {
       _newInterested = true;
       _newInterestCount = interestCount + 1;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서에 담겼습니다.',
         snackBarAction: _moveNextToInterestBookListScreen(),
@@ -290,14 +290,14 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
     } else if (interested && onTapInterestBook == false) {
       _newInterested = false;
       _newInterestCount = interestCount - 1;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서가 삭제되었습니다.',
       );
     } else if (interested && onTapInterestBook) {
       _newInterested = true;
       _newInterestCount = interestCount;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서에 담겼습니다.',
         snackBarAction: _moveNextToInterestBookListScreen(),
@@ -305,7 +305,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
     } else {
       _newInterested = false;
       _newInterestCount = interestCount;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서가 삭제되었습니다.',
       );

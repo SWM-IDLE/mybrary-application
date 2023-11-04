@@ -370,7 +370,7 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
                     );
 
                     if (!mounted) return;
-                    showInterestBookMessage(
+                    showCommonSnackBarMessage(
                       context: context,
                       snackBarText: '마이 리뷰가 삭제되었습니다.',
                     );

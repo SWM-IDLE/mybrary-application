@@ -34,6 +34,7 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
   late String _bookAuthor;
   late List<String> _recommendKeywordList;
   late bool _clearRecommendKeyword = false;
+  late bool _notValidContent = false;
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
     _recommendKeywordList = [];
 
     _recommendKeywordListController.addListener(_isClearRecommendKeyword);
+    _recommendContentController.addListener(_isValidContentLength);
   }
 
   void _isClearRecommendKeyword() {
@@ -54,6 +56,17 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
     } else {
       _clearRecommendKeyword = true;
     }
+  }
+
+  void _isValidContentLength() {
+    setState(() {
+      if (_recommendContentController.text.isNotEmpty &&
+          _recommendContentController.text.length < 5) {
+        _notValidContent = true;
+      } else {
+        _notValidContent = false;
+      }
+    });
   }
 
   @override
@@ -70,6 +83,28 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
       appBarActions: [
         TextButton(
           onPressed: () async {
+            if (_bookId == 0) {
+              return showCommonSnackBarMessage(
+                context: context,
+                snackBarText: '마이 추천을 위한 책을 추가해주세요 :)',
+              );
+            }
+
+            if (_recommendKeywordList.isEmpty ||
+                _recommendContentController.text.isEmpty) {
+              return showCommonSnackBarMessage(
+                context: context,
+                snackBarText: '작성하신 내용을 다시한 번 확인해주세요 :)',
+              );
+            }
+
+            if (_recommendContentController.text.length < 5) {
+              return showCommonSnackBarMessage(
+                context: context,
+                snackBarText: '5자 이상 입력해주세요 :)',
+              );
+            }
+
             ref.watch(myRecommendProvider.notifier).createRecommendFeed(
                   userId: _userId,
                   body: MyRecommendModel(
@@ -96,6 +131,7 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraint.maxHeight),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   MyRecommendHeader(
                     bookId: _bookId,
@@ -149,17 +185,27 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
                     dividerColor: greyF7F7F7,
                     dividerThickness: 4,
                   ),
-                  MyRecommendContent(
-                    recommendContentController: _recommendContentController,
-                  ),
-                  if (_recommendContentController.text.isNotEmpty &&
-                      _recommendContentController.text.length < 5)
-                    Text(
-                      '5자 이상 입력해주세요.',
-                      style: commonSubThinStyle.copyWith(
-                        color: commonRedColor,
+                  Stack(
+                    children: [
+                      MyRecommendContent(
+                        recommendContentController: _recommendContentController,
                       ),
-                    ),
+                      if (_notValidContent)
+                        Positioned(
+                          bottom: 10,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 30.0),
+                            child: Text(
+                              '5자 이상 입력해주세요.',
+                              style: commonSubThinStyle.copyWith(
+                                color: commonRedColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
             ),
