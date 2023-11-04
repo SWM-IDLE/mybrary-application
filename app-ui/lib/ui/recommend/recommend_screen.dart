@@ -116,6 +116,7 @@ class _RecommendScreenState extends State<RecommendScreen> {
                           profileImageUrl: feed.profileImageUrl,
                           nickname: feed.nickname,
                           interestCount: feed.interestCount,
+                          interested: feed.interested,
                         ),
                         commonDivider(
                           dividerColor: greyF7F7F7,
