@@ -93,12 +93,12 @@ class _RecommendFeedHeaderState extends State<RecommendFeedHeader> {
           ),
           if (_showReportButton)
             Positioned(
-              bottom: -4,
-              right: 16,
+              bottom: -6,
+              right: 14,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12.0,
-                  vertical: 6.0,
+                  vertical: 8.0,
                 ),
                 decoration: BoxDecoration(
                   color: commonWhiteColor,
@@ -106,7 +106,7 @@ class _RecommendFeedHeaderState extends State<RecommendFeedHeader> {
                   boxShadow: [
                     BoxShadow(
                       color: commonBlackColor.withOpacity(0.1),
-                      blurRadius: 6,
+                      blurRadius: 4,
                       offset: const Offset(0, 0),
                       spreadRadius: 2,
                     ),

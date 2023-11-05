@@ -162,6 +162,13 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
                     },
                     onFieldSubmitted: (value) {
                       setState(() {
+                        if (_recommendKeywordList.contains(value)) {
+                          return showCommonSnackBarMessage(
+                            context: context,
+                            snackBarText: '이미 추가된 키워드입니다 :)',
+                          );
+                        }
+
                         if (value.isNotEmpty) {
                           _recommendKeywordList.add(value);
                           _recommendKeywordListController.text = '';
@@ -206,6 +213,7 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
                         ),
                     ],
                   ),
+                  const SizedBox(height: 40.0),
                 ],
               ),
             ),
