@@ -4,6 +4,18 @@ part 'my_recommend_feed_model.g.dart';
 
 @JsonSerializable()
 class MyRecommendFeedModel {
+  final List<MyRecommendFeedDataModel> recommendationFeeds;
+
+  MyRecommendFeedModel({
+    required this.recommendationFeeds,
+  });
+
+  factory MyRecommendFeedModel.fromJson(Map<String, dynamic> json) =>
+      _$MyRecommendFeedModelFromJson(json);
+}
+
+@JsonSerializable()
+class MyRecommendFeedDataModel {
   final String content;
   final int recommendationFeedId;
   final int myBookId;
@@ -14,7 +26,7 @@ class MyRecommendFeedModel {
   final String createdAt;
   final List<String> recommendationTargetNames;
 
-  MyRecommendFeedModel({
+  MyRecommendFeedDataModel({
     required this.content,
     required this.recommendationFeedId,
     required this.myBookId,
@@ -26,6 +38,6 @@ class MyRecommendFeedModel {
     required this.recommendationTargetNames,
   });
 
-  factory MyRecommendFeedModel.fromJson(Map<String, dynamic> json) =>
-      _$MyRecommendFeedModelFromJson(json);
+  factory MyRecommendFeedDataModel.fromJson(Map<String, dynamic> json) =>
+      _$MyRecommendFeedDataModelFromJson(json);
 }

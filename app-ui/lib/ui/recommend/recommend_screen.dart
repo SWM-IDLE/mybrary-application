@@ -28,15 +28,21 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
 
   final ScrollController _recommendScrollController = ScrollController();
 
-  late bool _isVisibleAppBar = false;
+  late bool _isVisibleAppBar;
+  late bool _refreshRecommendFeed;
 
   @override
   void initState() {
     super.initState();
 
-    ref
-        .read(myRecommendProvider.notifier)
-        .getRecommendFeedList(userId: _userId);
+    _isVisibleAppBar = false;
+    _refreshRecommendFeed = false;
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      ref
+          .read(myRecommendProvider.notifier)
+          .getRecommendFeedList(userId: _userId);
+    });
 
     _recommendScrollController.addListener(_changeAppBarState);
   }
@@ -190,12 +196,22 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
             right: 8.0,
           ),
           child: IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
+            onPressed: () async {
+              bool? refresh = await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => const MyRecommendScreen(),
                 ),
               );
+
+              setState(() {
+                _refreshRecommendFeed = refresh ?? false;
+              });
+
+              if (_refreshRecommendFeed) {
+                ref
+                    .refresh(myRecommendProvider.notifier)
+                    .getRecommendFeedList(userId: _userId);
+              }
             },
             icon: SvgPicture.asset('assets/svg/icon/add_button.svg'),
           ),

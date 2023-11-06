@@ -70,7 +70,7 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
           context: context,
           snackBarText: '추천 피드가 등록되었어요 :)',
         );
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       });
     } on DioException catch (err) {
       if (err.response!.data.toString().contains('RF-04')) {

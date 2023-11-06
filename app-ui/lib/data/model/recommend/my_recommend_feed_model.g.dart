@@ -9,6 +9,21 @@ part of 'my_recommend_feed_model.dart';
 MyRecommendFeedModel _$MyRecommendFeedModelFromJson(
         Map<String, dynamic> json) =>
     MyRecommendFeedModel(
+      recommendationFeeds: (json['recommendationFeeds'] as List<dynamic>)
+          .map((e) =>
+              MyRecommendFeedDataModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$MyRecommendFeedModelToJson(
+        MyRecommendFeedModel instance) =>
+    <String, dynamic>{
+      'recommendationFeeds': instance.recommendationFeeds,
+    };
+
+MyRecommendFeedDataModel _$MyRecommendFeedDataModelFromJson(
+        Map<String, dynamic> json) =>
+    MyRecommendFeedDataModel(
       content: json['content'] as String,
       recommendationFeedId: json['recommendationFeedId'] as int,
       myBookId: json['myBookId'] as int,
@@ -23,8 +38,8 @@ MyRecommendFeedModel _$MyRecommendFeedModelFromJson(
               .toList(),
     );
 
-Map<String, dynamic> _$MyRecommendFeedModelToJson(
-        MyRecommendFeedModel instance) =>
+Map<String, dynamic> _$MyRecommendFeedDataModelToJson(
+        MyRecommendFeedDataModel instance) =>
     <String, dynamic>{
       'content': instance.content,
       'recommendationFeedId': instance.recommendationFeedId,

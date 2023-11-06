@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/model/recommend/my_recommend_feed_model.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_post_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
-List<MyRecommendFeedModel> myRecommendFeedData = [
-  MyRecommendFeedModel.fromJson({
+List<MyRecommendFeedDataModel> myRecommendFeedData = [
+  MyRecommendFeedDataModel.fromJson({
     "content": "아버지의 장례식이 끝나고 아버지가 등장했다! 모이지 말아야 할 자리에서 시작된 복수극",
     "recommendationFeedId": 1,
     "myBookId": 1,
@@ -22,7 +26,7 @@ List<MyRecommendFeedModel> myRecommendFeedData = [
       "추리소설을 좋아하는 사람",
     ],
   }),
-  MyRecommendFeedModel.fromJson({
+  MyRecommendFeedDataModel.fromJson({
     "content": "아버지의 장례식이 끝나고 아버지가 등장했다! 모이지 말아야 할 자리에서 시작된 복수극",
     "recommendationFeedId": 1,
     "myBookId": 1,
@@ -39,16 +43,43 @@ List<MyRecommendFeedModel> myRecommendFeedData = [
   }),
 ];
 
-class MyRecommendPostScreen extends StatefulWidget {
+class MyRecommendPostScreen extends ConsumerStatefulWidget {
   const MyRecommendPostScreen({super.key});
 
   @override
-  State<MyRecommendPostScreen> createState() => _MyRecommendPostScreenState();
+  ConsumerState<MyRecommendPostScreen> createState() =>
+      _MyRecommendPostScreenState();
 }
 
-class _MyRecommendPostScreenState extends State<MyRecommendPostScreen> {
+class _MyRecommendPostScreenState extends ConsumerState<MyRecommendPostScreen> {
+  final _userId = UserState.userId;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        ref
+            .read(recommendProvider.notifier)
+            .getMyRecommendPostList(userId: _userId);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final myRecommendFeed = ref.watch(myRecommendFeedProvider);
+
+    if (myRecommendFeed == null) {
+      return const SubPageLayout(
+        appBarTitle: '마이 추천 포스트',
+        child: CircularLoading(),
+      );
+    }
+
+    final myRecommendFeedData = myRecommendFeed.recommendationFeeds;
+
     return SubPageLayout(
       appBarTitle: '마이 추천 포스트',
       child: Padding(
@@ -127,15 +158,18 @@ class _MyRecommendPostScreenState extends State<MyRecommendPostScreen> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 32.0,
-                  ),
-                  child: commonDivider(
-                    dividerColor: greyACACAC,
-                    dividerThickness: 1,
-                  ),
-                )
+                if (index != myRecommendFeedData.length - 1)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 32.0,
+                    ),
+                    child: commonDivider(
+                      dividerColor: greyACACAC,
+                      dividerThickness: 1,
+                    ),
+                  )
+                else
+                  const SizedBox(height: 20.0),
               ],
             );
           },

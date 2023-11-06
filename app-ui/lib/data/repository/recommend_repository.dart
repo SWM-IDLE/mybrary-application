@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
+import 'package:mybrary/data/model/recommend/my_recommend_feed_model.dart';
 import 'package:mybrary/data/model/recommend/my_recommend_model.dart';
 import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
 import 'package:mybrary/data/network/api.dart';
@@ -37,5 +38,10 @@ abstract class RecommendRepository {
     @Header('User-Id') required String userId,
     @Body() required MyRecommendModel body,
     required BuildContext context,
+  });
+
+  @GET('/recommendation-feeds/{userId}')
+  Future<CommonModel<MyRecommendFeedModel>> getMyRecommendPostList({
+    @Path('userId') required String userId,
   });
 }
