@@ -19,6 +19,41 @@ class _RecommendRepository implements RecommendRepository {
   String? baseUrl;
 
   @override
+  Future<CommonModel<RecommendFeedModel>> getRecommendFeedList({
+    required userId,
+    cursor,
+    limit,
+  }) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'cursor': cursor,
+      r'limit': limit,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'User-Id': userId};
+    _headers.removeWhere((k, v) => v == null);
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonModel<RecommendFeedModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/recommendation-feeds',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonModel<RecommendFeedModel>.fromJson(
+      _result.data!,
+      (json) => RecommendFeedModel.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
   Future<CommonModel<dynamic>>? createRecommendFeed({
     required userId,
     required body,

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/recommend/my_recommend_model.dart';
+import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/common/dio_provider.dart';
 import 'package:retrofit/retrofit.dart';
@@ -20,6 +21,13 @@ final recommendRepositoryProvider = Provider<RecommendRepository>((ref) {
 @RestApi()
 abstract class RecommendRepository {
   factory RecommendRepository(Dio dio, {String baseUrl}) = _RecommendRepository;
+
+  @GET('/recommendation-feeds')
+  Future<CommonModel<RecommendFeedModel>> getRecommendFeedList({
+    @Header('User-Id') required String userId,
+    @Query('cursor') int? cursor,
+    @Query('limit') int? limit,
+  });
 
   @POST('/recommendation-feeds')
   @Headers({

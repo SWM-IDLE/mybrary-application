@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
+import 'package:mybrary/ui/profile/my_recommend_post/my_recommend_post_screen.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_book_info.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_content.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_header.dart';
@@ -11,40 +16,16 @@ import 'package:mybrary/ui/recommend/components/recommend_feed_keyword.dart';
 import 'package:mybrary/ui/recommend/myRecommend/my_recommend_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
-List<RecommendFeedModel> recommendScreenData = [
-  RecommendFeedModel.fromJson({
-    "content": "아버지의 장례식이 끝나고 아버지가 등장했다! 모이지 말아야 할 자리에서 시작된 복수극",
-    "recommendationTargetNames": [
-      "히가시노 게이고 팬",
-      "추리소설을 좋아하는 사람",
-      "시간이 잘 가지 않는 군인들",
-      "젠지가 이겼으면 좋겠는 사람"
-    ],
-    "userId": "USER_ID_1",
-    "nickname": "이영자",
-    "profileImageUrl":
-        "https://d2k5miyk6y5zf0.cloudfront.net/article/MYH/20180720/MYH20180720017800038.jpg",
-    "myBookId": 1,
-    "bookId": 1,
-    "title": "블랙 쇼맨과 이름 없는 마을의 살인",
-    "thumbnailUrl":
-        "https://image.aladin.co.kr/product/25659/89/cover/8925591715_1.jpg",
-    "isbn13": "9788925591711",
-    "authors": ["히가시노 게이고"],
-    "holderCount": 9,
-    "interestCount": 9,
-    "interested": true,
-  })
-];
-
-class RecommendScreen extends StatefulWidget {
+class RecommendScreen extends ConsumerStatefulWidget {
   const RecommendScreen({super.key});
 
   @override
-  State<RecommendScreen> createState() => _RecommendScreenState();
+  ConsumerState<RecommendScreen> createState() => _RecommendScreenState();
 }
 
-class _RecommendScreenState extends State<RecommendScreen> {
+class _RecommendScreenState extends ConsumerState<RecommendScreen> {
+  final _userId = UserState.userId;
+
   final ScrollController _recommendScrollController = ScrollController();
 
   late bool _isVisibleAppBar = false;
@@ -52,6 +33,10 @@ class _RecommendScreenState extends State<RecommendScreen> {
   @override
   void initState() {
     super.initState();
+
+    ref
+        .read(myRecommendProvider.notifier)
+        .getRecommendFeedList(userId: _userId);
 
     _recommendScrollController.addListener(_changeAppBarState);
   }
@@ -74,6 +59,23 @@ class _RecommendScreenState extends State<RecommendScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final recommendFeedData = ref.watch(recommendFeedProvider);
+    if (recommendFeedData == null) {
+      return DefaultLayout(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          slivers: [
+            _recommendAppBar(),
+            const SliverToBoxAdapter(
+              child: CircularLoading(),
+            ),
+          ],
+        ),
+      );
+    }
+
     return DefaultLayout(
       child: CustomScrollView(
         controller: _recommendScrollController,
@@ -85,14 +87,14 @@ class _RecommendScreenState extends State<RecommendScreen> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                RecommendFeedModel feed = recommendScreenData[index];
+                RecommendFeedDataModel feed =
+                    recommendFeedData.recommendationFeeds[index];
                 return Padding(
                   padding: EdgeInsets.only(
                     left: 32.0,
                     right: 32.0,
-                    top: index == 0 ? 12.0 : 24.0,
-                    bottom:
-                        index == recommendScreenData.length - 1 ? 24.0 : 12.0,
+                    top: index == 0 ? 12.0 : 8.0,
+                    bottom: 16.0,
                   ),
                   child: Container(
                     decoration: ShapeDecoration(
@@ -147,8 +149,11 @@ class _RecommendScreenState extends State<RecommendScreen> {
                   ),
                 );
               },
-              childCount: recommendScreenData.length,
+              childCount: recommendFeedData.recommendationFeeds.length,
             ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20.0),
           ),
         ],
       ),
@@ -169,8 +174,21 @@ class _RecommendScreenState extends State<RecommendScreen> {
       titleTextStyle: appBarTitleStyle,
       foregroundColor: commonBlackColor,
       actions: [
+        InkWell(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const MyRecommendPostScreen(),
+              ),
+            );
+          },
+          child: SvgPicture.asset('assets/svg/icon/recommend_post.svg'),
+        ),
         Padding(
-          padding: const EdgeInsets.only(right: 8.0),
+          padding: const EdgeInsets.only(
+            left: 2.0,
+            right: 8.0,
+          ),
           child: IconButton(
             onPressed: () {
               Navigator.of(context).push(
