@@ -90,6 +90,43 @@ class _RecommendRepository implements RecommendRepository {
   }
 
   @override
+  Future<CommonModel<dynamic>>? updateRecommendFeed({
+    required userId,
+    required recommendationFeedId,
+    required body,
+    required context,
+  }) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{
+      r'Content-Type': 'application/json',
+      r'User-Id': userId,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonModel<dynamic>>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'application/json',
+    )
+            .compose(
+              _dio.options,
+              '/recommendation-feeds/${recommendationFeedId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonModel<dynamic>.fromJson(
+      _result.data!,
+      (json) => json as dynamic,
+    );
+    return value;
+  }
+
+  @override
   Future<CommonModel<MyRecommendFeedModel>> getMyRecommendPostList(
       {required userId}) async {
     const _extra = <String, dynamic>{};
@@ -112,6 +149,33 @@ class _RecommendRepository implements RecommendRepository {
     final value = CommonModel<MyRecommendFeedModel>.fromJson(
       _result.data!,
       (json) => MyRecommendFeedModel.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
+  Future<CommonModel<MyRecommendPostModel>> getMyRecommendPost(
+      {required myBookId}) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonModel<MyRecommendPostModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/mybooks/${myBookId}/recommendation-feed',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonModel<MyRecommendPostModel>.fromJson(
+      _result.data!,
+      (json) => MyRecommendPostModel.fromJson(json as Map<String, dynamic>),
     );
     return value;
   }

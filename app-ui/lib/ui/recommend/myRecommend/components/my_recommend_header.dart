@@ -9,15 +9,18 @@ class MyRecommendHeader extends StatelessWidget {
   final String bookAuthor;
   final void Function()? onTapAddBook;
   final void Function()? onTapEditBook;
+  final int? recommendFeedId;
 
-  const MyRecommendHeader(
-      {required this.bookId,
-      required this.bookTitle,
-      required this.thumbnailUrl,
-      required this.bookAuthor,
-      required this.onTapAddBook,
-      required this.onTapEditBook,
-      super.key});
+  const MyRecommendHeader({
+    required this.bookId,
+    required this.bookTitle,
+    required this.thumbnailUrl,
+    required this.bookAuthor,
+    required this.onTapAddBook,
+    required this.onTapEditBook,
+    this.recommendFeedId,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,7 @@ class MyRecommendHeader extends StatelessWidget {
                 InkWell(
                   onTap: onTapAddBook,
                   child: Hero(
-                    tag: bookId,
+                    tag: recommendFeedId != null ? recommendFeedId! : bookId,
                     child: Container(
                       width: 100,
                       height: 150,

@@ -40,8 +40,24 @@ abstract class RecommendRepository {
     required BuildContext context,
   });
 
+  @PUT('/recommendation-feeds/{id}')
+  @Headers({
+    'Content-Type': 'application/json',
+  })
+  Future<CommonModel>? updateRecommendFeed({
+    @Header('User-Id') required String userId,
+    @Path('id') required int recommendationFeedId,
+    @Body() required MyRecommendPostDataModel body,
+    required BuildContext context,
+  });
+
   @GET('/recommendation-feeds/{userId}')
   Future<CommonModel<MyRecommendFeedModel>> getMyRecommendPostList({
     @Path('userId') required String userId,
+  });
+
+  @GET('/mybooks/{myBookId}/recommendation-feed')
+  Future<CommonModel<MyRecommendPostModel>> getMyRecommendPost({
+    @Path('myBookId') required int myBookId,
   });
 }

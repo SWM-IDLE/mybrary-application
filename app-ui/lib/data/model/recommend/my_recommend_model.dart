@@ -19,3 +19,35 @@ class MyRecommendModel {
 
   Map<String, dynamic> toJson() => _$MyRecommendModelToJson(this);
 }
+
+@JsonSerializable()
+class MyRecommendPostModel {
+  final int recommendationFeedId;
+  final String content;
+  final List<String> recommendationTargetNames;
+
+  MyRecommendPostModel({
+    required this.recommendationFeedId,
+    required this.content,
+    required this.recommendationTargetNames,
+  });
+
+  factory MyRecommendPostModel.fromJson(Map<String, dynamic> json) =>
+      _$MyRecommendPostModelFromJson(json);
+}
+
+@JsonSerializable()
+class MyRecommendPostDataModel {
+  final String content;
+  final List<String> recommendationTargetNames;
+
+  MyRecommendPostDataModel({
+    required this.content,
+    required this.recommendationTargetNames,
+  });
+
+  factory MyRecommendPostDataModel.fromJson(Map<String, dynamic> json) =>
+      _$MyRecommendPostDataModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MyRecommendPostDataModelToJson(this);
+}

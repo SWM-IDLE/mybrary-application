@@ -22,3 +22,39 @@ Map<String, dynamic> _$MyRecommendModelToJson(MyRecommendModel instance) =>
       'content': instance.content,
       'recommendationTargetNames': instance.recommendationTargetNames,
     };
+
+MyRecommendPostModel _$MyRecommendPostModelFromJson(
+        Map<String, dynamic> json) =>
+    MyRecommendPostModel(
+      recommendationFeedId: json['recommendationFeedId'] as int,
+      content: json['content'] as String,
+      recommendationTargetNames:
+          (json['recommendationTargetNames'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList(),
+    );
+
+Map<String, dynamic> _$MyRecommendPostModelToJson(
+        MyRecommendPostModel instance) =>
+    <String, dynamic>{
+      'recommendationFeedId': instance.recommendationFeedId,
+      'content': instance.content,
+      'recommendationTargetNames': instance.recommendationTargetNames,
+    };
+
+MyRecommendPostDataModel _$MyRecommendPostDataModelFromJson(
+        Map<String, dynamic> json) =>
+    MyRecommendPostDataModel(
+      content: json['content'] as String,
+      recommendationTargetNames:
+          (json['recommendationTargetNames'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList(),
+    );
+
+Map<String, dynamic> _$MyRecommendPostDataModelToJson(
+        MyRecommendPostDataModel instance) =>
+    <String, dynamic>{
+      'content': instance.content,
+      'recommendationTargetNames': instance.recommendationTargetNames,
+    };

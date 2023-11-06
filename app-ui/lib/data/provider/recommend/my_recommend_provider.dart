@@ -81,4 +81,30 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
       }
     }
   }
+
+  void updateRecommendFeed({
+    required String userId,
+    required int recommendationFeedId,
+    required MyRecommendPostDataModel body,
+    required BuildContext context,
+  }) async {
+    try {
+      await repository.updateRecommendFeed(
+        userId: userId,
+        recommendationFeedId: recommendationFeedId,
+        body: body,
+        context: context,
+      );
+      if (!mounted) return;
+      Future.delayed(const Duration(seconds: 1), () {
+        showCommonSnackBarMessage(
+          context: context,
+          snackBarText: '추천 피드가 수정되었어요 :)',
+        );
+        Navigator.pop(context, true);
+      });
+    } on DioException catch (err) {
+      throw Exception(err);
+    }
+  }
 }
