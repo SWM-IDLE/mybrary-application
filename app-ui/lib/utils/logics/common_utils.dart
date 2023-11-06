@@ -140,8 +140,8 @@ void showCommonSnackBarMessage({
             snackBarAction ?? const SizedBox(),
           ],
         ),
-        duration: Duration(
-          seconds: snackBarAction == null ? 1 : 2,
+        duration: const Duration(
+          seconds: 2,
         ),
       ),
     );

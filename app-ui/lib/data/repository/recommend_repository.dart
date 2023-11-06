@@ -1,4 +1,5 @@
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' hide Headers;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/recommend/my_recommend_model.dart';
@@ -21,8 +22,12 @@ abstract class RecommendRepository {
   factory RecommendRepository(Dio dio, {String baseUrl}) = _RecommendRepository;
 
   @POST('/recommendation-feeds')
-  Future<CommonModel> createRecommendFeed({
+  @Headers({
+    'Content-Type': 'application/json',
+  })
+  Future<CommonModel>? createRecommendFeed({
     @Header('User-Id') required String userId,
     @Body() required MyRecommendModel body,
+    required BuildContext context,
   });
 }

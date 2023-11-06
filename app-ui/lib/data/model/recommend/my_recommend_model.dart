@@ -16,4 +16,6 @@ class MyRecommendModel {
 
   factory MyRecommendModel.fromJson(Map<String, dynamic> json) =>
       _$MyRecommendModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MyRecommendModelToJson(this);
 }

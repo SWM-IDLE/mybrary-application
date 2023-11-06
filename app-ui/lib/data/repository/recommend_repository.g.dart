@@ -19,20 +19,26 @@ class _RecommendRepository implements RecommendRepository {
   String? baseUrl;
 
   @override
-  Future<CommonModel<dynamic>> createRecommendFeed({
+  Future<CommonModel<dynamic>>? createRecommendFeed({
     required userId,
     required body,
+    required context,
   }) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'User-Id': userId};
+    final _headers = <String, dynamic>{
+      r'Content-Type': 'application/json',
+      r'User-Id': userId,
+    };
     _headers.removeWhere((k, v) => v == null);
-    final _data = body;
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CommonModel<dynamic>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
+      contentType: 'application/json',
     )
             .compose(
               _dio.options,

@@ -69,3 +69,31 @@ void showCupertinoPicker(BuildContext context, Widget child) {
     ),
   );
 }
+
+BoxDecoration commonBookThumbnailStyle({
+  required String thumbnailUrl,
+}) {
+  return BoxDecoration(
+    color: greyF4F4F4,
+    borderRadius: const BorderRadius.only(
+      topRight: Radius.circular(8),
+      bottomRight: Radius.circular(8),
+    ),
+    image: DecorationImage(
+      image: NetworkImage(thumbnailUrl),
+      onError: (exception, stackTrace) => Image.asset(
+        'assets/img/logo/mybrary.png',
+        fit: BoxFit.fill,
+      ),
+      fit: BoxFit.fill,
+    ),
+    boxShadow: const [
+      BoxShadow(
+        color: Color(0x33000000),
+        blurRadius: 10,
+        offset: Offset(4, 4),
+        spreadRadius: 0,
+      ),
+    ],
+  );
+}

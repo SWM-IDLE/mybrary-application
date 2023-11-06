@@ -82,7 +82,7 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
       appBarTitle: '마이 추천',
       appBarActions: [
         TextButton(
-          onPressed: () async {
+          onPressed: () {
             if (_bookId == 0) {
               return showCommonSnackBarMessage(
                 context: context,
@@ -106,6 +106,7 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
             }
 
             ref.watch(myRecommendProvider.notifier).createRecommendFeed(
+                  context: context,
                   userId: _userId,
                   body: MyRecommendModel(
                     myBookId: _bookId,

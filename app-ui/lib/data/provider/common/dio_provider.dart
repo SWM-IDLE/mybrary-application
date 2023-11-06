@@ -48,8 +48,8 @@ class CustomInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    log("ERROR: Server 에러 코드 <${err.response!.statusCode}>");
-    log("ERROR: Server 에러 메세지 <${err.response!.data.toString()}>");
+    log("ERROR: Server 에러 코드 <${err.response?.statusCode}>");
+    log("ERROR: Server 에러 메세지 <${err.response?.data.toString()}>");
 
     if (err.response?.statusCode == 401) {
       log('ERROR: Access 토큰 만료에 대한 서버 에러가 발생했습니다.');

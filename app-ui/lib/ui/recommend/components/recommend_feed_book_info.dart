@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/utils/logics/book_utils.dart';
 
 class RecommendFeedBookInfo extends StatelessWidget {
   final String thumbnailUrl;
@@ -27,28 +27,8 @@ class RecommendFeedBookInfo extends StatelessWidget {
           Container(
             width: 100,
             height: 150,
-            decoration: BoxDecoration(
-              color: greyF4F4F4,
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(8),
-                bottomRight: Radius.circular(8),
-              ),
-              image: DecorationImage(
-                image: NetworkImage(thumbnailUrl),
-                onError: (exception, stackTrace) => Image.asset(
-                  'assets/img/logo/mybrary.png',
-                  fit: BoxFit.fill,
-                ),
-                fit: BoxFit.fill,
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x33000000),
-                  blurRadius: 10,
-                  offset: Offset(4, 4),
-                  spreadRadius: 0,
-                ),
-              ],
+            decoration: commonBookThumbnailStyle(
+              thumbnailUrl: thumbnailUrl,
             ),
           ),
           const SizedBox(height: 16.0),
