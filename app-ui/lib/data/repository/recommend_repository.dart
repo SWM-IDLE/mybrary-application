@@ -51,6 +51,13 @@ abstract class RecommendRepository {
     required BuildContext context,
   });
 
+  @DELETE('/recommendation-feeds/{id}')
+  Future<CommonModel>? deleteRecommendFeed({
+    @Header('User-Id') required String userId,
+    @Path('id') required int recommendationFeedId,
+    required BuildContext context,
+  });
+
   @GET('/recommendation-feeds/{userId}')
   Future<CommonModel<MyRecommendFeedModel>> getMyRecommendPostList({
     @Path('userId') required String userId,

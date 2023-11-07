@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_post_provider.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
+import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/recommend/myRecommend/my_recommend_screen.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
 class MyRecommendPostScreen extends ConsumerStatefulWidget {
-  const MyRecommendPostScreen({super.key});
+  final String? userId;
+  const MyRecommendPostScreen({
+    this.userId,
+    super.key,
+  });
 
   @override
   ConsumerState<MyRecommendPostScreen> createState() =>
@@ -20,7 +26,6 @@ class MyRecommendPostScreen extends ConsumerStatefulWidget {
 
 class _MyRecommendPostScreenState extends ConsumerState<MyRecommendPostScreen> {
   final _userId = UserState.userId;
-
   late bool _refreshRecommendFeedPost;
 
   @override
@@ -30,11 +35,9 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendPostScreen> {
     _refreshRecommendFeedPost = false;
 
     Future.delayed(const Duration(milliseconds: 500), () {
-      setState(() {
-        ref
-            .read(recommendProvider.notifier)
-            .getMyRecommendPostList(userId: _userId);
-      });
+      ref
+          .read(recommendProvider.notifier)
+          .getMyRecommendPostList(userId: _userId);
     });
   }
 
@@ -44,15 +47,25 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendPostScreen> {
 
     if (myRecommendFeed == null) {
       return const SubPageLayout(
-        appBarTitle: '마이 추천 포스트',
+        appBarTitle: '마이 추천 피드',
         child: CircularLoading(),
       );
     }
 
     final myRecommendFeedData = myRecommendFeed.recommendationFeeds;
 
+    if (myRecommendFeedData.isEmpty) {
+      return const SubPageLayout(
+        appBarTitle: '마이 추천 피드',
+        child: DataError(
+          icon: Icons.menu_book_rounded,
+          errorMessage: '작성된 추천 글이 없어요!\n추천 피드를 작성해보세요 :)',
+        ),
+      );
+    }
+
     return SubPageLayout(
-      appBarTitle: '마이 추천 포스트',
+      appBarTitle: '마이 추천 피드',
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 24.0,
@@ -66,22 +79,36 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendPostScreen> {
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () async {
-                bool? refresh = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => MyRecommendScreen(
-                      myRecommendFeedData: myRecommendFeedData[index],
+                if (widget.userId == _userId) {
+                  bool? refresh = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MyRecommendScreen(
+                        myRecommendFeedData: myRecommendFeedData[index],
+                      ),
                     ),
-                  ),
-                );
+                  );
 
-                setState(() {
-                  _refreshRecommendFeedPost = refresh ?? false;
-                });
+                  setState(() {
+                    _refreshRecommendFeedPost = refresh ?? false;
+                  });
 
-                if (_refreshRecommendFeedPost) {
-                  ref
-                      .read(recommendProvider.notifier)
-                      .getMyRecommendPostList(userId: _userId);
+                  if (_refreshRecommendFeedPost) {
+                    ref
+                        .refresh(recommendProvider.notifier)
+                        .getMyRecommendPostList(
+                            userId: widget.userId ?? _userId);
+                    ref
+                        .refresh(myRecommendProvider.notifier)
+                        .getRecommendFeedList(userId: widget.userId ?? _userId);
+                  }
+                }
+
+                if (widget.userId != _userId) {
+                  if (!mounted) return;
+                  moveToBookDetail(
+                    context: context,
+                    isbn13: myRecommendFeedData[index].isbn13,
+                  );
                 }
               },
               child: Column(

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class RecommendFeedHeader extends StatefulWidget {
+  final String targetUserId;
   final String profileImageUrl;
   final String nickname;
   final int interestCount;
   final bool interested;
 
   const RecommendFeedHeader({
+    required this.targetUserId,
     required this.profileImageUrl,
     required this.nickname,
     required this.interestCount,
@@ -22,6 +26,7 @@ class RecommendFeedHeader extends StatefulWidget {
 }
 
 class _RecommendFeedHeaderState extends State<RecommendFeedHeader> {
+  final _userId = UserState.userId;
   late bool _showReportButton = false;
 
   @override
@@ -35,18 +40,35 @@ class _RecommendFeedHeaderState extends State<RecommendFeedHeader> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 18.0,
-                    backgroundImage: NetworkImage(widget.profileImageUrl),
-                  ),
-                  const SizedBox(width: 8.0),
-                  Text(
-                    widget.nickname,
-                    style: recommendFeedHeaderStyle,
-                  ),
-                ],
+              InkWell(
+                onTap: () {
+                  moveToUserProfile(
+                    context: context,
+                    myUserId: _userId,
+                    userId: widget.targetUserId,
+                    nickname: widget.nickname,
+                  );
+                },
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 18.0,
+                      backgroundColor: primaryColor,
+                      backgroundImage: Image.network(
+                        widget.profileImageUrl,
+                        errorBuilder: (context, error, stackTrace) =>
+                            SvgPicture.asset(
+                          'assets/svg/icon/profile_default.svg',
+                        ),
+                      ).image,
+                    ),
+                    const SizedBox(width: 8.0),
+                    Text(
+                      widget.nickname,
+                      style: recommendFeedHeaderStyle,
+                    ),
+                  ],
+                ),
               ),
               Row(
                 children: [

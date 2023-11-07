@@ -107,4 +107,29 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
       throw Exception(err);
     }
   }
+
+  void deleteRecommendFeed({
+    required String userId,
+    required int recommendationFeedId,
+    required BuildContext context,
+  }) async {
+    try {
+      await repository.deleteRecommendFeed(
+        userId: userId,
+        recommendationFeedId: recommendationFeedId,
+        context: context,
+      );
+      if (!mounted) return;
+      Future.delayed(const Duration(seconds: 1), () {
+        showCommonSnackBarMessage(
+          context: context,
+          snackBarText: '추천 피드가 삭제되었어요 !',
+        );
+        Navigator.pop(context, true);
+        Navigator.pop(context, true);
+      });
+    } on DioException catch (err) {
+      throw Exception(err);
+    }
+  }
 }

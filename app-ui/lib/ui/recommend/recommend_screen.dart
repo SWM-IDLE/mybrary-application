@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_post_provider.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
@@ -121,6 +122,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
                       alignment: WrapAlignment.center,
                       children: [
                         RecommendFeedHeader(
+                          targetUserId: feed.userId,
                           profileImageUrl: feed.profileImageUrl,
                           nickname: feed.nickname,
                           interestCount: feed.interestCount,
@@ -184,7 +186,9 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => const MyRecommendPostScreen(),
+                builder: (context) => MyRecommendPostScreen(
+                  userId: _userId,
+                ),
               ),
             );
           },
@@ -208,6 +212,9 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
               });
 
               if (_refreshRecommendFeed) {
+                ref
+                    .refresh(recommendProvider.notifier)
+                    .getMyRecommendPostList(userId: _userId);
                 ref
                     .refresh(myRecommendProvider.notifier)
                     .getRecommendFeedList(userId: _userId);

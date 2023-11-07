@@ -105,15 +105,49 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
             _recommendKeywordList.isNotEmpty ||
             _recommendContentController.text.isNotEmpty,
         onTapBackAction: () {
-          ref
-              .refresh(recommendProvider.notifier)
-              .getMyRecommendPostList(userId: _userId);
-          Navigator.of(context).pop(true);
+          if (widget.myRecommendFeedData != null) {
+            ref
+                .refresh(recommendProvider.notifier)
+                .getMyRecommendPostList(userId: _userId);
+          }
+          Navigator.pop(context, true);
         },
       ),
       child: SubPageLayout(
         appBarTitle: '마이 추천',
         appBarActions: [
+          if (widget.myRecommendFeedData != null)
+            TextButton(
+              onPressed: () {
+                commonShowConfirmOrCancelDialog(
+                  context: context,
+                  title: '삭제',
+                  content: '해당 마이 추천 피드를\n삭제 하시겠습니까?',
+                  cancelButtonText: '취소',
+                  cancelButtonOnTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  confirmButtonText: '삭제하기',
+                  confirmButtonOnTap: () {
+                    ref.watch(myRecommendProvider.notifier).deleteRecommendFeed(
+                          context: context,
+                          userId: _userId,
+                          recommendationFeedId:
+                              widget.myRecommendFeedData!.recommendationFeedId,
+                        );
+                  },
+                  confirmButtonColor: commonRedColor,
+                  confirmButtonTextColor: commonWhiteColor,
+                );
+              },
+              style: disableAnimationTextButtonStyle,
+              child: Text(
+                '삭제',
+                style: saveTextButtonStyle.copyWith(
+                  color: commonRedColor,
+                ),
+              ),
+            ),
           TextButton(
             onPressed: () {
               if (_bookId == 0) {
@@ -152,6 +186,7 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
 
               if (widget.myRecommendFeedData != null) {
                 ref.watch(myRecommendProvider.notifier).updateRecommendFeed(
+                      context: context,
                       userId: _userId,
                       recommendationFeedId:
                           widget.myRecommendFeedData!.recommendationFeedId,
@@ -159,7 +194,6 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
                         content: _recommendContentController.text,
                         recommendationTargetNames: _recommendKeywordList,
                       ),
-                      context: context,
                     );
               }
             },

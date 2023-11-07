@@ -211,7 +211,7 @@ void moveToUserProfile({
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (_) => const RootTab(
-          tapIndex: 3,
+          tapIndex: 4,
         ),
       ),
       (route) => false,

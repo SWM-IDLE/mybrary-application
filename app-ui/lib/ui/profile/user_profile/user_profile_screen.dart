@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/data/model/book/mybooks_response.dart';
 import 'package:mybrary/data/model/profile/follower_response.dart';
@@ -7,6 +8,8 @@ import 'package:mybrary/data/model/profile/my_interests_response.dart';
 import 'package:mybrary/data/model/profile/profile_common_response.dart';
 import 'package:mybrary/data/model/profile/profile_image_response.dart';
 import 'package:mybrary/data/model/profile/profile_response.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_post_provider.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
 import 'package:mybrary/data/repository/follow_repository.dart';
 import 'package:mybrary/data/repository/interests_repository.dart';
@@ -20,11 +23,12 @@ import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/mybook/mybook_screen.dart';
 import 'package:mybrary/ui/profile/components/profile_header.dart';
 import 'package:mybrary/ui/profile/follow/follow_screen.dart';
+import 'package:mybrary/ui/profile/my_recommend_post/my_recommend_post_screen.dart';
 import 'package:mybrary/ui/profile/user_profile/components/user_profile_intro.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 import 'package:mybrary/utils/logics/ui_utils.dart';
 
-class UserProfileScreen extends StatefulWidget {
+class UserProfileScreen extends ConsumerStatefulWidget {
   final String userId;
   final String nickname;
 
@@ -35,10 +39,12 @@ class UserProfileScreen extends StatefulWidget {
   });
 
   @override
-  State<UserProfileScreen> createState() => _UserProfileScreenState();
+  ConsumerState<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen> {
+class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
+  final _userId = UserState.userId;
+
   final _profileRepository = ProfileRepository();
   final _myInterestsRepository = InterestsRepository();
   final _followRepository = FollowRepository();
@@ -145,6 +151,36 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       UserProfileIntro(
                         introduction: profileData.introduction!,
                         userInterests: myInterestsData.userInterests!,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            ref
+                                .refresh(recommendProvider.notifier)
+                                .getMyRecommendPostList(userId: widget.userId);
+                            Navigator.of(context)
+                                .push(
+                              MaterialPageRoute(
+                                builder: (_) => MyRecommendPostScreen(
+                                  userId: widget.userId,
+                                ),
+                              ),
+                            )
+                                .then((value) {
+                              ref
+                                  .refresh(recommendProvider.notifier)
+                                  .getMyRecommendPostList(userId: _userId);
+                            });
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20.0,
+                            bottom: 20.0,
+                          ),
+                          child: commonSubTitle(title: '마이 추천 피드'),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(

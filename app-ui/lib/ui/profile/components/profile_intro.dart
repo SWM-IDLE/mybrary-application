@@ -8,12 +8,14 @@ import 'package:mybrary/ui/profile/my_recommend_post/my_recommend_post_screen.da
 import 'package:mybrary/utils/logics/common_utils.dart';
 
 class ProfileIntro extends StatelessWidget {
+  final String userId;
   final String? introduction;
   final List<UserInterests> userInterests;
   final VoidCallback onTapWriteIntroduction;
   final VoidCallback onTapMyInterests;
 
   const ProfileIntro({
+    required this.userId,
     required this.introduction,
     required this.userInterests,
     required this.onTapWriteIntroduction,
@@ -70,11 +72,13 @@ class ProfileIntro extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => const MyRecommendPostScreen(),
+                  builder: (_) => MyRecommendPostScreen(
+                    userId: userId,
+                  ),
                 ),
               );
             },
-            child: commonSubTitle(title: '마이 추천 포스트'),
+            child: commonSubTitle(title: '마이 추천 피드'),
           ),
           const SizedBox(height: 42.0),
           InkWell(

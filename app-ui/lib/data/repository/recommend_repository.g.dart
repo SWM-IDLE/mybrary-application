@@ -127,6 +127,37 @@ class _RecommendRepository implements RecommendRepository {
   }
 
   @override
+  Future<CommonModel<dynamic>>? deleteRecommendFeed({
+    required userId,
+    required recommendationFeedId,
+    required context,
+  }) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'User-Id': userId};
+    _headers.removeWhere((k, v) => v == null);
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonModel<dynamic>>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/recommendation-feeds/${recommendationFeedId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonModel<dynamic>.fromJson(
+      _result.data!,
+      (json) => json as dynamic,
+    );
+    return value;
+  }
+
+  @override
   Future<CommonModel<MyRecommendFeedModel>> getMyRecommendPostList(
       {required userId}) async {
     const _extra = <String, dynamic>{};

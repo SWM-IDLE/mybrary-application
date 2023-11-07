@@ -42,8 +42,9 @@ class RecommendFeedBookInfo extends StatelessWidget {
           Text(
             authors.map((author) => author).join(', '),
             style: recommendFeedBookSubStyle,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
         ],
       ),
