@@ -23,6 +23,7 @@ import 'package:mybrary/ui/home/home_screen.dart';
 import 'package:mybrary/ui/profile/profile_edit/profile_edit_screen.dart';
 import 'package:mybrary/ui/search/search_isbn_scan/search_isbn_scan_screen.dart';
 import 'package:mybrary/ui/search/search_screen.dart';
+import 'package:mybrary/utils/logics/future_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -31,6 +32,7 @@ void main() async {
     await dotenv.load(fileName: ".env");
 
     await Firebase.initializeApp();
+    initializeNotification();
 
     FlutterError.onError = (errorDetails) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
