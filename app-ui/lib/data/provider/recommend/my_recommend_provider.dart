@@ -5,7 +5,6 @@ import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/recommend/my_recommend_model.dart';
 import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
 import 'package:mybrary/data/repository/recommend_repository.dart';
-import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
 final recommendFeedProvider = Provider<RecommendFeedModel?>((ref) {
@@ -60,19 +59,25 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
     required BuildContext context,
   }) async {
     try {
-      await repository.createRecommendFeed(
+      commonLoadingAlert(
         context: context,
-        userId: userId,
-        body: body,
+        loadingAction: () async {
+          await repository.createRecommendFeed(
+            context: context,
+            userId: userId,
+            body: body,
+          );
+
+          if (!mounted) return;
+
+          showCommonSnackBarMessage(
+            context: context,
+            snackBarText: '추천 피드가 등록되었어요 :)',
+          );
+          Navigator.pop(context);
+          Navigator.pop(context, true);
+        },
       );
-      if (!mounted) return;
-      Future.delayed(const Duration(seconds: 1), () {
-        showCommonSnackBarMessage(
-          context: context,
-          snackBarText: '추천 피드가 등록되었어요 :)',
-        );
-        Navigator.pop(context, true);
-      });
     } on DioException catch (err) {
       if (err.response!.data.toString().contains('RF-04')) {
         showCommonSnackBarMessage(
@@ -90,35 +95,24 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
     required BuildContext context,
   }) {
     try {
-      showDialog(
-        barrierDismissible: false,
+      commonLoadingAlert(
         context: context,
-        builder: (context) {
-          Future.delayed(const Duration(seconds: 1), () async {
-            await repository.updateRecommendFeed(
-              userId: userId,
-              recommendationFeedId: recommendationFeedId,
-              body: body,
-              context: context,
-            );
-            if (!mounted) return;
-
-            showCommonSnackBarMessage(
-              context: context,
-              snackBarText: '추천 피드가 수정되었어요 :)',
-            );
-            Navigator.pop(context, true);
-            Navigator.pop(context, true);
-          });
-          return const SizedBox(
-            width: 100,
-            height: 100,
-            child: Center(
-              child: CircularProgressIndicator(
-                color: primaryColor,
-              ),
-            ),
+        loadingAction: () async {
+          await repository.updateRecommendFeed(
+            userId: userId,
+            recommendationFeedId: recommendationFeedId,
+            body: body,
+            context: context,
           );
+
+          if (!mounted) return;
+
+          showCommonSnackBarMessage(
+            context: context,
+            snackBarText: '추천 피드가 수정되었어요 :)',
+          );
+          Navigator.pop(context);
+          Navigator.pop(context, true);
         },
       );
     } on DioException catch (err) {
@@ -132,32 +126,28 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
     required BuildContext context,
   }) async {
     try {
-      await repository.deleteRecommendFeed(
-        userId: userId,
-        recommendationFeedId: recommendationFeedId,
+      commonLoadingAlert(
         context: context,
+        loadingAction: () async {
+          await repository.deleteRecommendFeed(
+            userId: userId,
+            recommendationFeedId: recommendationFeedId,
+            context: context,
+          );
+
+          if (!mounted) return;
+
+          Navigator.pop(context);
+
+          showCommonSnackBarMessage(
+            context: context,
+            snackBarText: '추천 피드가 삭제되었어요 !',
+          );
+
+          Navigator.pop(context);
+          Navigator.pop(context, true);
+        },
       );
-      if (!mounted) return;
-      Future.delayed(const Duration(seconds: 1), () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Center(
-              child: CircularProgressIndicator(
-                color: primaryColor,
-              ),
-            ),
-            duration: Duration(
-              milliseconds: 500,
-            ),
-          ),
-        );
-      });
-      showCommonSnackBarMessage(
-        context: context,
-        snackBarText: '추천 피드가 삭제되었어요 !',
-      );
-      Navigator.pop(context, true);
-      Navigator.pop(context, true);
     } on DioException catch (err) {
       throw Exception(err);
     }

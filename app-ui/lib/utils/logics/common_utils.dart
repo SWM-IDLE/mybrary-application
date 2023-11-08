@@ -381,3 +381,27 @@ void connectAppStoreLink() async {
     );
   }
 }
+
+void commonLoadingAlert({
+  required BuildContext context,
+  required void Function() loadingAction,
+}) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      Future.delayed(const Duration(seconds: 1), () async {
+        loadingAction();
+      });
+      return const SizedBox(
+        width: 100,
+        height: 100,
+        child: Center(
+          child: CircularProgressIndicator(
+            color: primaryColor,
+          ),
+        ),
+      );
+    },
+  );
+}
