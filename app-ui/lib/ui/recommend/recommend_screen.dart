@@ -83,85 +83,100 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
       );
     }
 
-    return DefaultLayout(
-      child: CustomScrollView(
-        controller: _recommendScrollController,
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        slivers: [
-          _recommendAppBar(),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                RecommendFeedDataModel feed =
-                    recommendFeedData.recommendationFeeds[index];
-                return Padding(
-                  padding: EdgeInsets.only(
-                    left: 32.0,
-                    right: 32.0,
-                    top: index == 0 ? 12.0 : 8.0,
-                    bottom: 16.0,
-                  ),
-                  child: Container(
-                    decoration: ShapeDecoration(
-                      color: commonWhiteColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+    return RefreshIndicator(
+      color: commonWhiteColor,
+      backgroundColor: primaryColor,
+      edgeOffset: const SliverAppBar().toolbarHeight * 0.5,
+      onRefresh: () {
+        return Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            ref
+                .refresh(myRecommendProvider.notifier)
+                .getRecommendFeedList(userId: _userId);
+          },
+        );
+      },
+      child: DefaultLayout(
+        child: CustomScrollView(
+          controller: _recommendScrollController,
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          slivers: [
+            _recommendAppBar(),
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  RecommendFeedDataModel feed =
+                      recommendFeedData.recommendationFeeds[index];
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      left: 32.0,
+                      right: 32.0,
+                      top: index == 0 ? 12.0 : 8.0,
+                      bottom: 16.0,
+                    ),
+                    child: Container(
+                      decoration: ShapeDecoration(
+                        color: commonWhiteColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: commonBlackColor.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 0),
+                            spreadRadius: 2,
+                          ),
+                        ],
                       ),
-                      shadows: [
-                        BoxShadow(
-                          color: commonBlackColor.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 0),
-                          spreadRadius: 2,
-                        ),
-                      ],
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        children: [
+                          RecommendFeedHeader(
+                            isbn13: feed.isbn13,
+                            targetUserId: feed.userId,
+                            profileImageUrl: feed.profileImageUrl,
+                            nickname: feed.nickname,
+                            interestCount: feed.interestCount,
+                            interested: feed.interested,
+                          ),
+                          RecommendFeedBookInfo(
+                            isbn13: feed.isbn13,
+                            thumbnailUrl: feed.thumbnailUrl,
+                            title: feed.title,
+                            authors: feed.authors,
+                          ),
+                          commonDivider(
+                            dividerColor: greyF7F7F7,
+                            dividerThickness: 4,
+                          ),
+                          RecommendFeedKeyword(
+                            recommendationTargetNames:
+                                feed.recommendationTargetNames,
+                          ),
+                          commonDivider(
+                            dividerColor: greyF7F7F7,
+                            dividerThickness: 4,
+                          ),
+                          RecommendFeedContent(
+                            content: feed.content,
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      children: [
-                        RecommendFeedHeader(
-                          isbn13: feed.isbn13,
-                          targetUserId: feed.userId,
-                          profileImageUrl: feed.profileImageUrl,
-                          nickname: feed.nickname,
-                          interestCount: feed.interestCount,
-                          interested: feed.interested,
-                        ),
-                        RecommendFeedBookInfo(
-                          isbn13: feed.isbn13,
-                          thumbnailUrl: feed.thumbnailUrl,
-                          title: feed.title,
-                          authors: feed.authors,
-                        ),
-                        commonDivider(
-                          dividerColor: greyF7F7F7,
-                          dividerThickness: 4,
-                        ),
-                        RecommendFeedKeyword(
-                          recommendationTargetNames:
-                              feed.recommendationTargetNames,
-                        ),
-                        commonDivider(
-                          dividerColor: greyF7F7F7,
-                          dividerThickness: 4,
-                        ),
-                        RecommendFeedContent(
-                          content: feed.content,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              childCount: recommendFeedData.recommendationFeeds.length,
+                  );
+                },
+                childCount: recommendFeedData.recommendationFeeds.length,
+              ),
             ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 20.0),
-          ),
-        ],
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 20.0),
+            ),
+          ],
+        ),
       ),
     );
   }

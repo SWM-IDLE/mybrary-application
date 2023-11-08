@@ -22,9 +22,8 @@ import 'package:mybrary/ui/home/components/home_recommend_books.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books_header.dart';
 import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
-import 'package:mybrary/utils/logics/permission_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
-
+import 'package:mybrary/utils/logics/permission_utils.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -189,6 +188,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return RefreshIndicator(
       color: commonWhiteColor,
       backgroundColor: primaryColor,
+      edgeOffset: AppBar().preferredSize.height * 0.5,
       onRefresh: () {
         return Future.delayed(
           const Duration(milliseconds: 500),
