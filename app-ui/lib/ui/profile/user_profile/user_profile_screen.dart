@@ -23,8 +23,8 @@ import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/mybook/mybook_screen.dart';
 import 'package:mybrary/ui/profile/components/profile_header.dart';
 import 'package:mybrary/ui/profile/follow/follow_screen.dart';
-import 'package:mybrary/ui/profile/my_recommend_post/my_recommend_post_screen.dart';
 import 'package:mybrary/ui/profile/user_profile/components/user_profile_intro.dart';
+import 'package:mybrary/ui/recommend/my_recommend_feed/my_recommend_feed_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 import 'package:mybrary/utils/logics/ui_utils.dart';
 
@@ -161,7 +161,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                             Navigator.of(context)
                                 .push(
                               MaterialPageRoute(
-                                builder: (_) => MyRecommendPostScreen(
+                                builder: (_) => MyRecommendFeedScreen(
                                   userId: widget.userId,
                                 ),
                               ),

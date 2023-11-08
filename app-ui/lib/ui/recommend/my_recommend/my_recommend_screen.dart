@@ -10,9 +10,9 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/mybook/mybook_list/mybook_list_screen.dart';
-import 'package:mybrary/ui/recommend/myRecommend/components/my_recommend_content.dart';
-import 'package:mybrary/ui/recommend/myRecommend/components/my_recommend_header.dart';
-import 'package:mybrary/ui/recommend/myRecommend/components/my_recommend_keyword.dart';
+import 'package:mybrary/ui/recommend/my_recommend/components/my_recommend_content.dart';
+import 'package:mybrary/ui/recommend/my_recommend/components/my_recommend_header.dart';
+import 'package:mybrary/ui/recommend/my_recommend/components/my_recommend_keyword.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 import 'package:mybrary/utils/logics/future_utils.dart';
 
@@ -61,7 +61,7 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
       _bookId = feed.myBookId;
       _thumbnailUrl = feed.thumbnailUrl;
       _bookTitle = feed.title;
-      _bookAuthor = '';
+      _bookAuthor = feed.authors.join(', ');
       _recommendKeywordList = feed.recommendationTargetNames;
       _recommendContentController.text = feed.content;
     }

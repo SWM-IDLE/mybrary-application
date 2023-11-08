@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:html/parser.dart';
 import 'package:mybrary/data/model/search/book_search_detail_response.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
@@ -12,7 +14,7 @@ import 'package:mybrary/ui/search/search_detail_user_infos/search_detail_user_in
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
-class BookDetailHeader extends StatefulWidget {
+class BookDetailHeader extends ConsumerStatefulWidget {
   final String thumbnail;
   final String title;
   final List<Authors> authors;
@@ -42,10 +44,10 @@ class BookDetailHeader extends StatefulWidget {
   });
 
   @override
-  State<BookDetailHeader> createState() => _BookDetailHeaderState();
+  ConsumerState<BookDetailHeader> createState() => _BookDetailHeaderState();
 }
 
-class _BookDetailHeaderState extends State<BookDetailHeader> {
+class _BookDetailHeaderState extends ConsumerState<BookDetailHeader> {
   final _bookRepository = BookRepository();
 
   bool onTapInterestBook = false;
@@ -139,6 +141,10 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                         _newInterestCount,
                         context,
                       );
+
+                      ref
+                          .refresh(myRecommendProvider.notifier)
+                          .getRecommendFeedList(userId: _userId);
                     });
                   },
                   child: Column(

@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mybrary/data/model/profile/profile_response.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/profile_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
@@ -17,14 +19,14 @@ import 'package:mybrary/ui/profile/profile_edit/components/profile_edit_image.da
 import 'package:mybrary/utils/logics/common_utils.dart';
 import 'package:mybrary/utils/logics/validate_utils.dart';
 
-class ProfileEditScreen extends StatefulWidget {
+class ProfileEditScreen extends ConsumerStatefulWidget {
   const ProfileEditScreen({super.key});
 
   @override
-  State<ProfileEditScreen> createState() => _ProfileEditScreenState();
+  ConsumerState<ProfileEditScreen> createState() => _ProfileEditScreenState();
 }
 
-class _ProfileEditScreenState extends State<ProfileEditScreen> {
+class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   late String _originProfileImageUrl;
   late TextEditingController _nicknameController = TextEditingController();
   late TextEditingController _introductionController = TextEditingController();
@@ -195,6 +197,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       snackBarText: '기본 이미지로 변경 되었습니다.',
     );
 
+    ref
+        .refresh(myRecommendProvider.notifier)
+        .getRecommendFeedList(userId: _userId);
+
     Navigator.of(context).pop();
   }
 
@@ -301,6 +307,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         context: context,
         snackBarText: '변경 사항이 저장 되었습니다.',
       );
+
+      ref
+          .refresh(myRecommendProvider.notifier)
+          .getRecommendFeedList(userId: _userId);
 
       Navigator.pop(context);
     }

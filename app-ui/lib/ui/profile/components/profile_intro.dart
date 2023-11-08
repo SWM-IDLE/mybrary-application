@@ -4,7 +4,7 @@ import 'package:mybrary/data/model/profile/my_interests_response.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/profile/my_badge/my_badge_screen.dart';
-import 'package:mybrary/ui/profile/my_recommend_post/my_recommend_post_screen.dart';
+import 'package:mybrary/ui/recommend/my_recommend_feed/my_recommend_feed_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
 class ProfileIntro extends StatelessWidget {
@@ -72,7 +72,7 @@ class ProfileIntro extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => MyRecommendPostScreen(
+                  builder: (_) => MyRecommendFeedScreen(
                     userId: userId,
                   ),
                 ),

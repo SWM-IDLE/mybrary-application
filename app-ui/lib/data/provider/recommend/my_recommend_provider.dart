@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/recommend/my_recommend_model.dart';
 import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
 import 'package:mybrary/data/repository/recommend_repository.dart';
+import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
 final recommendFeedProvider = Provider<RecommendFeedModel?>((ref) {
@@ -87,22 +88,39 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
     required int recommendationFeedId,
     required MyRecommendPostDataModel body,
     required BuildContext context,
-  }) async {
+  }) {
     try {
-      await repository.updateRecommendFeed(
-        userId: userId,
-        recommendationFeedId: recommendationFeedId,
-        body: body,
+      showDialog(
+        barrierDismissible: false,
         context: context,
+        builder: (context) {
+          Future.delayed(const Duration(seconds: 1), () async {
+            await repository.updateRecommendFeed(
+              userId: userId,
+              recommendationFeedId: recommendationFeedId,
+              body: body,
+              context: context,
+            );
+            if (!mounted) return;
+
+            showCommonSnackBarMessage(
+              context: context,
+              snackBarText: '추천 피드가 수정되었어요 :)',
+            );
+            Navigator.pop(context, true);
+            Navigator.pop(context, true);
+          });
+          return const SizedBox(
+            width: 100,
+            height: 100,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: primaryColor,
+              ),
+            ),
+          );
+        },
       );
-      if (!mounted) return;
-      Future.delayed(const Duration(seconds: 1), () {
-        showCommonSnackBarMessage(
-          context: context,
-          snackBarText: '추천 피드가 수정되었어요 :)',
-        );
-        Navigator.pop(context, true);
-      });
     } on DioException catch (err) {
       throw Exception(err);
     }
@@ -121,13 +139,25 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
       );
       if (!mounted) return;
       Future.delayed(const Duration(seconds: 1), () {
-        showCommonSnackBarMessage(
-          context: context,
-          snackBarText: '추천 피드가 삭제되었어요 !',
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(
+              child: CircularProgressIndicator(
+                color: primaryColor,
+              ),
+            ),
+            duration: Duration(
+              milliseconds: 500,
+            ),
+          ),
         );
-        Navigator.pop(context, true);
-        Navigator.pop(context, true);
       });
+      showCommonSnackBarMessage(
+        context: context,
+        snackBarText: '추천 피드가 삭제되었어요 !',
+      );
+      Navigator.pop(context, true);
+      Navigator.pop(context, true);
     } on DioException catch (err) {
       throw Exception(err);
     }

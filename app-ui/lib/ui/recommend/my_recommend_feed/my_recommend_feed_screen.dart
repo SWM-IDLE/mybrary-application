@@ -8,23 +8,23 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
-import 'package:mybrary/ui/recommend/myRecommend/my_recommend_screen.dart';
+import 'package:mybrary/ui/recommend/my_recommend//my_recommend_screen.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
-class MyRecommendPostScreen extends ConsumerStatefulWidget {
+class MyRecommendFeedScreen extends ConsumerStatefulWidget {
   final String? userId;
-  const MyRecommendPostScreen({
+  const MyRecommendFeedScreen({
     this.userId,
     super.key,
   });
 
   @override
-  ConsumerState<MyRecommendPostScreen> createState() =>
+  ConsumerState<MyRecommendFeedScreen> createState() =>
       _MyRecommendPostScreenState();
 }
 
-class _MyRecommendPostScreenState extends ConsumerState<MyRecommendPostScreen> {
+class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
   final _userId = UserState.userId;
   late bool _refreshRecommendFeedPost;
 

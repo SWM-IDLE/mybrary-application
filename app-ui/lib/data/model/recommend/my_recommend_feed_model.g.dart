@@ -32,6 +32,8 @@ MyRecommendFeedDataModel _$MyRecommendFeedDataModelFromJson(
       thumbnailUrl: json['thumbnailUrl'] as String,
       isbn13: json['isbn13'] as String,
       createdAt: json['createdAt'] as String,
+      authors:
+          (json['authors'] as List<dynamic>).map((e) => e as String).toList(),
       recommendationTargetNames:
           (json['recommendationTargetNames'] as List<dynamic>)
               .map((e) => e as String)
@@ -49,5 +51,6 @@ Map<String, dynamic> _$MyRecommendFeedDataModelToJson(
       'thumbnailUrl': instance.thumbnailUrl,
       'isbn13': instance.isbn13,
       'createdAt': instance.createdAt,
+      'authors': instance.authors,
       'recommendationTargetNames': instance.recommendationTargetNames,
     };

@@ -24,6 +24,7 @@ class MyRecommendFeedDataModel {
   final String thumbnailUrl;
   final String isbn13;
   final String createdAt;
+  final List<String> authors;
   final List<String> recommendationTargetNames;
 
   MyRecommendFeedDataModel({
@@ -35,6 +36,7 @@ class MyRecommendFeedDataModel {
     required this.thumbnailUrl,
     required this.isbn13,
     required this.createdAt,
+    required this.authors,
     required this.recommendationTargetNames,
   });
 

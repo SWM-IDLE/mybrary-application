@@ -9,12 +9,12 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
-import 'package:mybrary/ui/profile/my_recommend_post/my_recommend_post_screen.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_book_info.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_content.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_header.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_keyword.dart';
-import 'package:mybrary/ui/recommend/myRecommend/my_recommend_screen.dart';
+import 'package:mybrary/ui/recommend/my_recommend/my_recommend_screen.dart';
+import 'package:mybrary/ui/recommend/my_recommend_feed/my_recommend_feed_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
 class RecommendScreen extends ConsumerStatefulWidget {
@@ -122,6 +122,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
                       alignment: WrapAlignment.center,
                       children: [
                         RecommendFeedHeader(
+                          isbn13: feed.isbn13,
                           targetUserId: feed.userId,
                           profileImageUrl: feed.profileImageUrl,
                           nickname: feed.nickname,
@@ -133,6 +134,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
                           dividerThickness: 4,
                         ),
                         RecommendFeedBookInfo(
+                          isbn13: feed.isbn13,
                           thumbnailUrl: feed.thumbnailUrl,
                           title: feed.title,
                           authors: feed.authors,
@@ -186,7 +188,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => MyRecommendPostScreen(
+                builder: (context) => MyRecommendFeedScreen(
                   userId: _userId,
                 ),
               ),
