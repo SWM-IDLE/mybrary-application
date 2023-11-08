@@ -10,6 +10,7 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
+import 'package:mybrary/ui/search/search_detail_recommendation_feed_user_infos/search_detail_recommendation_feed_user_infos_screen.dart';
 import 'package:mybrary/ui/search/search_detail_user_infos/search_detail_user_infos_screen.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
@@ -21,6 +22,7 @@ class BookDetailHeader extends ConsumerStatefulWidget {
   final int interestCount;
   final int readCount;
   final int holderCount;
+  final int recommendationFeedCount;
   final bool interested;
   final bool completed;
   final bool registered;
@@ -35,6 +37,7 @@ class BookDetailHeader extends ConsumerStatefulWidget {
     required this.interestCount,
     required this.readCount,
     required this.holderCount,
+    required this.recommendationFeedCount,
     required this.interested,
     required this.completed,
     required this.registered,
@@ -113,6 +116,7 @@ class _BookDetailHeaderState extends ConsumerState<BookDetailHeader> {
                 style: commonSubRegularStyle.copyWith(
                   color: bookDescriptionColor,
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -122,7 +126,7 @@ class _BookDetailHeaderState extends ConsumerState<BookDetailHeader> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             bookStatusColumn(
-              padding: 30.0,
+              padding: 32.0,
               children: [
                 InkWell(
                   onTap: () async {
@@ -184,17 +188,16 @@ class _BookDetailHeaderState extends ConsumerState<BookDetailHeader> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => SearchDetailUserInfosScreen(
-                      title: '완독했어요',
+                    builder: (_) =>
+                        SearchDetailRecommendationFeedUserInfosScreen(
                       isbn13: widget.isbn13,
-                      userCount: widget.readCount,
-                      type: SearchDetailUserInfosType.readComplete,
+                      userCount: widget.recommendationFeedCount,
                     ),
                   ),
                 );
               },
               child: bookStatusColumn(
-                padding: 36.0,
+                padding: 32.0,
                 children: [
                   Column(
                     children: [
@@ -202,12 +205,12 @@ class _BookDetailHeaderState extends ConsumerState<BookDetailHeader> {
                         'assets/svg/icon/small/${widget.completed ? 'read_green.svg' : 'read.svg'}',
                       ),
                       const SizedBox(height: 4.0),
-                      const Text('완독했어요', style: bookStatusStyle),
+                      const Text('추천했어요', style: bookStatusStyle),
                     ],
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    '${widget.readCount} 명',
+                    '${widget.recommendationFeedCount} 명',
                     style: bookStatusCountStyle,
                   ),
                 ],
@@ -219,7 +222,7 @@ class _BookDetailHeaderState extends ConsumerState<BookDetailHeader> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => SearchDetailUserInfosScreen(
-                      title: '소장하고있어요',
+                      title: '소장했어요',
                       isbn13: widget.isbn13,
                       userCount: widget.holderCount,
                       type: SearchDetailUserInfosType.holder,
@@ -228,7 +231,7 @@ class _BookDetailHeaderState extends ConsumerState<BookDetailHeader> {
                 );
               },
               child: bookStatusColumn(
-                padding: 24.0,
+                padding: 32.0,
                 lastBox: true,
                 children: [
                   Column(
@@ -237,7 +240,7 @@ class _BookDetailHeaderState extends ConsumerState<BookDetailHeader> {
                         'assets/svg/icon/small/${widget.newRegistered || widget.registered ? 'holder_green.svg' : 'holder.svg'}',
                       ),
                       const SizedBox(height: 4.0),
-                      const Text('소장하고있어요', style: bookStatusStyle),
+                      const Text('소장했어요', style: bookStatusStyle),
                     ],
                   ),
                   const SizedBox(height: 8.0),

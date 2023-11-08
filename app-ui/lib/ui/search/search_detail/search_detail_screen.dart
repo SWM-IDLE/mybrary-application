@@ -189,6 +189,8 @@ class _SearchDetailScreenState extends State<SearchDetailScreen> {
                           interestCount: bookSearchDetail.interestCount!,
                           readCount: bookSearchDetail.readCount!,
                           holderCount: bookSearchDetail.holderCount!,
+                          recommendationFeedCount:
+                              bookSearchDetail.recommendationFeedCount!,
                           isbn13: bookSearchDetail.isbn13!,
                         ),
                         const BookDetailDivider(),

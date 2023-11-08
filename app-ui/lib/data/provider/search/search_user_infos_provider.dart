@@ -61,4 +61,14 @@ class SearchUserInfosStateNotifier extends StateNotifier<CommonResponseBase> {
       return;
     }
   }
+
+  void getRecommendationFeedsUserInfos(String isbn13) async {
+    if (state is! CommonModel) {
+      state = await repository.getRecommendationFeedsUserInfos(isbn13: isbn13);
+    }
+
+    if (state is! CommonModel) {
+      return;
+    }
+  }
 }

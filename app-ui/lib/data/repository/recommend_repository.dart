@@ -5,6 +5,7 @@ import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/recommend/my_recommend_feed_model.dart';
 import 'package:mybrary/data/model/recommend/my_recommend_model.dart';
 import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
+import 'package:mybrary/data/model/search/book_recommendation_feed_users_model.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/common/dio_provider.dart';
 import 'package:retrofit/retrofit.dart';
