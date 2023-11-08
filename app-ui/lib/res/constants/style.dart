@@ -500,6 +500,21 @@ const recommendMoreButtonStyle = TextStyle(
   letterSpacing: -1,
 );
 
+final recommendBoxStyle = ShapeDecoration(
+  color: commonWhiteColor,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(20.0),
+  ),
+  shadows: [
+    BoxShadow(
+      color: commonBlackColor.withOpacity(0.1),
+      blurRadius: 10,
+      offset: const Offset(0, 0),
+      spreadRadius: 2,
+    ),
+  ],
+);
+
 // padding
 final double paddingTopHeight =
     Size.fromHeight(const SliverAppBar().toolbarHeight).height * 2;

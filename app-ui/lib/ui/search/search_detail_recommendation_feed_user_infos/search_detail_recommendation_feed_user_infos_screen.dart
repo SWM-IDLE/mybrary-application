@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/provider/search/search_recommendation_feed_users_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
+import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
+import 'package:mybrary/ui/recommend/components/recommend_feed_content.dart';
+import 'package:mybrary/ui/recommend/components/recommend_feed_keyword.dart';
+import 'package:mybrary/ui/search/search_book_list/components/search_user_info.dart';
+import 'package:mybrary/utils/logics/common_utils.dart';
 
 class SearchDetailRecommendationFeedUserInfosScreen
     extends ConsumerStatefulWidget {
@@ -91,12 +96,63 @@ class _SearchDetailRecommendationFeedUserInfosScreenState
                 itemBuilder: (context, index) {
                   final user = recommendationFeedUserInfoList[index];
 
-                  return ListTile(
-                    leading: CircleAvatar(
-                      radius: 20.0,
-                      backgroundImage: NetworkImage(user.profileImageUrl),
+                  return InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierColor: commonBlackColor.withOpacity(0.2),
+                        builder: (context) {
+                          return AlertDialog(
+                            elevation: 0,
+                            backgroundColor: Colors.transparent,
+                            content: Container(
+                              decoration: recommendBoxStyle,
+                              child: Wrap(
+                                alignment: WrapAlignment.center,
+                                children: [
+                                  RecommendFeedKeyword(
+                                    recommendationTargetNames:
+                                        user.recommendationTargetNames,
+                                  ),
+                                  commonDivider(
+                                    dividerColor: greyF7F7F7,
+                                    dividerThickness: 4,
+                                  ),
+                                  RecommendFeedContent(
+                                    content: user.content,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SearchUserInfo(
+                          nickname: user.nickname,
+                          profileImageUrl: user.profileImageUrl,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              '추천피드 구경',
+                              style: recommendSubStyle.copyWith(
+                                fontSize: 15.0,
+                                color: grey262626,
+                              ),
+                            ),
+                            const Icon(
+                              Icons.chevron_right_rounded,
+                              color: grey262626,
+                              size: 22.0,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    title: Text(user.nickname),
                   );
                 },
                 itemCount: recommendationFeedUserInfoList.length,

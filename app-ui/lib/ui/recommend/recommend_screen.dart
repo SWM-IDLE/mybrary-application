@@ -8,6 +8,7 @@ import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
+import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_book_info.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_content.dart';
@@ -67,6 +68,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
   @override
   Widget build(BuildContext context) {
     final recommendFeedData = ref.watch(recommendFeedProvider);
+
     if (recommendFeedData == null) {
       return DefaultLayout(
         child: CustomScrollView(
@@ -77,6 +79,25 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
             _recommendAppBar(),
             const SliverToBoxAdapter(
               child: CircularLoading(),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (recommendFeedData.recommendationFeeds.isEmpty) {
+      return DefaultLayout(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          slivers: [
+            _recommendAppBar(),
+            const SliverToBoxAdapter(
+              child: DataError(
+                icon: Icons.feed_rounded,
+                errorMessage: '아직 작성된 추천 피드가 없어요 :(',
+              ),
             ),
           ],
         ),
@@ -118,20 +139,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
                       bottom: 16.0,
                     ),
                     child: Container(
-                      decoration: ShapeDecoration(
-                        color: commonWhiteColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        shadows: [
-                          BoxShadow(
-                            color: commonBlackColor.withOpacity(0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 0),
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
+                      decoration: recommendBoxStyle,
                       child: Wrap(
                         alignment: WrapAlignment.center,
                         children: [
