@@ -1,4 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
@@ -48,6 +50,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
 
+    sendNotificationMessage();
+
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
@@ -72,6 +76,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (UserState.forceUpdate == true) {
       return _showForceUpdateAlert();
     }
+  }
+
+  void sendNotificationMessage() {
+    setState(() {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+        RemoteNotification? notification = message.notification;
+
+        if (notification != null) {
+          FlutterLocalNotificationsPlugin().show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            const NotificationDetails(
+              android: AndroidNotificationDetails(
+                'high_importance_channel',
+                'high_importance_notification',
+                importance: Importance.max,
+              ),
+            ),
+          );
+        }
+      });
+    });
   }
 
   void _showUpdateAlert() {

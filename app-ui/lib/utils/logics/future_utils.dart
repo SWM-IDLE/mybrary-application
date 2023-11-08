@@ -96,3 +96,23 @@ void initializeNotification() async {
     sound: true,
   );
 }
+
+Future<void> showNotification() async {
+  const AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails('channel id', 'channel name',
+          channelDescription: 'channel description',
+          importance: Importance.max,
+          priority: Priority.max,
+          showWhen: false);
+
+  const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: DarwinNotificationDetails(badgeNumber: 1));
+
+  await FlutterLocalNotificationsPlugin().show(
+    0,
+    'test title',
+    'test body',
+    notificationDetails,
+  );
+}
