@@ -492,6 +492,14 @@ const recommendFeedBookSubStyle = TextStyle(
   letterSpacing: -1,
 );
 
+const recommendMoreButtonStyle = TextStyle(
+  color: grey262626,
+  fontSize: 15.0,
+  fontWeight: FontWeight.w500,
+  height: 1.2,
+  letterSpacing: -1,
+);
+
 // padding
 final double paddingTopHeight =
     Size.fromHeight(const SliverAppBar().toolbarHeight).height * 2;

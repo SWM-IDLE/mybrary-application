@@ -54,157 +54,175 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: () {
-                  moveToUserProfile(
-                    context: context,
-                    myUserId: _userId,
-                    userId: widget.targetUserId,
-                    nickname: widget.nickname,
-                  );
-                },
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 18.0,
-                      backgroundColor: primaryColor,
-                      backgroundImage: Image.network(
-                        widget.profileImageUrl,
-                        errorBuilder: (context, error, stackTrace) =>
-                            SvgPicture.asset(
-                          'assets/svg/icon/profile_default.svg',
-                        ),
-                      ).image,
-                    ),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      widget.nickname,
-                      style: recommendFeedHeaderStyle,
-                    ),
-                  ],
-                ),
-              ),
-              Row(
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SearchDetailUserInfosScreen(
-                            title: '읽고싶어요',
-                            isbn13: widget.isbn13,
-                            userCount: _newInterestCount,
-                            type: SearchDetailUserInfosType.interest,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Text.rich(
-                      TextSpan(
-                        text: _newInterestCount.toString(),
-                        style: recommendFeedHeaderStyle.copyWith(
-                          color: primaryColor,
-                        ),
-                        children: const [
-                          TextSpan(
-                            text: ' 명의 픽',
-                            style: recommendFeedHeaderStyle,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      final result =
-                          await _bookRepository.createOrDeleteInterestBook(
+                      moveToUserProfile(
                         context: context,
-                        userId: _userId,
-                        isbn13: widget.isbn13,
+                        myUserId: _userId,
+                        userId: widget.targetUserId,
+                        nickname: widget.nickname,
                       );
-
-                      setState(() {
-                        onTapInterestBook = result.interested!;
-
-                        _isInterestBook(
-                          _newInterested,
-                          _newInterestCount,
-                          context,
-                        );
-                      });
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 6.0,
-                        right: 2.0,
-                      ),
-                      child: SvgPicture.asset(
-                          'assets/svg/icon/small/${_newInterested ? 'heart_green' : 'heart'}.svg'),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 18.0,
+                          backgroundColor: primaryColor,
+                          backgroundImage: Image.network(
+                            widget.profileImageUrl,
+                            errorBuilder: (context, error, stackTrace) =>
+                                SvgPicture.asset(
+                              'assets/svg/icon/profile_default.svg',
+                            ),
+                          ).image,
+                        ),
+                        const SizedBox(width: 8.0),
+                        Text(
+                          widget.nickname,
+                          style: recommendFeedHeaderStyle,
+                        ),
+                      ],
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _showReportButton = !_showReportButton;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 6.0,
-                        right: 4.0,
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SearchDetailUserInfosScreen(
+                                title: '읽고싶어요',
+                                isbn13: widget.isbn13,
+                                userCount: _newInterestCount,
+                                type: SearchDetailUserInfosType.interest,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Text.rich(
+                            TextSpan(
+                              text: _newInterestCount.toString(),
+                              style: recommendFeedHeaderStyle.copyWith(
+                                color: primaryColor,
+                              ),
+                              children: const [
+                                TextSpan(
+                                  text: ' 명의 픽',
+                                  style: recommendFeedHeaderStyle,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                      child: SvgPicture.asset(
-                        'assets/svg/icon/small/more_vert.svg',
+                      InkWell(
+                        onTap: () async {
+                          final result =
+                              await _bookRepository.createOrDeleteInterestBook(
+                            context: context,
+                            userId: _userId,
+                            isbn13: widget.isbn13,
+                          );
+
+                          setState(() {
+                            onTapInterestBook = result.interested!;
+
+                            _isInterestBook(
+                              _newInterested,
+                              _newInterestCount,
+                              context,
+                            );
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 6.0,
+                            right: 4.0,
+                          ),
+                          child: SvgPicture.asset(
+                              'assets/svg/icon/small/${_newInterested ? 'heart_green' : 'heart'}.svg'),
+                        ),
                       ),
-                    ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _showReportButton = !_showReportButton;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                            right: 6.0,
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/svg/icon/small/more_vert.svg',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
-          if (_showReportButton)
-            Positioned(
-              bottom: -6,
-              right: 14,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 8.0,
-                ),
-                decoration: BoxDecoration(
-                  color: commonWhiteColor,
-                  borderRadius: BorderRadius.circular(4.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: commonBlackColor.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 0),
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: Text(
-                  '신고하기',
-                  style: commonSubMediumStyle.copyWith(
-                    fontSize: 14.0,
-                    height: 1.2,
-                    letterSpacing: -1,
+            ),
+            commonDivider(
+              dividerColor: greyF7F7F7,
+              dividerThickness: 4,
+            ),
+          ],
+        ),
+        if (_showReportButton)
+          Positioned(
+            top: 20,
+            right: 32,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
+              decoration: BoxDecoration(
+                color: commonWhiteColor,
+                borderRadius: BorderRadius.circular(4.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: commonBlackColor.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 0),
+                    spreadRadius: 2,
                   ),
-                ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    '신고하기',
+                    style: recommendMoreButtonStyle,
+                  ),
+                  if (widget.targetUserId == _userId) ...[
+                    const SizedBox(height: 14.0),
+                    const Text(
+                      '삭제하기',
+                      style: recommendMoreButtonStyle,
+                    ),
+                  ]
+                ],
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 

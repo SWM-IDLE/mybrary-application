@@ -129,10 +129,6 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
                           interestCount: feed.interestCount,
                           interested: feed.interested,
                         ),
-                        commonDivider(
-                          dividerColor: greyF7F7F7,
-                          dividerThickness: 4,
-                        ),
                         RecommendFeedBookInfo(
                           isbn13: feed.isbn13,
                           thumbnailUrl: feed.thumbnailUrl,
