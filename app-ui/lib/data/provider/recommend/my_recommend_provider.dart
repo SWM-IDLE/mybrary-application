@@ -124,6 +124,7 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
     required String userId,
     required int recommendationFeedId,
     required BuildContext context,
+    required void Function() afterSuccessDelete,
   }) async {
     try {
       commonLoadingAlert(
@@ -144,8 +145,7 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
             snackBarText: '추천 피드가 삭제되었어요 !',
           );
 
-          Navigator.pop(context);
-          Navigator.pop(context, true);
+          afterSuccessDelete();
         },
       );
     } on DioException catch (err) {

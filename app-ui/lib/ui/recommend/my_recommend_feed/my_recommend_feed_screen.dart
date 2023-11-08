@@ -26,6 +26,7 @@ class MyRecommendFeedScreen extends ConsumerStatefulWidget {
 
 class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
   final _userId = UserState.userId;
+
   late bool _refreshRecommendFeedPost;
 
   @override
@@ -167,12 +168,67 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                                   ),
                                 ],
                               ),
-                              Text(
-                                myRecommendFeedData[index].createdAt,
-                                style: recommendBookSubStyle.copyWith(
-                                  color: grey777777,
-                                  fontSize: 13.0,
-                                ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    myRecommendFeedData[index].createdAt,
+                                    style: recommendBookSubStyle.copyWith(
+                                      color: grey777777,
+                                      fontSize: 13.0,
+                                    ),
+                                  ),
+                                  if (widget.userId == _userId)
+                                    InkWell(
+                                      onTap: () {
+                                        commonShowConfirmOrCancelDialog(
+                                          context: context,
+                                          title: '삭제',
+                                          content: '해당 마이 추천 피드를\n삭제 하시겠습니까?',
+                                          cancelButtonText: '취소',
+                                          cancelButtonOnTap: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          confirmButtonText: '삭제하기',
+                                          confirmButtonOnTap: () {
+                                            ref
+                                                .watch(myRecommendProvider
+                                                    .notifier)
+                                                .deleteRecommendFeed(
+                                                  context: context,
+                                                  userId: _userId,
+                                                  recommendationFeedId:
+                                                      myRecommendFeedData[index]
+                                                          .recommendationFeedId,
+                                                  afterSuccessDelete: () {
+                                                    Future.delayed(
+                                                        const Duration(
+                                                            milliseconds: 500),
+                                                        () {
+                                                      Navigator.pop(context);
+                                                      ref
+                                                          .read(
+                                                              myRecommendProvider
+                                                                  .notifier)
+                                                          .getRecommendFeedList(
+                                                              userId: _userId);
+                                                    });
+                                                  },
+                                                );
+                                          },
+                                          confirmButtonColor: commonRedColor,
+                                          confirmButtonTextColor:
+                                              commonWhiteColor,
+                                        );
+                                      },
+                                      child: const Icon(
+                                        Icons.delete_rounded,
+                                        color: grey777777,
+                                        size: 16.0,
+                                      ),
+                                    ),
+                                ],
                               ),
                             ],
                           ),

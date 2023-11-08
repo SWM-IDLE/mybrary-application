@@ -25,6 +25,7 @@ class RecommendFeedDataModel {
   final String profileImageUrl;
   final int myBookId;
   final int bookId;
+  final int recommendationFeedId;
   final String title;
   final String thumbnailUrl;
   final String isbn13;
@@ -41,6 +42,7 @@ class RecommendFeedDataModel {
     required this.profileImageUrl,
     required this.myBookId,
     required this.bookId,
+    required this.recommendationFeedId,
     required this.title,
     required this.thumbnailUrl,
     required this.isbn13,

@@ -31,6 +31,7 @@ class MyRecommendScreen extends ConsumerStatefulWidget {
 class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
   final _userId = UserState.userId;
 
+  final FocusNode _recommendKeywordFocusNode = FocusNode();
   final TextEditingController _recommendKeywordListController =
       TextEditingController();
   final TextEditingController _recommendContentController =
@@ -134,6 +135,10 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
                           userId: _userId,
                           recommendationFeedId:
                               widget.myRecommendFeedData!.recommendationFeedId,
+                          afterSuccessDelete: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context, true);
+                          },
                         );
                   },
                   confirmButtonColor: commonRedColor,
@@ -204,107 +209,103 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
             ),
           ),
         ],
-        child: LayoutBuilder(
-          builder: (context, constraint) {
-            return SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics(),
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MyRecommendHeader(
+                recommendFeedId:
+                    widget.myRecommendFeedData?.recommendationFeedId,
+                bookId: _bookId,
+                bookTitle: _bookTitle,
+                thumbnailUrl: _thumbnailUrl,
+                bookAuthor: _bookAuthor,
+                onTapAddBook: () async {
+                  if (_thumbnailUrl == '') {
+                    await _addMyBookToMyRecommend(context: context);
+                  }
+                },
+                onTapEditBook: () async {
+                  await _addMyBookToMyRecommend(context: context);
+                },
               ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraint.maxHeight),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyRecommendHeader(
-                      recommendFeedId:
-                          widget.myRecommendFeedData?.recommendationFeedId,
-                      bookId: _bookId,
-                      bookTitle: _bookTitle,
-                      thumbnailUrl: _thumbnailUrl,
-                      bookAuthor: _bookAuthor,
-                      onTapAddBook: () async {
-                        if (_thumbnailUrl == '') {
-                          await _addMyBookToMyRecommend(context: context);
-                        }
-                      },
-                      onTapEditBook: () async {
-                        await _addMyBookToMyRecommend(context: context);
-                      },
-                    ),
-                    commonDivider(
-                      dividerColor: greyF7F7F7,
-                      dividerThickness: 4,
-                    ),
-                    MyRecommendKeyword(
-                      recommendKeywordListController:
-                          _recommendKeywordListController,
-                      recommendKeywordList: _recommendKeywordList,
-                      onChanged: (value) {
-                        setState(() {
-                          _clearRecommendKeyword = value.isNotEmpty;
-                        });
-                      },
-                      onFieldSubmitted: (value) {
-                        setState(() {
-                          if (_recommendKeywordList.contains(value)) {
-                            return showCommonSnackBarMessage(
-                              context: context,
-                              snackBarText: '이미 추가된 키워드입니다 :)',
-                            );
-                          }
+              commonDivider(
+                dividerColor: greyF7F7F7,
+                dividerThickness: 4,
+              ),
+              MyRecommendKeyword(
+                focusNode: _recommendKeywordFocusNode,
+                recommendKeywordListController: _recommendKeywordListController,
+                recommendKeywordList: _recommendKeywordList,
+                onChanged: (value) {
+                  setState(() {
+                    _clearRecommendKeyword = value.isNotEmpty;
+                  });
+                },
+                onFieldSubmitted: (value) {
+                  setState(() {
+                    if (_recommendKeywordList.length < 5) {
+                      FocusScope.of(context)
+                          .autofocus(_recommendKeywordFocusNode);
+                    }
 
-                          if (value.isNotEmpty) {
-                            _recommendKeywordList.add(value);
-                            _recommendKeywordListController.text = '';
-                          }
-                        });
-                      },
-                      clearRecommendKeyword: _clearRecommendKeyword,
-                      onTapClearRecommendKeywordText: () {
-                        setState(() {
-                          _recommendKeywordListController.text = '';
-                          _clearRecommendKeyword = false;
-                        });
-                      },
-                      onTapRemoveRecommendKeyword: (index) {
-                        setState(() {
-                          _recommendKeywordList.removeAt(index);
-                        });
-                      },
-                    ),
-                    commonDivider(
-                      dividerColor: greyF7F7F7,
-                      dividerThickness: 4,
-                    ),
-                    Stack(
-                      children: [
-                        MyRecommendContent(
-                          recommendContentController:
-                              _recommendContentController,
-                        ),
-                        if (_notValidContent)
-                          Positioned(
-                            bottom: 10,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 30.0),
-                              child: Text(
-                                '5자 이상 입력해주세요.',
-                                style: commonSubThinStyle.copyWith(
-                                  color: commonRedColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 40.0),
-                  ],
-                ),
+                    if (_recommendKeywordList.contains(value)) {
+                      return showCommonSnackBarMessage(
+                        context: context,
+                        snackBarText: '이미 추가된 키워드입니다 :)',
+                      );
+                    }
+
+                    if (value.isNotEmpty) {
+                      _recommendKeywordList.add(value);
+                      _recommendKeywordListController.text = '';
+                    }
+                  });
+                },
+                clearRecommendKeyword: _clearRecommendKeyword,
+                onTapClearRecommendKeywordText: () {
+                  setState(() {
+                    _recommendKeywordListController.text = '';
+                    _clearRecommendKeyword = false;
+                  });
+                },
+                onTapRemoveRecommendKeyword: (index) {
+                  setState(() {
+                    _recommendKeywordList.removeAt(index);
+                  });
+                },
               ),
-            );
-          },
+              commonDivider(
+                dividerColor: greyF7F7F7,
+                dividerThickness: 4,
+              ),
+              Stack(
+                children: [
+                  MyRecommendContent(
+                    recommendContentController: _recommendContentController,
+                  ),
+                  if (_notValidContent)
+                    Positioned(
+                      bottom: 10,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Text(
+                          '5자 이상 입력해주세요.',
+                          style: commonSubThinStyle.copyWith(
+                            color: commonRedColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 40.0),
+            ],
+          ),
         ),
       ),
     );

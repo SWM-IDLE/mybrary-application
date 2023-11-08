@@ -13,6 +13,7 @@ class MyRecommendKeyword extends StatelessWidget {
   final bool clearRecommendKeyword;
   final void Function()? onTapClearRecommendKeywordText;
   final void Function(int index)? onTapRemoveRecommendKeyword;
+  final FocusNode focusNode;
 
   const MyRecommendKeyword({
     required this.recommendKeywordListController,
@@ -22,6 +23,7 @@ class MyRecommendKeyword extends StatelessWidget {
     required this.clearRecommendKeyword,
     required this.onTapClearRecommendKeywordText,
     required this.onTapRemoveRecommendKeyword,
+    required this.focusNode,
     super.key,
   });
 
@@ -55,6 +57,7 @@ class MyRecommendKeyword extends StatelessWidget {
           ),
           const SizedBox(height: 16.0),
           TextFormField(
+            focusNode: focusNode,
             controller: recommendKeywordListController,
             cursorColor: primaryColor,
             textInputAction: TextInputAction.done,
@@ -64,7 +67,7 @@ class MyRecommendKeyword extends StatelessWidget {
             maxLength: 15,
             readOnly: recommendKeywordList.length > 4 ? true : false,
             scrollPadding: EdgeInsets.only(
-              bottom: bottomInset(context) * 0.5,
+              bottom: bottomInset(context) + 200,
             ),
             onChanged: onChanged,
             onFieldSubmitted: onFieldSubmitted,

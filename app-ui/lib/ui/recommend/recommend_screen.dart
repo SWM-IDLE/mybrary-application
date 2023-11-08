@@ -10,7 +10,6 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
-import 'package:mybrary/ui/recommend/components/recommend_feed_book_info.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_content.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_header.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_keyword.dart';
@@ -30,6 +29,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
 
   final ScrollController _recommendScrollController = ScrollController();
 
+  late bool _isScrollLoading;
   late bool _isVisibleAppBar;
   late bool _refreshRecommendFeed;
 
@@ -39,6 +39,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
 
     _isVisibleAppBar = false;
     _refreshRecommendFeed = false;
+    _isScrollLoading = false;
 
     Future.delayed(const Duration(milliseconds: 500), () {
       ref
@@ -47,6 +48,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
     });
 
     _recommendScrollController.addListener(_changeAppBarState);
+    _recommendScrollController.addListener(_infiniteScrollUpdateBookList);
   }
 
   void _changeAppBarState() {
@@ -55,6 +57,17 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
         _isVisibleAppBar = true;
       } else {
         _isVisibleAppBar = false;
+      }
+    });
+  }
+
+  void _infiniteScrollUpdateBookList() {
+    setState(() {
+      if (_recommendScrollController.position.pixels >
+          _recommendScrollController.position.maxScrollExtent * 0.85) {
+        _isScrollLoading = true;
+      } else {
+        _isScrollLoading = false;
       }
     });
   }
@@ -150,9 +163,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
                             nickname: feed.nickname,
                             interestCount: feed.interestCount,
                             interested: feed.interested,
-                          ),
-                          RecommendFeedBookInfo(
-                            isbn13: feed.isbn13,
+                            recommendationFeedId: feed.recommendationFeedId,
                             thumbnailUrl: feed.thumbnailUrl,
                             title: feed.title,
                             authors: feed.authors,

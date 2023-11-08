@@ -32,14 +32,14 @@ class MyRecommendContent extends StatelessWidget {
             maxLines: 3,
             maxLength: 50,
             cursorColor: primaryColor,
-            textInputAction: TextInputAction.done,
+            textInputAction: TextInputAction.newline,
             style: recommendEditStyle.copyWith(
               color: grey262626,
               fontSize: 14.0,
             ),
             controller: recommendContentController,
             scrollPadding: EdgeInsets.only(
-              bottom: bottomInset(context),
+              bottom: bottomInset(context) + 500,
             ),
             onEditingComplete: () {
               FocusScope.of(context).unfocus();

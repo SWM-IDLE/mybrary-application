@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
+import 'package:mybrary/ui/recommend/components/recommend_feed_book_info.dart';
 import 'package:mybrary/ui/search/search_detail_user_infos/search_detail_user_infos_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
@@ -17,6 +19,10 @@ class RecommendFeedHeader extends ConsumerStatefulWidget {
   final String nickname;
   final int interestCount;
   final bool interested;
+  final int recommendationFeedId;
+  final String thumbnailUrl;
+  final String title;
+  final List<String> authors;
 
   const RecommendFeedHeader({
     required this.isbn13,
@@ -25,6 +31,10 @@ class RecommendFeedHeader extends ConsumerStatefulWidget {
     required this.nickname,
     required this.interestCount,
     required this.interested,
+    required this.recommendationFeedId,
+    required this.thumbnailUrl,
+    required this.title,
+    required this.authors,
     super.key,
   });
 
@@ -36,7 +46,7 @@ class RecommendFeedHeader extends ConsumerStatefulWidget {
 class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
   final _bookRepository = BookRepository();
 
-  late bool _showReportButton = false;
+  late bool _showMoreButton = false;
 
   bool onTapInterestBook = false;
   late bool _newInterested;
@@ -160,7 +170,7 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            _showReportButton = !_showReportButton;
+                            _showMoreButton = !_showMoreButton;
                           });
                         },
                         child: Padding(
@@ -182,9 +192,15 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
               dividerColor: greyF7F7F7,
               dividerThickness: 4,
             ),
+            RecommendFeedBookInfo(
+              isbn13: widget.isbn13,
+              thumbnailUrl: widget.thumbnailUrl,
+              title: widget.title,
+              authors: widget.authors,
+            ),
           ],
         ),
-        if (_showReportButton)
+        if (_showMoreButton)
           Positioned(
             top: 20,
             right: 32,
@@ -213,9 +229,46 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
                   ),
                   if (widget.targetUserId == _userId) ...[
                     const SizedBox(height: 14.0),
-                    const Text(
-                      '삭제하기',
-                      style: recommendMoreButtonStyle,
+                    InkWell(
+                      onTap: () {
+                        commonShowConfirmOrCancelDialog(
+                          context: context,
+                          title: '삭제',
+                          content: '해당 마이 추천 피드를\n삭제 하시겠습니까?',
+                          cancelButtonText: '취소',
+                          cancelButtonOnTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          confirmButtonText: '삭제하기',
+                          confirmButtonOnTap: () {
+                            ref
+                                .watch(myRecommendProvider.notifier)
+                                .deleteRecommendFeed(
+                                  context: context,
+                                  userId: _userId,
+                                  recommendationFeedId:
+                                      widget.recommendationFeedId,
+                                  afterSuccessDelete: () {
+                                    Future.delayed(
+                                        const Duration(milliseconds: 500), () {
+                                      Navigator.pop(context);
+                                      ref
+                                          .refresh(myRecommendProvider.notifier)
+                                          .getRecommendFeedList(
+                                            userId: _userId,
+                                          );
+                                    });
+                                  },
+                                );
+                          },
+                          confirmButtonColor: commonRedColor,
+                          confirmButtonTextColor: commonWhiteColor,
+                        );
+                      },
+                      child: const Text(
+                        '삭제하기',
+                        style: recommendMoreButtonStyle,
+                      ),
                     ),
                   ]
                 ],
