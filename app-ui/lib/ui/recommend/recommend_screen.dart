@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mybrary/data/datasource/recommend/recommend_datasource.dart';
 import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_post_provider.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
@@ -32,6 +33,8 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
   late bool _isScrollLoading;
   late bool _isVisibleAppBar;
   late bool _refreshRecommendFeed;
+  late int _lastRecommendationFeedId = 0;
+  late List<RecommendFeedDataModel> _recommendFeedList = [];
 
   @override
   void initState() {
@@ -48,7 +51,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
     });
 
     _recommendScrollController.addListener(_changeAppBarState);
-    _recommendScrollController.addListener(_infiniteScrollUpdateBookList);
+    _recommendScrollController.addListener(_infiniteScrollUpdateFeedList);
   }
 
   void _changeAppBarState() {
@@ -61,10 +64,10 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
     });
   }
 
-  void _infiniteScrollUpdateBookList() {
+  void _infiniteScrollUpdateFeedList() {
     setState(() {
       if (_recommendScrollController.position.pixels >
-          _recommendScrollController.position.maxScrollExtent * 0.85) {
+          _recommendScrollController.position.maxScrollExtent * 0.7) {
         _isScrollLoading = true;
       } else {
         _isScrollLoading = false;
@@ -117,6 +120,42 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
       );
     }
 
+    if (_recommendFeedList.isEmpty) {
+      _recommendFeedList = recommendFeedData.recommendationFeeds;
+      _lastRecommendationFeedId = recommendFeedData.lastRecommendationFeedId;
+    }
+
+    if (_isScrollLoading && _lastRecommendationFeedId != -1) {
+      final data = RecommendDataSource()
+          .getBookSearchResponse(
+              context: context,
+              userId: _userId,
+              cursor: _lastRecommendationFeedId)
+          .then((feedList) {
+        setState(() {
+          _isScrollLoading = false;
+          _recommendFeedList.addAll(feedList!.recommendationFeeds);
+          _lastRecommendationFeedId = feedList.lastRecommendationFeedId;
+        });
+      });
+
+      // ref
+      //     .watch(myRecommendProvider.notifier)
+      //     .repository
+      //     .getRecommendFeedList(
+      //         userId: _userId, cursor: _lastRecommendationFeedId)
+      //     .then((feedList) {
+      //   ref.watch(recommendFeedProvider.notifier).update((state) {
+      //     _recommendFeedList.addAll(feedList.data!.recommendationFeeds);
+      //     _lastRecommendationFeedId = feedList.data!.lastRecommendationFeedId;
+      //     return state = RecommendFeedModel(
+      //       lastRecommendationFeedId: _lastRecommendationFeedId,
+      //       recommendationFeeds: [..._recommendFeedList],
+      //     );
+      //   });
+      // });
+    }
+
     return RefreshIndicator(
       color: commonWhiteColor,
       backgroundColor: primaryColor,
@@ -142,8 +181,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  RecommendFeedDataModel feed =
-                      recommendFeedData.recommendationFeeds[index];
+                  RecommendFeedDataModel feed = _recommendFeedList[index];
                   return Padding(
                     padding: EdgeInsets.only(
                       left: 32.0,
@@ -188,7 +226,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
                     ),
                   );
                 },
-                childCount: recommendFeedData.recommendationFeeds.length,
+                childCount: _recommendFeedList.length,
               ),
             ),
             const SliverToBoxAdapter(

@@ -1,10 +1,14 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mybrary/data/model/profile/user_report_model.dart';
+import 'package:mybrary/data/provider/profile/user_report_provider.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
+import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
@@ -223,12 +227,148 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
               ),
               child: Column(
                 children: [
-                  const Text(
-                    '신고하기',
-                    style: recommendMoreButtonStyle,
-                  ),
+                  if (widget.targetUserId != _userId) ...[
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          barrierColor: commonBlackColor.withOpacity(0.2),
+                          builder: (context) {
+                            int tapReasonIndex = 0;
+                            String tapReportReason =
+                                userReportReason[tapReasonIndex];
+
+                            return AlertDialog(
+                              title: Text(
+                                '신고하기',
+                                style: commonSubBoldStyle.copyWith(
+                                  fontSize: 16.0,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              content: StatefulBuilder(
+                                builder: (BuildContext context,
+                                    StateSetter setState) {
+                                  return Wrap(
+                                    alignment: WrapAlignment.center,
+                                    children: userReportReason.mapIndexed(
+                                      (index, reason) {
+                                        return InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              tapReasonIndex = index;
+                                              tapReportReason = reason;
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12.0,
+                                              vertical: 8.0,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  reason,
+                                                  style: recommendBookSubStyle
+                                                      .copyWith(
+                                                    color: grey262626,
+                                                    fontSize: 15.0,
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  tapReasonIndex == index
+                                                      ? Icons
+                                                          .radio_button_checked_rounded
+                                                      : Icons
+                                                          .radio_button_off_rounded,
+                                                  color: tapReasonIndex == index
+                                                      ? grey262626
+                                                      : greyDDDDDD,
+                                                  size: 20.0,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ).toList(),
+                                  );
+                                },
+                              ),
+                              actions: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          color: greyF4F4F4,
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12.0,
+                                          ),
+                                          child: const Text(
+                                            '취소',
+                                            style: commonSubMediumStyle,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          ref
+                                              .watch(
+                                                  userReportProvider.notifier)
+                                              .createUserReport(
+                                                context: context,
+                                                userId: _userId,
+                                                body: UserReportModel(
+                                                  reportedUserId:
+                                                      widget.targetUserId,
+                                                  reportedReason:
+                                                      tapReportReason,
+                                                ),
+                                              );
+                                        },
+                                        child: Container(
+                                          color: primaryColor,
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12.0,
+                                          ),
+                                          child: Text(
+                                            '등록',
+                                            style:
+                                                commonSubMediumStyle.copyWith(
+                                              color: commonWhiteColor,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              actionsPadding: const EdgeInsets.only(top: 8.0),
+                            );
+                          },
+                        );
+                      },
+                      child: const Text(
+                        '신고하기',
+                        style: recommendMoreButtonStyle,
+                      ),
+                    ),
+                  ],
                   if (widget.targetUserId == _userId) ...[
-                    const SizedBox(height: 14.0),
                     InkWell(
                       onTap: () {
                         commonShowConfirmOrCancelDialog(

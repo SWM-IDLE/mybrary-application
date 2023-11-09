@@ -7,7 +7,7 @@ import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
 import 'package:mybrary/data/repository/recommend_repository.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
-final recommendFeedProvider = Provider<RecommendFeedModel?>((ref) {
+final recommendFeedProvider = StateProvider<RecommendFeedModel?>((ref) {
   final state = ref.watch(myRecommendProvider);
 
   if (state is! CommonModel) {
@@ -42,11 +42,41 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
   }) async {
     try {
       if (state is! CommonModel) {
-        state = await repository.getRecommendFeedList(
-          userId: userId,
-          cursor: cursor,
-          limit: limit,
-        );
+        if (cursor == null) {
+          state = await repository.getRecommendFeedList(
+            userId: userId,
+            cursor: cursor,
+            limit: limit,
+          );
+        }
+
+        if (cursor != null) {
+          final pState = await repository.getRecommendFeedList(
+            userId: userId,
+            limit: limit,
+          );
+
+          await repository
+              .getRecommendFeedList(
+            userId: userId,
+            cursor: cursor,
+            limit: limit,
+          )
+              .then((feedList) {
+            state = CommonModel(
+              status: feedList.status,
+              message: feedList.message,
+              data: RecommendFeedModel(
+                lastRecommendationFeedId:
+                    feedList.data!.lastRecommendationFeedId,
+                recommendationFeeds: [
+                  ...pState.data!.recommendationFeeds,
+                  ...feedList.data!.recommendationFeeds,
+                ],
+              ),
+            );
+          });
+        }
       }
     } on DioException catch (err) {
       throw Exception(err);
@@ -59,17 +89,16 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
     required BuildContext context,
   }) async {
     try {
+      await repository.createRecommendFeed(
+        context: context,
+        userId: userId,
+        body: body,
+      );
+
+      if (!mounted) return;
       commonLoadingAlert(
         context: context,
         loadingAction: () async {
-          await repository.createRecommendFeed(
-            context: context,
-            userId: userId,
-            body: body,
-          );
-
-          if (!mounted) return;
-
           showCommonSnackBarMessage(
             context: context,
             snackBarText: '추천 피드가 등록되었어요 :)',
