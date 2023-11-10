@@ -4,6 +4,7 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
+import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
 import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/utils/logics/ui_utils.dart';
@@ -403,5 +404,25 @@ void commonLoadingAlert({
         ),
       );
     },
+  );
+}
+
+Widget moveNextToInterestBookListScreen({
+  required BuildContext context,
+}) {
+  return InkWell(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const InterestBookListScreen(),
+        ),
+      );
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    },
+    child: const Text(
+      '관심북으로 이동',
+      style: commonSnackBarButtonStyle,
+    ),
   );
 }

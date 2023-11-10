@@ -11,7 +11,6 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
-import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
 import 'package:mybrary/ui/recommend/components/recommend_feed_book_info.dart';
 import 'package:mybrary/ui/search/search_detail_user_infos/search_detail_user_infos_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
@@ -169,10 +168,10 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
                           setState(() {
                             onTapInterestBook = result.interested!;
 
-                            _isInterestBook(
-                              _newInterested,
-                              _newInterestCount,
-                              context,
+                            _enrollInterestBook(
+                              interested: _newInterested,
+                              interestCount: _newInterestCount,
+                              context: context,
                             );
                           });
                         },
@@ -486,18 +485,20 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
     );
   }
 
-  void _isInterestBook(
-    bool interested,
-    int interestCount,
-    BuildContext context,
-  ) {
+  void _enrollInterestBook({
+    required bool interested,
+    required int interestCount,
+    required BuildContext context,
+  }) {
     if (!interested && onTapInterestBook) {
       _newInterested = true;
       _newInterestCount = interestCount + 1;
       showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서에 담겼습니다.',
-        snackBarAction: _moveNextToInterestBookListScreen(),
+        snackBarAction: moveNextToInterestBookListScreen(
+          context: context,
+        ),
       );
     } else if (interested && onTapInterestBook == false) {
       _newInterested = false;
@@ -512,7 +513,9 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
       showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서에 담겼습니다.',
-        snackBarAction: _moveNextToInterestBookListScreen(),
+        snackBarAction: moveNextToInterestBookListScreen(
+          context: context,
+        ),
       );
     } else {
       _newInterested = false;
@@ -522,23 +525,5 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
         snackBarText: '관심 도서가 삭제되었습니다.',
       );
     }
-  }
-
-  Widget _moveNextToInterestBookListScreen() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const InterestBookListScreen(),
-          ),
-        );
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      },
-      child: const Text(
-        '관심북으로 이동',
-        style: commonSnackBarButtonStyle,
-      ),
-    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mybrary/data/model/recommend/my_recommend_feed_model.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_post_provider.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
@@ -9,6 +10,7 @@ import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/recommend/my_recommend//my_recommend_screen.dart';
+import 'package:mybrary/ui/recommend/my_recommend_feed/components/my_recommend_feed_book_info.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
@@ -136,99 +138,17 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    myRecommendFeedData[index].title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: recommendBookTitleStyle,
-                                  ),
-                                  const SizedBox(height: 2.0),
-                                  Text(
+                              MyRecommendFeedBookInfo(
+                                title: myRecommendFeedData[index].title,
+                                recommendationTargetNames:
                                     myRecommendFeedData[index]
-                                        .recommendationTargetNames
-                                        .map((targetName) => targetName)
-                                        .join(', '),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: recommendBookSubStyle.copyWith(
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6.0),
-                                  Text(
-                                    myRecommendFeedData[index].content,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: recommendBookSubStyle.copyWith(
-                                      fontSize: 13.0,
-                                    ),
-                                  ),
-                                ],
+                                        .recommendationTargetNames,
+                                content: myRecommendFeedData[index].content,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    myRecommendFeedData[index].createdAt,
-                                    style: recommendBookSubStyle.copyWith(
-                                      color: grey777777,
-                                      fontSize: 13.0,
-                                    ),
-                                  ),
-                                  if (widget.userId == _userId)
-                                    InkWell(
-                                      onTap: () {
-                                        commonShowConfirmOrCancelDialog(
-                                          context: context,
-                                          title: '삭제',
-                                          content: '해당 마이 추천 피드를\n삭제 하시겠습니까?',
-                                          cancelButtonText: '취소',
-                                          cancelButtonOnTap: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          confirmButtonText: '삭제하기',
-                                          confirmButtonOnTap: () {
-                                            ref
-                                                .watch(myRecommendProvider
-                                                    .notifier)
-                                                .deleteRecommendFeed(
-                                                  context: context,
-                                                  userId: _userId,
-                                                  recommendationFeedId:
-                                                      myRecommendFeedData[index]
-                                                          .recommendationFeedId,
-                                                  afterSuccessDelete: () {
-                                                    Future.delayed(
-                                                        const Duration(
-                                                            milliseconds: 500),
-                                                        () {
-                                                      Navigator.pop(context);
-                                                      ref
-                                                          .read(
-                                                              myRecommendProvider
-                                                                  .notifier)
-                                                          .getRecommendFeedList(
-                                                              userId: _userId);
-                                                    });
-                                                  },
-                                                );
-                                          },
-                                          confirmButtonColor: commonRedColor,
-                                          confirmButtonTextColor:
-                                              commonWhiteColor,
-                                        );
-                                      },
-                                      child: const Icon(
-                                        Icons.delete_rounded,
-                                        color: grey777777,
-                                        size: 16.0,
-                                      ),
-                                    ),
-                                ],
+                              _createdAtAndDeleteRecommendFeedComponent(
+                                myRecommendFeedData,
+                                index,
+                                context,
                               ),
                             ],
                           ),
@@ -255,5 +175,76 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
         ),
       ),
     );
+  }
+
+  Row _createdAtAndDeleteRecommendFeedComponent(
+    List<MyRecommendFeedDataModel> myRecommendFeedData,
+    int index,
+    BuildContext context,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          myRecommendFeedData[index].createdAt,
+          style: recommendBookSubStyle.copyWith(
+            color: grey777777,
+            fontSize: 13.0,
+          ),
+        ),
+        if (widget.userId == _userId)
+          InkWell(
+            onTap: () {
+              commonShowConfirmOrCancelDialog(
+                context: context,
+                title: '삭제',
+                content: '해당 마이 추천 피드를\n삭제 하시겠습니까?',
+                cancelButtonText: '취소',
+                cancelButtonOnTap: () {
+                  Navigator.of(context).pop();
+                },
+                confirmButtonText: '삭제하기',
+                confirmButtonOnTap: () {
+                  _deleteRecommendFeed(
+                    context,
+                    myRecommendFeedData,
+                    index,
+                  );
+                },
+                confirmButtonColor: commonRedColor,
+                confirmButtonTextColor: commonWhiteColor,
+              );
+            },
+            child: const Icon(
+              Icons.delete_rounded,
+              color: grey777777,
+              size: 16.0,
+            ),
+          ),
+      ],
+    );
+  }
+
+  void _deleteRecommendFeed(
+    BuildContext context,
+    List<MyRecommendFeedDataModel> myRecommendFeedData,
+    int index,
+  ) {
+    ref.watch(myRecommendProvider.notifier).deleteRecommendFeed(
+          context: context,
+          userId: _userId,
+          recommendationFeedId: myRecommendFeedData[index].recommendationFeedId,
+          afterSuccessDelete: () {
+            Future.delayed(const Duration(milliseconds: 500), () {
+              Navigator.pop(context);
+              ref
+                  .refresh(recommendProvider.notifier)
+                  .getMyRecommendPostList(userId: _userId);
+              ref
+                  .refresh(myRecommendProvider.notifier)
+                  .getRecommendFeedList(userId: _userId);
+            });
+          },
+        );
   }
 }
