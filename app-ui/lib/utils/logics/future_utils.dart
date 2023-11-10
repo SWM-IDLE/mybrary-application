@@ -1,5 +1,9 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mybrary/res/constants/color.dart';
@@ -78,23 +82,64 @@ void initializeNotification() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  AndroidNotificationChannel? androidNotificationChannel;
+  if (Platform.isIOS) {
+    await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+  } else if (Platform.isAndroid) {
+    androidNotificationChannel = const AndroidNotificationChannel(
+      'important_channel', // id
+      'Important_Notifications', // name
+      description: '중요도가 높은 알림을 위한 채널.',
+      importance: Importance.high,
+    );
 
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(const AndroidNotificationChannel(
-          'high_importance_channel', 'high_importance_notification',
-          importance: Importance.max));
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(androidNotificationChannel);
 
-  await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
-    android: AndroidInitializationSettings("@mipmap/ic_launcher"),
-  ));
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(const AndroidNotificationChannel(
+            'high_importance_channel', 'high_importance_notification',
+            importance: Importance.max));
 
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+    await flutterLocalNotificationsPlugin
+        .initialize(const InitializationSettings(
+      android: AndroidInitializationSettings("@mipmap/ic_launcher"),
+    ));
+
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    getToken();
+  }
+}
+
+Future<void> getToken() async {
+  String? token;
+  if (defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.macOS) {
+    token = await FirebaseMessaging.instance.getAPNSToken();
+  }
+  // aos
+  else {
+    token = await FirebaseMessaging.instance.getToken();
+  }
+  log("fcmToken : $token");
 }
 
 Future<void> showNotification() async {

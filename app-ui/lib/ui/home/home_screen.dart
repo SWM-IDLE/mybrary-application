@@ -94,6 +94,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 'high_importance_notification',
                 importance: Importance.max,
               ),
+              iOS: DarwinNotificationDetails(
+                presentAlert: true,
+                presentBadge: true,
+                presentSound: true,
+              ),
             ),
           );
         }
