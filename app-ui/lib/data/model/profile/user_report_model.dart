@@ -5,11 +5,11 @@ part 'user_report_model.g.dart';
 @JsonSerializable()
 class UserReportModel {
   final String reportedUserId;
-  final String reportedReason;
+  final String reportReason;
 
   UserReportModel({
     required this.reportedUserId,
-    required this.reportedReason,
+    required this.reportReason,
   });
 
   factory UserReportModel.fromJson(Map<String, dynamic> json) =>

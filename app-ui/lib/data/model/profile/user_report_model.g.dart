@@ -9,11 +9,11 @@ part of 'user_report_model.dart';
 UserReportModel _$UserReportModelFromJson(Map<String, dynamic> json) =>
     UserReportModel(
       reportedUserId: json['reportedUserId'] as String,
-      reportedReason: json['reportedReason'] as String,
+      reportReason: json['reportReason'] as String,
     );
 
 Map<String, dynamic> _$UserReportModelToJson(UserReportModel instance) =>
     <String, dynamic>{
       'reportedUserId': instance.reportedUserId,
-      'reportedReason': instance.reportedReason,
+      'reportReason': instance.reportReason,
     };

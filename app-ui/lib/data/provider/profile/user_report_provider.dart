@@ -47,6 +47,7 @@ class UserReportStateNotifier extends StateNotifier<CommonResponseBase> {
             snackBarText: '신고가 정상적으로 접수되었습니다.',
           );
           Navigator.pop(context);
+          Navigator.pop(context);
         },
       );
     } on DioException catch (err) {
