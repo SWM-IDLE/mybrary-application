@@ -49,34 +49,33 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
             limit: limit,
           );
         }
+      }
 
-        if (cursor != null) {
-          final feedList = await repository.getRecommendFeedList(
-            userId: userId,
-            cursor: cursor,
-            limit: limit,
-          );
+      if (cursor != null) {
+        final feedList = await repository.getRecommendFeedList(
+          userId: userId,
+          cursor: cursor,
+          limit: limit,
+        );
 
-          final currentState = state;
+        final currentState = state;
 
-          if (currentState is CommonModel) {
-            if (currentState.data is RecommendFeedModel) {
-              final appendedData = RecommendFeedModel(
-                lastRecommendationFeedId:
-                    feedList.data!.lastRecommendationFeedId,
-                recommendationFeeds: [
-                  ...(currentState.data as RecommendFeedModel)
-                      .recommendationFeeds,
-                  ...feedList.data!.recommendationFeeds,
-                ],
-              );
+        if (currentState is CommonModel) {
+          if (currentState.data is RecommendFeedModel) {
+            final appendedData = RecommendFeedModel(
+              lastRecommendationFeedId: feedList.data!.lastRecommendationFeedId,
+              recommendationFeeds: [
+                ...(currentState.data as RecommendFeedModel)
+                    .recommendationFeeds,
+                ...feedList.data!.recommendationFeeds,
+              ],
+            );
 
-              state = CommonModel(
-                status: feedList.status,
-                message: feedList.message,
-                data: appendedData,
-              );
-            }
+            state = CommonModel(
+              status: feedList.status,
+              message: feedList.message,
+              data: appendedData,
+            );
           }
         }
       }

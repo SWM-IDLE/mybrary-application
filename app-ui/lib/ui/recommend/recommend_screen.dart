@@ -91,6 +91,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final recommendFeedData = ref.watch(recommendFeedProvider);
 
     if (recommendFeedData == null) {
