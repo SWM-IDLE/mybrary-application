@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mybrary/data/datasource/recommend/recommend_datasource.dart';
 import 'package:mybrary/data/model/recommend/recommend_feed_model.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_post_provider.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
@@ -17,6 +16,7 @@ import 'package:mybrary/ui/recommend/components/recommend_feed_keyword.dart';
 import 'package:mybrary/ui/recommend/my_recommend/my_recommend_screen.dart';
 import 'package:mybrary/ui/recommend/my_recommend_feed/my_recommend_feed_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class RecommendScreen extends ConsumerStatefulWidget {
   const RecommendScreen({super.key});
@@ -25,33 +25,39 @@ class RecommendScreen extends ConsumerStatefulWidget {
   ConsumerState<RecommendScreen> createState() => _RecommendScreenState();
 }
 
-class _RecommendScreenState extends ConsumerState<RecommendScreen> {
-  final _userId = UserState.userId;
+class _RecommendScreenState extends ConsumerState<RecommendScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
+  final _userId = UserState.userId;
   final ScrollController _recommendScrollController = ScrollController();
 
-  late bool _isScrollLoading;
+  late bool _isLoading;
   late bool _isVisibleAppBar;
   late bool _refreshRecommendFeed;
-  late int _lastRecommendationFeedId = 0;
-  late List<RecommendFeedDataModel> _recommendFeedList = [];
+  late int? _lastRecommendationFeedId;
 
   @override
   void initState() {
     super.initState();
 
+    _isLoading = false;
     _isVisibleAppBar = false;
     _refreshRecommendFeed = false;
-    _isScrollLoading = false;
+    _lastRecommendationFeedId = 0;
 
-    Future.delayed(const Duration(milliseconds: 500), () {
-      ref
-          .read(myRecommendProvider.notifier)
-          .getRecommendFeedList(userId: _userId);
+    ref
+        .read(myRecommendProvider.notifier)
+        .getRecommendFeedList(userId: _userId);
+
+    _recommendScrollController.addListener(() {
+      _changeAppBarState();
+      if (_isScrollEnd && _lastRecommendationFeedId != null) {
+        _isLoading = true;
+        _fetchMoreRecommendFeedList();
+      }
     });
-
-    _recommendScrollController.addListener(_changeAppBarState);
-    _recommendScrollController.addListener(_infiniteScrollUpdateFeedList);
   }
 
   void _changeAppBarState() {
@@ -64,15 +70,17 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
     });
   }
 
-  void _infiniteScrollUpdateFeedList() {
-    setState(() {
-      if (_recommendScrollController.position.pixels >
-          _recommendScrollController.position.maxScrollExtent * 0.7) {
-        _isScrollLoading = true;
-      } else {
-        _isScrollLoading = false;
-      }
-    });
+  bool get _isScrollEnd {
+    return (_recommendScrollController.offset >=
+            _recommendScrollController.position.maxScrollExtent) &&
+        !_recommendScrollController.position.outOfRange;
+  }
+
+  void _fetchMoreRecommendFeedList() {
+    ref.read(myRecommendProvider.notifier).getRecommendFeedList(
+          userId: _userId,
+          cursor: _lastRecommendationFeedId,
+        );
   }
 
   @override
@@ -120,40 +128,10 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
       );
     }
 
-    if (_recommendFeedList.isEmpty) {
-      _recommendFeedList = recommendFeedData.recommendationFeeds;
+    if (_lastRecommendationFeedId !=
+        recommendFeedData.lastRecommendationFeedId) {
+      _isLoading = false;
       _lastRecommendationFeedId = recommendFeedData.lastRecommendationFeedId;
-    }
-
-    if (_isScrollLoading && _lastRecommendationFeedId != -1) {
-      final data = RecommendDataSource()
-          .getBookSearchResponse(
-              context: context,
-              userId: _userId,
-              cursor: _lastRecommendationFeedId)
-          .then((feedList) {
-        setState(() {
-          _isScrollLoading = false;
-          _recommendFeedList.addAll(feedList!.recommendationFeeds);
-          _lastRecommendationFeedId = feedList.lastRecommendationFeedId;
-        });
-      });
-
-      // ref
-      //     .watch(myRecommendProvider.notifier)
-      //     .repository
-      //     .getRecommendFeedList(
-      //         userId: _userId, cursor: _lastRecommendationFeedId)
-      //     .then((feedList) {
-      //   ref.watch(recommendFeedProvider.notifier).update((state) {
-      //     _recommendFeedList.addAll(feedList.data!.recommendationFeeds);
-      //     _lastRecommendationFeedId = feedList.data!.lastRecommendationFeedId;
-      //     return state = RecommendFeedModel(
-      //       lastRecommendationFeedId: _lastRecommendationFeedId,
-      //       recommendationFeeds: [..._recommendFeedList],
-      //     );
-      //   });
-      // });
     }
 
     return RefreshIndicator(
@@ -162,7 +140,7 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
       edgeOffset: const SliverAppBar().toolbarHeight * 0.5,
       onRefresh: () {
         return Future.delayed(
-          const Duration(seconds: 1),
+          const Duration(milliseconds: 500),
           () {
             ref
                 .refresh(myRecommendProvider.notifier)
@@ -181,57 +159,85 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  RecommendFeedDataModel feed = _recommendFeedList[index];
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      left: 32.0,
-                      right: 32.0,
-                      top: index == 0 ? 12.0 : 8.0,
-                      bottom: 16.0,
-                    ),
-                    child: Container(
-                      decoration: recommendBoxStyle,
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        children: [
-                          RecommendFeedHeader(
-                            isbn13: feed.isbn13,
-                            targetUserId: feed.userId,
-                            profileImageUrl: feed.profileImageUrl,
-                            nickname: feed.nickname,
-                            interestCount: feed.interestCount,
-                            interested: feed.interested,
-                            recommendationFeedId: feed.recommendationFeedId,
-                            thumbnailUrl: feed.thumbnailUrl,
-                            title: feed.title,
-                            authors: feed.authors,
+                  RecommendFeedDataModel feed =
+                      recommendFeedData.recommendationFeeds[index];
+
+                  return Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 32.0,
+                          right: 32.0,
+                          top: index == 0 ? 12.0 : 8.0,
+                          bottom: 16.0,
+                        ),
+                        child: Container(
+                          decoration: recommendBoxStyle,
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            children: [
+                              RecommendFeedHeader(
+                                isbn13: feed.isbn13,
+                                targetUserId: feed.userId,
+                                profileImageUrl: feed.profileImageUrl,
+                                nickname: feed.nickname,
+                                interestCount: feed.interestCount,
+                                interested: feed.interested,
+                                recommendationFeedId: feed.recommendationFeedId,
+                                thumbnailUrl: feed.thumbnailUrl,
+                                title: feed.title,
+                                authors: feed.authors,
+                              ),
+                              commonDivider(
+                                dividerColor: greyF7F7F7,
+                                dividerThickness: 4,
+                              ),
+                              RecommendFeedKeyword(
+                                recommendationTargetNames:
+                                    feed.recommendationTargetNames,
+                              ),
+                              commonDivider(
+                                dividerColor: greyF7F7F7,
+                                dividerThickness: 4,
+                              ),
+                              RecommendFeedContent(
+                                content: feed.content,
+                              ),
+                            ],
                           ),
-                          commonDivider(
-                            dividerColor: greyF7F7F7,
-                            dividerThickness: 4,
-                          ),
-                          RecommendFeedKeyword(
-                            recommendationTargetNames:
-                                feed.recommendationTargetNames,
-                          ),
-                          commonDivider(
-                            dividerColor: greyF7F7F7,
-                            dividerThickness: 4,
-                          ),
-                          RecommendFeedContent(
-                            content: feed.content,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                      if (_isLoading &&
+                          index ==
+                              recommendFeedData.recommendationFeeds.length - 1)
+                        Positioned.fill(
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Transform.scale(
+                              scale: 0.7,
+                              child: commonLoadingIndicator(),
+                            ),
+                          ),
+                        ),
+                    ],
                   );
                 },
-                childCount: _recommendFeedList.length,
+                childCount: recommendFeedData.recommendationFeeds.length,
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 20.0),
-            ),
+            if (_lastRecommendationFeedId == null)
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 40.0,
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: const Center(
+                    child: Text(
+                      '마지막 추천 피드까지 보셨군요! 🎉🎉',
+                      style: recommendLastFeedStyle,
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

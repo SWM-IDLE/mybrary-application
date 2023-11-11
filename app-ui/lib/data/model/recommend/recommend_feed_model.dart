@@ -4,7 +4,7 @@ part 'recommend_feed_model.g.dart';
 
 @JsonSerializable()
 class RecommendFeedModel {
-  final int lastRecommendationFeedId;
+  final int? lastRecommendationFeedId;
   final List<RecommendFeedDataModel> recommendationFeeds;
 
   RecommendFeedModel({

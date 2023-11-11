@@ -500,6 +500,13 @@ const recommendMoreButtonStyle = TextStyle(
   letterSpacing: -1,
 );
 
+const recommendLastFeedStyle = TextStyle(
+  color: grey555555,
+  fontSize: 15.0,
+  fontWeight: FontWeight.w500,
+  letterSpacing: -1,
+);
+
 final recommendBoxStyle = ShapeDecoration(
   color: commonWhiteColor,
   shape: RoundedRectangleBorder(

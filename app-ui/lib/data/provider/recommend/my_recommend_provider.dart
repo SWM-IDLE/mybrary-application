@@ -51,31 +51,33 @@ class MyRecommendStateNotifier extends StateNotifier<CommonResponseBase> {
         }
 
         if (cursor != null) {
-          final pState = await repository.getRecommendFeedList(
-            userId: userId,
-            limit: limit,
-          );
-
-          await repository
-              .getRecommendFeedList(
+          final feedList = await repository.getRecommendFeedList(
             userId: userId,
             cursor: cursor,
             limit: limit,
-          )
-              .then((feedList) {
-            state = CommonModel(
-              status: feedList.status,
-              message: feedList.message,
-              data: RecommendFeedModel(
+          );
+
+          final currentState = state;
+
+          if (currentState is CommonModel) {
+            if (currentState.data is RecommendFeedModel) {
+              final appendedData = RecommendFeedModel(
                 lastRecommendationFeedId:
                     feedList.data!.lastRecommendationFeedId,
                 recommendationFeeds: [
-                  ...pState.data!.recommendationFeeds,
+                  ...(currentState.data as RecommendFeedModel)
+                      .recommendationFeeds,
                   ...feedList.data!.recommendationFeeds,
                 ],
-              ),
-            );
-          });
+              );
+
+              state = CommonModel(
+                status: feedList.status,
+                message: feedList.message,
+                data: appendedData,
+              );
+            }
+          }
         }
       }
     } on DioException catch (err) {

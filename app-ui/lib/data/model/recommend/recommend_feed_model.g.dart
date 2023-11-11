@@ -8,7 +8,7 @@ part of 'recommend_feed_model.dart';
 
 RecommendFeedModel _$RecommendFeedModelFromJson(Map<String, dynamic> json) =>
     RecommendFeedModel(
-      lastRecommendationFeedId: json['lastRecommendationFeedId'] as int,
+      lastRecommendationFeedId: json['lastRecommendationFeedId'] as int?,
       recommendationFeeds: (json['recommendationFeeds'] as List<dynamic>)
           .map(
               (e) => RecommendFeedDataModel.fromJson(e as Map<String, dynamic>))
