@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mybrary/data/provider/home/home_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/home/home_screen.dart';
@@ -31,7 +33,7 @@ const bottomNavigationBarItemList = [
   },
 ];
 
-class RootTab extends StatefulWidget {
+class RootTab extends ConsumerStatefulWidget {
   final int? tapIndex;
 
   const RootTab({
@@ -40,10 +42,11 @@ class RootTab extends StatefulWidget {
   });
 
   @override
-  State<RootTab> createState() => _RootTabState();
+  ConsumerState<RootTab> createState() => _RootTabState();
 }
 
-class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
+class _RootTabState extends ConsumerState<RootTab>
+    with SingleTickerProviderStateMixin {
   late TabController tabController;
 
   int index = 0;
@@ -63,18 +66,21 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
       tabController.index = widget.tapIndex!;
     }
 
-    tabController.addListener(tabListener);
+    tabController.addListener(_tabListener);
   }
 
-  void tabListener() {
+  void _tabListener() {
     setState(() {
       index = tabController.index;
+      if (index == 0) {
+        ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
+      }
     });
   }
 
   @override
   void dispose() {
-    tabController.removeListener(tabListener);
+    tabController.removeListener(_tabListener);
     super.dispose();
   }
 

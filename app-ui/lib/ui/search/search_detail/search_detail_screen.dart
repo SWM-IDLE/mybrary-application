@@ -248,7 +248,7 @@ class _SearchDetailScreenState extends State<SearchDetailScreen> {
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                           builder: (context) {
                             return const RootTab(
-                              tapIndex: 2,
+                              tapIndex: 3,
                             );
                           },
                         ), (route) => false);

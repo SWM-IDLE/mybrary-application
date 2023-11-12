@@ -58,7 +58,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
-        ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
+        ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
         ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
         ref
             .read(recommendationBooksProvider.notifier)
@@ -171,6 +171,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final todayRegisteredBookCount =
         ref.watch(todayRegisteredBookCountProvider);
     final booksByBestSeller = ref.watch(homeBestSellerProvider);
