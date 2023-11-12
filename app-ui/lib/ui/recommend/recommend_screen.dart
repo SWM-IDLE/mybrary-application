@@ -228,17 +228,46 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen>
             ),
             if (_lastRecommendationFeedId == null)
               SliverToBoxAdapter(
-                child: Container(
-                  height: 40.0,
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: const Center(
-                    child: Text(
-                      '마지막 추천 피드까지 보셨군요! 🎉🎉',
-                      style: recommendLastFeedStyle,
-                    ),
-                  ),
-                ),
+                child: _lastRecommendFeedPhrases(),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Padding _lastRecommendFeedPhrases() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Center(
+        child: Column(
+          children: [
+            const Text(
+              '마지막 추천 피드까지 보셨군요! 🎉🎉',
+              style: recommendLastFeedStyle,
+            ),
+            const SizedBox(height: 6.0),
+            InkWell(
+              onTap: () {
+                _recommendScrollController.animateTo(
+                  0.0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('맨 위로 올라가기', style: recommendSubStyle),
+                  Icon(
+                    Icons.arrow_drop_up_rounded,
+                    size: 36.0,
+                    color: primaryColor,
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
