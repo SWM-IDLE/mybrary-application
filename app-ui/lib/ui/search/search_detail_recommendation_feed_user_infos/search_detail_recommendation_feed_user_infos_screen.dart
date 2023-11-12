@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/provider/search/search_recommendation_feed_users_provider.dart';
-import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
@@ -30,8 +29,6 @@ class SearchDetailRecommendationFeedUserInfosScreen
 
 class _SearchDetailRecommendationFeedUserInfosScreenState
     extends ConsumerState<SearchDetailRecommendationFeedUserInfosScreen> {
-  final _userId = UserState.userId;
-
   @override
   void initState() {
     super.initState();
@@ -128,36 +125,40 @@ class _SearchDetailRecommendationFeedUserInfosScreenState
                         },
                       );
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SearchUserInfo(
-                          nickname: user.nickname,
-                          profileImageUrl: user.profileImageUrl,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              '추천피드 구경',
-                              style: recommendSubStyle.copyWith(
-                                fontSize: 15.0,
-                                color: grey262626,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SearchUserInfo(
+                            nickname: user.nickname,
+                            profileImageUrl: user.profileImageUrl,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                '추천피드 구경',
+                                style: recommendSubStyle.copyWith(
+                                  fontSize: 15.0,
+                                  color: grey262626,
+                                ),
                               ),
-                            ),
-                            const Icon(
-                              Icons.chevron_right_rounded,
-                              color: grey262626,
-                              size: 22.0,
-                            ),
-                          ],
-                        ),
-                      ],
+                              const Icon(
+                                Icons.chevron_right_rounded,
+                                color: grey262626,
+                                size: 22.0,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
                 itemCount: recommendationFeedUserInfoList.length,
               ),
             ),
+            const SizedBox(height: 30.0),
           ],
         ),
       ),
