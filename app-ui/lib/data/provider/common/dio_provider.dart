@@ -8,14 +8,15 @@ import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/common/secure_storage_provider.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/variable/global_navigator_variable.dart';
+import 'package:mybrary/utils/dios/dio_service.dart';
 
 final dioProvider = Provider<Dio>((ref) {
-  final dio = Dio();
+  final dio = DioService().to();
 
   final secureStorage = ref.watch(secureStorageProvider);
 
   dio.interceptors.add(
-    CustomInterceptor(secureStorage: secureStorage),
+    CustomInterceptor(secureStorage: secureStorage, dio: dio),
   );
 
   return dio;
@@ -23,9 +24,11 @@ final dioProvider = Provider<Dio>((ref) {
 
 class CustomInterceptor extends Interceptor {
   final FlutterSecureStorage secureStorage;
+  final Dio dio;
 
   CustomInterceptor({
     required this.secureStorage,
+    required this.dio,
   });
 
   @override
@@ -57,12 +60,10 @@ class CustomInterceptor extends Interceptor {
       final accessToken = await secureStorage.read(key: accessTokenKey);
       final refreshToken = await secureStorage.read(key: refreshTokenKey);
 
-      final refreshDio = Dio();
       final context = GlobalNavigatorVariable.navigatorKey.currentContext!;
 
-      refreshDio.interceptors.clear();
-      refreshDio.interceptors
-          .add(InterceptorsWrapper(onError: (err, handler) async {
+      dio.interceptors.clear();
+      dio.interceptors.add(InterceptorsWrapper(onError: (err, handler) async {
         if (err.response?.statusCode == 401) {
           log('ERROR: Refresh 토큰 만료에 대한 서버 에러가 발생했습니다.');
           await secureStorage.deleteAll();
@@ -76,12 +77,12 @@ class CustomInterceptor extends Interceptor {
         return handler.reject(err);
       }));
 
-      refreshDio.options.headers[accessTokenHeaderKey] =
+      dio.options.headers[accessTokenHeaderKey] =
           '$jwtHeaderBearer$accessToken';
-      refreshDio.options.headers[refreshTokenHeaderKey] =
+      dio.options.headers[refreshTokenHeaderKey] =
           '$jwtHeaderBearer$refreshToken';
 
-      final refreshResponse = await refreshDio.get(
+      final refreshResponse = await dio.get(
         getApi(API.getRefreshToken),
       );
 
@@ -96,7 +97,7 @@ class CustomInterceptor extends Interceptor {
 
       options.headers[accessTokenHeaderKey] = '$jwtHeaderBearer$newAccessToken';
 
-      final response = await refreshDio.fetch(options);
+      final response = await dio.fetch(options);
 
       return handler.resolve(response);
     }
