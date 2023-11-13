@@ -95,7 +95,7 @@ class _SearchDetailUserInfosScreenState
       return _initUserInfosLayout(
         child: DataError(
           icon: Icons.emoji_people_rounded,
-          errorMessage: '아직 이 책을 ${_introduction}\n 사람이 없어요 :(',
+          errorMessage: '아직 이 책을 $_introduction\n 사람이 없어요 :(',
         ),
       );
     }

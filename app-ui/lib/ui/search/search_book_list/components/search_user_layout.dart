@@ -11,9 +11,10 @@ class SearchUserLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 8.0,
+      padding: const EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+        bottom: 8.0,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -189,6 +189,8 @@ class _SearchDetailScreenState extends State<SearchDetailScreen> {
                           interestCount: bookSearchDetail.interestCount!,
                           readCount: bookSearchDetail.readCount!,
                           holderCount: bookSearchDetail.holderCount!,
+                          recommendationFeedCount:
+                              bookSearchDetail.recommendationFeedCount!,
                           isbn13: bookSearchDetail.isbn13!,
                         ),
                         const BookDetailDivider(),
@@ -246,7 +248,7 @@ class _SearchDetailScreenState extends State<SearchDetailScreen> {
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                           builder: (context) {
                             return const RootTab(
-                              tapIndex: 2,
+                              tapIndex: 3,
                             );
                           },
                         ), (route) => false);

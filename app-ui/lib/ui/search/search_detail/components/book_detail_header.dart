@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:html/parser.dart';
 import 'package:mybrary/data/model/search/book_search_detail_response.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/data/repository/book_repository.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
+import 'package:mybrary/ui/search/search_detail_recommendation_feed_user_infos/search_detail_recommendation_feed_user_infos_screen.dart';
 import 'package:mybrary/ui/search/search_detail_user_infos/search_detail_user_infos_screen.dart';
 import 'package:mybrary/utils/logics/book_utils.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
-class BookDetailHeader extends StatefulWidget {
+class BookDetailHeader extends ConsumerStatefulWidget {
   final String thumbnail;
   final String title;
   final List<Authors> authors;
   final int interestCount;
   final int readCount;
   final int holderCount;
+  final int recommendationFeedCount;
   final bool interested;
   final bool completed;
   final bool registered;
@@ -33,6 +37,7 @@ class BookDetailHeader extends StatefulWidget {
     required this.interestCount,
     required this.readCount,
     required this.holderCount,
+    required this.recommendationFeedCount,
     required this.interested,
     required this.completed,
     required this.registered,
@@ -42,10 +47,10 @@ class BookDetailHeader extends StatefulWidget {
   });
 
   @override
-  State<BookDetailHeader> createState() => _BookDetailHeaderState();
+  ConsumerState<BookDetailHeader> createState() => _BookDetailHeaderState();
 }
 
-class _BookDetailHeaderState extends State<BookDetailHeader> {
+class _BookDetailHeaderState extends ConsumerState<BookDetailHeader> {
   final _bookRepository = BookRepository();
 
   bool onTapInterestBook = false;
@@ -111,6 +116,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                 style: commonSubRegularStyle.copyWith(
                   color: bookDescriptionColor,
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -120,7 +126,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             bookStatusColumn(
-              padding: 30.0,
+              padding: 32.0,
               children: [
                 InkWell(
                   onTap: () async {
@@ -139,6 +145,10 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                         _newInterestCount,
                         context,
                       );
+
+                      ref
+                          .refresh(myRecommendProvider.notifier)
+                          .getRecommendFeedList(userId: _userId);
                     });
                   },
                   child: Column(
@@ -178,17 +188,16 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => SearchDetailUserInfosScreen(
-                      title: '완독했어요',
+                    builder: (_) =>
+                        SearchDetailRecommendationFeedUserInfosScreen(
                       isbn13: widget.isbn13,
-                      userCount: widget.readCount,
-                      type: SearchDetailUserInfosType.readComplete,
+                      userCount: widget.recommendationFeedCount,
                     ),
                   ),
                 );
               },
               child: bookStatusColumn(
-                padding: 36.0,
+                padding: 32.0,
                 children: [
                   Column(
                     children: [
@@ -196,12 +205,12 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                         'assets/svg/icon/small/${widget.completed ? 'read_green.svg' : 'read.svg'}',
                       ),
                       const SizedBox(height: 4.0),
-                      const Text('완독했어요', style: bookStatusStyle),
+                      const Text('추천했어요', style: bookStatusStyle),
                     ],
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    '${widget.readCount} 명',
+                    '${widget.recommendationFeedCount} 명',
                     style: bookStatusCountStyle,
                   ),
                 ],
@@ -213,7 +222,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => SearchDetailUserInfosScreen(
-                      title: '소장하고있어요',
+                      title: '소장했어요',
                       isbn13: widget.isbn13,
                       userCount: widget.holderCount,
                       type: SearchDetailUserInfosType.holder,
@@ -222,7 +231,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                 );
               },
               child: bookStatusColumn(
-                padding: 24.0,
+                padding: 32.0,
                 lastBox: true,
                 children: [
                   Column(
@@ -231,7 +240,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
                         'assets/svg/icon/small/${widget.newRegistered || widget.registered ? 'holder_green.svg' : 'holder.svg'}',
                       ),
                       const SizedBox(height: 4.0),
-                      const Text('소장하고있어요', style: bookStatusStyle),
+                      const Text('소장했어요', style: bookStatusStyle),
                     ],
                   ),
                   const SizedBox(height: 8.0),
@@ -282,7 +291,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
     if (!interested && onTapInterestBook) {
       _newInterested = true;
       _newInterestCount = interestCount + 1;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서에 담겼습니다.',
         snackBarAction: _moveNextToInterestBookListScreen(),
@@ -290,14 +299,14 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
     } else if (interested && onTapInterestBook == false) {
       _newInterested = false;
       _newInterestCount = interestCount - 1;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서가 삭제되었습니다.',
       );
     } else if (interested && onTapInterestBook) {
       _newInterested = true;
       _newInterestCount = interestCount;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서에 담겼습니다.',
         snackBarAction: _moveNextToInterestBookListScreen(),
@@ -305,7 +314,7 @@ class _BookDetailHeaderState extends State<BookDetailHeader> {
     } else {
       _newInterested = false;
       _newInterestCount = interestCount;
-      showInterestBookMessage(
+      showCommonSnackBarMessage(
         context: context,
         snackBarText: '관심 도서가 삭제되었습니다.',
       );

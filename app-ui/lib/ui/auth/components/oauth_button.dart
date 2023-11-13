@@ -23,8 +23,8 @@ class OAuthButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: 24.0,
-          vertical: 16.0,
+          horizontal: 20.0,
+          vertical: 14.0,
         ),
         decoration: BoxDecoration(
           color: btnBackgroundColor,
@@ -35,8 +35,8 @@ class OAuthButton extends StatelessWidget {
           children: [
             SvgPicture.asset(
               'assets/svg/icon/$oauthType.svg',
-              width: 30.0,
-              height: 30.0,
+              width: 28.0,
+              height: 28.0,
             ),
             Expanded(
               child: Text(
@@ -45,7 +45,7 @@ class OAuthButton extends StatelessWidget {
                   color: oauthType == 'naver' || oauthType == 'apple'
                       ? commonWhiteColor
                       : grey262626,
-                  fontSize: 16.0,
+                  fontSize: 15.0,
                 ),
                 textAlign: TextAlign.center,
               ),

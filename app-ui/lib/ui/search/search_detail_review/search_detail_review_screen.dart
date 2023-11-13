@@ -204,7 +204,7 @@ class _SearchDetailReviewScreenState extends State<SearchDetailReviewScreen> {
                     );
 
                     if (!mounted) return;
-                    showInterestBookMessage(
+                    showCommonSnackBarMessage(
                       context: context,
                       snackBarText: '마이 리뷰가 삭제되었습니다.',
                     );
