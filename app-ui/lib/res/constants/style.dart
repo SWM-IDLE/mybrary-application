@@ -207,7 +207,7 @@ final followButtonRoundStyle = RoundedRectangleBorder(
 );
 
 const popularKeywordTextStyle = TextStyle(
-  color: circularTextColor,
+  color: grey262626,
   fontSize: 14.0,
   fontWeight: FontWeight.w400,
 );
