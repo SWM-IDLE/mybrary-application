@@ -147,7 +147,6 @@ class _SearchDetailUserInfosScreenState
     required Widget child,
   }) {
     return SubPageLayout(
-      appBarTitle: widget.title,
       child: child,
     );
   }
