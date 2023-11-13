@@ -186,21 +186,37 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '최근 검색어',
-              style: commonSubBoldStyle.copyWith(
-                fontSize: 16.0,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '최근 검색어',
+                  style: commonSubBoldStyle.copyWith(
+                    fontSize: 16.0,
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      _recentSearchKeywordList.clear();
+                      UserState.localStorage
+                          .setStringList('recentSearchKeywordList', []);
+                    });
+                  },
+                  child: Text(
+                    '전체 기록 지우기',
+                    style: recentKeywordTextStyle.copyWith(
+                      fontSize: 13.0,
+                    ),
+                  ),
+                )
+              ],
             ),
             const SizedBox(height: 16.0),
             if (_recentSearchKeywordList.isEmpty)
-              Text(
+              const Text(
                 '최근 검색어가 없습니다.',
-                style: commonSubRegularStyle.copyWith(
-                  fontSize: 14.0,
-                  color: grey777777,
-                  letterSpacing: -1,
-                ),
+                style: recentKeywordTextStyle,
               )
             else
               Wrap(
@@ -208,49 +224,84 @@ class _SearchScreenState extends State<SearchScreen> {
                 runSpacing: 8.0,
                 children: List.generate(
                   _recentSearchKeywordList.length,
-                  (index) => Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 6.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: circularGreenColor,
-                      border: Border.all(
-                        color: circularGreenColor,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          _recentSearchKeywordList[index],
-                          style: popularKeywordTextStyle.copyWith(
-                            color: primaryColor,
-                          ),
+                  (index) => Stack(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 6.0,
                         ),
-                        const SizedBox(width: 6.0),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _recentSearchKeywordList.removeAt(index);
-                              UserState.localStorage.setStringList(
-                                  'recentSearchKeywordList',
-                                  _recentSearchKeywordList);
-                            });
-                          },
-                          child: SvgPicture.asset(
-                            'assets/svg/icon/clear.svg',
-                            width: 8.0,
-                            height: 8.0,
-                            colorFilter: const ColorFilter.mode(
-                              primaryColor,
-                              BlendMode.srcIn,
+                        decoration: BoxDecoration(
+                          color: circularGreenColor,
+                          border: Border.all(
+                            color: circularGreenColor,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Wrap(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => SearchBookList(
+                                      searchKeyword:
+                                          _recentSearchKeywordList[index],
+                                    ),
+                                  ),
+                                ).then(
+                                  (value) => {
+                                    setState(() {
+                                      _bookSearchKeywordController.clear();
+                                      _isClearButtonVisible = false;
+                                    })
+                                  },
+                                );
+                              },
+                              child: Text(
+                                _recentSearchKeywordList[index],
+                                style: popularKeywordTextStyle.copyWith(
+                                  color: primaryColor,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8.0),
+                          ],
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _recentSearchKeywordList.removeAt(index);
+                                UserState.localStorage.setStringList(
+                                    'recentSearchKeywordList',
+                                    _recentSearchKeywordList);
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                right: 8.0,
+                                bottom: 2.0,
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/svg/icon/clear.svg',
+                                width: 8.0,
+                                height: 8.0,
+                                colorFilter: const ColorFilter.mode(
+                                  primaryColor,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

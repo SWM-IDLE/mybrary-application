@@ -212,6 +212,13 @@ const popularKeywordTextStyle = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const recentKeywordTextStyle = TextStyle(
+  color: grey777777,
+  fontSize: 14.0,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -1,
+);
+
 const confirmButtonTextStyle = TextStyle(
   fontSize: 16.0,
   fontWeight: FontWeight.w500,
