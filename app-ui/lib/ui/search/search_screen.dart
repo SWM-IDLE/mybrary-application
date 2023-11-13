@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/ui/search/components/search_popular_keyword.dart';
 import 'package:mybrary/ui/search/search_book_list/search_book_list.dart';
 import 'package:mybrary/utils/logics/permission_utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -47,18 +47,16 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  void _loadRecentSearchKeywordList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  void _loadRecentSearchKeywordList() {
     setState(() {
-      _recentSearchKeywordList =
-          prefs.getStringList('recentSearchKeywordList') ?? [];
+      _recentSearchKeywordList = UserState.recentSearchKeywordList;
     });
   }
 
-  void _saveRecentSearchKeywordList(String keyword) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  void _saveRecentSearchKeywordList(String keyword) {
     _recentSearchKeywordList.insert(0, keyword);
-    prefs.setStringList('recentSearchKeywordList', _recentSearchKeywordList);
+    UserState.localStorage
+        .setStringList('recentSearchKeywordList', _recentSearchKeywordList);
   }
 
   @override
@@ -160,86 +158,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ),
                       const SizedBox(height: 8.0),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '최근 검색어',
-                                style: commonSubBoldStyle.copyWith(
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                              const SizedBox(height: 16.0),
-                              if (_recentSearchKeywordList.isEmpty)
-                                Text(
-                                  '최근 검색어가 없습니다.',
-                                  style: commonSubRegularStyle.copyWith(
-                                    fontSize: 14.0,
-                                    color: grey777777,
-                                    letterSpacing: -1,
-                                  ),
-                                )
-                              else
-                                Wrap(
-                                  spacing: 8.0,
-                                  runSpacing: 8.0,
-                                  children: List.generate(
-                                    _recentSearchKeywordList.length,
-                                    (index) => Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0,
-                                        vertical: 6.0,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: circularGreenColor,
-                                        border: Border.all(
-                                          color: circularGreenColor,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            _recentSearchKeywordList[index],
-                                            style: popularKeywordTextStyle
-                                                .copyWith(
-                                              color: primaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 6.0),
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                _recentSearchKeywordList
-                                                    .removeAt(index);
-                                              });
-                                            },
-                                            child: SvgPicture.asset(
-                                              'assets/svg/icon/clear.svg',
-                                              width: 8.0,
-                                              height: 8.0,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
-                                                primaryColor,
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      _recentSearchKeywordComponent(context),
                       const SizedBox(height: 24.0),
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
@@ -254,6 +173,88 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  SizedBox _recentSearchKeywordComponent(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '최근 검색어',
+              style: commonSubBoldStyle.copyWith(
+                fontSize: 16.0,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            if (_recentSearchKeywordList.isEmpty)
+              Text(
+                '최근 검색어가 없습니다.',
+                style: commonSubRegularStyle.copyWith(
+                  fontSize: 14.0,
+                  color: grey777777,
+                  letterSpacing: -1,
+                ),
+              )
+            else
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: List.generate(
+                  _recentSearchKeywordList.length,
+                  (index) => Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 6.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: circularGreenColor,
+                      border: Border.all(
+                        color: circularGreenColor,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _recentSearchKeywordList[index],
+                          style: popularKeywordTextStyle.copyWith(
+                            color: primaryColor,
+                          ),
+                        ),
+                        const SizedBox(width: 6.0),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _recentSearchKeywordList.removeAt(index);
+                              UserState.localStorage.setStringList(
+                                  'recentSearchKeywordList',
+                                  _recentSearchKeywordList);
+                            });
+                          },
+                          child: SvgPicture.asset(
+                            'assets/svg/icon/clear.svg',
+                            width: 8.0,
+                            height: 8.0,
+                            colorFilter: const ColorFilter.mode(
+                              primaryColor,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
