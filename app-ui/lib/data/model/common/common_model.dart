@@ -5,10 +5,12 @@ part 'common_model.g.dart';
 abstract class CommonResponseBase {}
 
 class CommonResponseError extends CommonResponseBase {
-  final String message;
+  final String errorCode;
+  final String errorMessage;
 
   CommonResponseError({
-    required this.message,
+    required this.errorCode,
+    required this.errorMessage,
   });
 }
 

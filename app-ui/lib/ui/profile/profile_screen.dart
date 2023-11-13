@@ -109,6 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _navigateToFollowingScreen(profileData.nickname!),
                   ),
                   ProfileIntro(
+                    userId: _userId,
                     introduction: profileData.introduction!,
                     userInterests: myInterestsData.userInterests!,
                     onTapWriteIntroduction: _onTapWriteIntroduction,

@@ -4,6 +4,7 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
+import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
 import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/utils/logics/ui_utils.dart';
@@ -118,7 +119,7 @@ Widget confirmButton({
   );
 }
 
-void showInterestBookMessage({
+void showCommonSnackBarMessage({
   required BuildContext context,
   required String snackBarText,
   Widget? snackBarAction,
@@ -140,8 +141,8 @@ void showInterestBookMessage({
             snackBarAction ?? const SizedBox(),
           ],
         ),
-        duration: Duration(
-          seconds: snackBarAction == null ? 1 : 2,
+        duration: const Duration(
+          seconds: 2,
         ),
       ),
     );
@@ -172,11 +173,12 @@ void commonBottomSheet({
 Widget commonDivider({
   double? dividerHeight,
   double? dividerThickness,
+  Color? dividerColor,
 }) {
   return Divider(
     height: dividerHeight ?? 1,
     thickness: dividerThickness ?? 1,
-    color: greyF1F2F5,
+    color: dividerColor ?? greyF1F2F5,
   );
 }
 
@@ -210,7 +212,7 @@ void moveToUserProfile({
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (_) => const RootTab(
-          tapIndex: 3,
+          tapIndex: 4,
         ),
       ),
       (route) => false,
@@ -385,4 +387,48 @@ void connectAppStoreLink() async {
       webLink: iosAppLink,
     );
   }
+}
+
+void commonLoadingAlert({
+  required BuildContext context,
+  required void Function() loadingAction,
+}) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      Future.delayed(const Duration(seconds: 1), () async {
+        loadingAction();
+      });
+      return const SizedBox(
+        width: 100,
+        height: 100,
+        child: Center(
+          child: CircularProgressIndicator(
+            color: primaryColor,
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget moveNextToInterestBookListScreen({
+  required BuildContext context,
+}) {
+  return InkWell(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const InterestBookListScreen(),
+        ),
+      );
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    },
+    child: const Text(
+      '관심북으로 이동',
+      style: commonSnackBarButtonStyle,
+    ),
+  );
 }

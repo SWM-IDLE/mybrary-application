@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart' hide Headers;
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/profile/profile_email_model.dart';
+import 'package:mybrary/data/model/profile/user_report_model.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/common/dio_provider.dart';
 import 'package:retrofit/retrofit.dart';
@@ -24,5 +26,15 @@ abstract class ProfileNewRepository {
   @GET('/users/{userId}/profile/email')
   Future<CommonModel<ProfileEmailModel>> getUserEmail({
     @Path('userId') required String? userId,
+  });
+
+  @POST('/users/report-user')
+  @Headers({
+    'Content-Type': 'application/json',
+  })
+  Future<CommonModel> createUserReport({
+    @Header('User-Id') required String userId,
+    @Body() required UserReportModel body,
+    required BuildContext context,
   });
 }

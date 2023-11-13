@@ -4,15 +4,18 @@ import 'package:mybrary/data/model/profile/my_interests_response.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/profile/my_badge/my_badge_screen.dart';
+import 'package:mybrary/ui/recommend/my_recommend_feed/my_recommend_feed_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
 class ProfileIntro extends StatelessWidget {
+  final String userId;
   final String? introduction;
   final List<UserInterests> userInterests;
   final VoidCallback onTapWriteIntroduction;
   final VoidCallback onTapMyInterests;
 
   const ProfileIntro({
+    required this.userId,
     required this.introduction,
     required this.userInterests,
     required this.onTapWriteIntroduction,
@@ -63,6 +66,19 @@ class ProfileIntro extends StatelessWidget {
                 ? '나의 관심사를 표시해보세요!'
                 : userInterests.map((interest) => interest.name).join(', '),
             style: commonEditContentStyle,
+          ),
+          const SizedBox(height: 42.0),
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => MyRecommendFeedScreen(
+                    userId: userId,
+                  ),
+                ),
+              );
+            },
+            child: commonSubTitle(title: '마이 추천 피드'),
           ),
           const SizedBox(height: 42.0),
           InkWell(

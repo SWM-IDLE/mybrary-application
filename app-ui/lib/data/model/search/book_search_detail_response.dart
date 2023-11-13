@@ -56,6 +56,7 @@ class BookSearchDetailResponseData {
   int? interestCount;
   double? aladinStarRating;
   int? aladinReviewCount;
+  int? recommendationFeedCount;
 
   BookSearchDetailResponseData({
     this.title,
@@ -87,6 +88,7 @@ class BookSearchDetailResponseData {
     this.interestCount,
     this.aladinStarRating,
     this.aladinReviewCount,
+    this.recommendationFeedCount,
   });
 
   BookSearchDetailResponseData.fromJson(Map<String, dynamic> json) {
@@ -129,6 +131,7 @@ class BookSearchDetailResponseData {
     interestCount = json['interestCount'] ?? 0;
     aladinStarRating = json['aladinStarRating'] ?? 0.0;
     aladinReviewCount = json['aladinReviewCount'] ?? 0;
+    recommendationFeedCount = json['recommendationFeedCount'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -166,6 +169,7 @@ class BookSearchDetailResponseData {
     data['interestCount'] = interestCount;
     data['aladinStarRating'] = aladinStarRating;
     data['aladinReviewCount'] = aladinReviewCount;
+    data['recommendationFeedCount'] = recommendationFeedCount;
     return data;
   }
 }

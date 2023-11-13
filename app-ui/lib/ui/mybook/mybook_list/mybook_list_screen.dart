@@ -19,9 +19,13 @@ class MyBookListScreen extends StatefulWidget {
   final String bookListTitle;
   final String order;
   final String readStatus;
+  final bool? isNotMyBook;
+  final void Function(MyBooksResponseData)? onTapBookComponent;
 
   const MyBookListScreen({
     this.userId,
+    this.isNotMyBook,
+    this.onTapBookComponent,
     required this.bookListTitle,
     required this.order,
     required this.readStatus,
@@ -122,6 +126,8 @@ class _MyBookListScreenState extends State<MyBookListScreen> {
                     bookList: bookList,
                     readStatus: widget.readStatus,
                     onTapMyBookDetail: _refreshMyBookScreen,
+                    isNotMyBook: widget.isNotMyBook ?? false,
+                    onTapBookComponent: widget.onTapBookComponent,
                   ),
               ],
             );

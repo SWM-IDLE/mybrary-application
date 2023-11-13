@@ -1,4 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
@@ -32,7 +34,10 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   final _homeRepository = HomeRepository();
 
   late String _bookCategory = '';
@@ -48,10 +53,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
 
+    sendNotificationMessage();
+
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
-        ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
+        ref.read(homeProvider.notifier).getTodayRegisteredBookCount();
         ref.read(bestSellerProvider.notifier).getBooksByBestSeller();
         ref
             .read(recommendationBooksProvider.notifier)
@@ -72,6 +79,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (UserState.forceUpdate == true) {
       return _showForceUpdateAlert();
     }
+  }
+
+  void sendNotificationMessage() {
+    setState(() {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+        RemoteNotification? notification = message.notification;
+
+        if (notification != null) {
+          FlutterLocalNotificationsPlugin().show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            const NotificationDetails(
+              android: AndroidNotificationDetails(
+                'high_importance_channel',
+                'high_importance_notification',
+                importance: Importance.max,
+              ),
+              iOS: DarwinNotificationDetails(
+                presentAlert: true,
+                presentBadge: true,
+                presentSound: true,
+              ),
+            ),
+          );
+        }
+      });
+    });
   }
 
   void _showUpdateAlert() {
@@ -136,6 +171,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final todayRegisteredBookCount =
         ref.watch(todayRegisteredBookCountProvider);
     final booksByBestSeller = ref.watch(homeBestSellerProvider);
@@ -188,6 +225,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return RefreshIndicator(
       color: commonWhiteColor,
       backgroundColor: primaryColor,
+      edgeOffset: AppBar().preferredSize.height * 0.5,
       onRefresh: () {
         return Future.delayed(
           const Duration(milliseconds: 500),

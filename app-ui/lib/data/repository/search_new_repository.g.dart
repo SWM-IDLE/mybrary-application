@@ -102,6 +102,35 @@ class _SearchNewRepository implements SearchNewRepository {
     return value;
   }
 
+  @override
+  Future<CommonModel<BookRecommendationFeedUsersModel>>
+      getRecommendationFeedsUserInfos({isbn13}) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonModel<BookRecommendationFeedUsersModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/books/${isbn13}/recommendation-feeds/userInfos',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonModel<BookRecommendationFeedUsersModel>.fromJson(
+      _result.data!,
+      (json) => BookRecommendationFeedUsersModel.fromJson(
+          json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

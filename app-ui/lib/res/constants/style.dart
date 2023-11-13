@@ -190,6 +190,18 @@ final disableTextButtonStyle = TextButton.styleFrom(
   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
 );
 
+final disableAnimationTextButtonStyle = TextButton.styleFrom(
+  splashFactory: NoSplash.splashFactory,
+  minimumSize: Size.zero,
+  padding: EdgeInsets.zero,
+  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+).copyWith(
+  backgroundColor: MaterialStateProperty.all(Colors.transparent),
+  elevation: MaterialStateProperty.all(0.0),
+  splashFactory: NoSplash.splashFactory,
+  overlayColor: MaterialStateProperty.all(Colors.transparent),
+);
+
 final followButtonRoundStyle = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(10.0),
 );
@@ -407,6 +419,107 @@ const settingInfoStyle = TextStyle(
   color: commonWhiteColor,
   fontSize: 14.0,
   fontWeight: FontWeight.w400,
+);
+
+// recommend
+const recommendBookTitleStyle = TextStyle(
+  color: grey151816,
+  fontSize: 16.0,
+  fontWeight: FontWeight.w700,
+  letterSpacing: -1,
+);
+
+const recommendBookSubStyle = TextStyle(
+  color: grey555555,
+  fontSize: 14.0,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -1,
+);
+
+const recommendBookEditStyle = TextStyle(
+  color: grey262626,
+  fontSize: 11.0,
+  fontWeight: FontWeight.w500,
+  letterSpacing: -1,
+  height: 1.2,
+);
+
+const recommendTitleStyle = TextStyle(
+  color: grey151816,
+  fontSize: 15.0,
+  fontWeight: FontWeight.w700,
+  letterSpacing: -1,
+);
+
+const recommendSubStyle = TextStyle(
+  color: grey8D8D8D,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w500,
+  letterSpacing: -1,
+);
+
+const recommendEditStyle = TextStyle(
+  color: grey8D8D8D,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w400,
+);
+
+const recommendEmptyKeywordStyle = TextStyle(
+  color: grey8D8D8D,
+  fontSize: 12.0,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -1,
+);
+
+const recommendFeedHeaderStyle = TextStyle(
+  color: grey151816,
+  fontSize: 14.0,
+  fontWeight: FontWeight.w700,
+  letterSpacing: -1,
+);
+
+const recommendFeedBookTitleStyle = TextStyle(
+  color: grey151816,
+  fontSize: 16.0,
+  fontWeight: FontWeight.w700,
+  letterSpacing: -1,
+);
+
+const recommendFeedBookSubStyle = TextStyle(
+  color: grey555555,
+  fontSize: 14.0,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -1,
+);
+
+const recommendMoreButtonStyle = TextStyle(
+  color: grey262626,
+  fontSize: 15.0,
+  fontWeight: FontWeight.w500,
+  height: 1.2,
+  letterSpacing: -1,
+);
+
+const recommendLastFeedStyle = TextStyle(
+  color: grey555555,
+  fontSize: 15.0,
+  fontWeight: FontWeight.w500,
+  letterSpacing: -1,
+);
+
+final recommendBoxStyle = ShapeDecoration(
+  color: commonWhiteColor,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(20.0),
+  ),
+  shadows: [
+    BoxShadow(
+      color: commonBlackColor.withOpacity(0.1),
+      blurRadius: 10,
+      offset: const Offset(0, 0),
+      spreadRadius: 2,
+    ),
+  ],
 );
 
 // padding
