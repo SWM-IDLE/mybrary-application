@@ -8,10 +8,9 @@ import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/common/secure_storage_provider.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/variable/global_navigator_variable.dart';
-import 'package:mybrary/utils/dios/dio_service.dart';
 
 final dioProvider = Provider<Dio>((ref) {
-  final dio = DioService().to();
+  final dio = ref.watch(dioSingletonProvider);
 
   final secureStorage = ref.watch(secureStorageProvider);
 
