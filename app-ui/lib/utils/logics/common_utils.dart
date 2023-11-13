@@ -266,42 +266,45 @@ void commonShowConfirmOrCancelDialog({
     barrierDismissible: false,
     context: context,
     builder: (context) {
-      return AlertDialog(
-        title: Text(
-          title,
-          style: commonSubBoldStyle,
-          textAlign: TextAlign.center,
-        ),
-        content: Text(
-          content,
-          style: confirmButtonTextStyle,
-          textAlign: TextAlign.center,
-        ),
-        contentPadding: const EdgeInsets.all(16.0),
-        actionsAlignment: MainAxisAlignment.center,
-        buttonPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-        actions: [
-          Row(
-            children: [
-              confirmButton(
-                onTap: () {
-                  cancelButtonOnTap!();
-                },
-                buttonText: cancelButtonText,
-                isCancel: true,
-              ),
-              confirmButton(
-                onTap: () {
-                  confirmButtonOnTap!();
-                },
-                buttonText: confirmButtonText,
-                isCancel: false,
-                confirmButtonColor: confirmButtonColor,
-                confirmButtonText: confirmButtonTextColor,
-              ),
-            ],
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          title: Text(
+            title,
+            style: commonSubBoldStyle,
+            textAlign: TextAlign.center,
           ),
-        ],
+          content: Text(
+            content,
+            style: confirmButtonTextStyle,
+            textAlign: TextAlign.center,
+          ),
+          contentPadding: const EdgeInsets.all(16.0),
+          actionsAlignment: MainAxisAlignment.center,
+          buttonPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+          actions: [
+            Row(
+              children: [
+                confirmButton(
+                  onTap: () {
+                    cancelButtonOnTap!();
+                  },
+                  buttonText: cancelButtonText,
+                  isCancel: true,
+                ),
+                confirmButton(
+                  onTap: () {
+                    confirmButtonOnTap!();
+                  },
+                  buttonText: confirmButtonText,
+                  isCancel: false,
+                  confirmButtonColor: confirmButtonColor,
+                  confirmButtonText: confirmButtonTextColor,
+                ),
+              ],
+            ),
+          ],
+        ),
       );
     },
   );
@@ -319,40 +322,43 @@ void commonShowConfirmDialog({
   showDialog(
     barrierDismissible: false,
     context: context,
-    builder: (context) => AlertDialog(
-      title: Text(
-        title,
-        style: commonSubBoldStyle,
-        textAlign: TextAlign.center,
-      ),
-      content: Text(
-        content,
-        style: confirmButtonTextStyle,
-        textAlign: TextAlign.center,
-      ),
-      contentPadding: const EdgeInsets.all(16.0),
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-      actions: [
-        Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: confirmButtonColor,
-                foregroundColor: confirmButtonTextColor,
-              ),
-              onPressed: () {
-                confirmButtonOnTap!();
-              },
-              child: Text(
-                confirmButtonText,
+    builder: (context) => WillPopScope(
+      onWillPop: () async => false,
+      child: AlertDialog(
+        title: Text(
+          title,
+          style: commonSubBoldStyle,
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          content,
+          style: confirmButtonTextStyle,
+          textAlign: TextAlign.center,
+        ),
+        contentPadding: const EdgeInsets.all(16.0),
+        actionsAlignment: MainAxisAlignment.center,
+        buttonPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+        actions: [
+          Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: confirmButtonColor,
+                  foregroundColor: confirmButtonTextColor,
+                ),
+                onPressed: () {
+                  confirmButtonOnTap!();
+                },
+                child: Text(
+                  confirmButtonText,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }

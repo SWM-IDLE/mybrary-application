@@ -5,6 +5,7 @@ import 'package:mybrary/data/provider/search/search_user_infos_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/enum.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
+import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/components/error_page.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_info.dart';
@@ -34,6 +35,7 @@ class SearchDetailUserInfosScreen extends ConsumerStatefulWidget {
 class _SearchDetailUserInfosScreenState
     extends ConsumerState<SearchDetailUserInfosScreen> {
   final _userId = UserState.userId;
+  late String _introduction = '';
 
   @override
   void initState() {
@@ -44,16 +46,19 @@ class _SearchDetailUserInfosScreenState
         ref
             .refresh(searchUserInfosProvider.notifier)
             .getInterestBookUserInfos(widget.isbn13);
+        _introduction = '관심있어 하는';
         break;
       case SearchDetailUserInfosType.readComplete:
         ref
             .refresh(searchUserInfosProvider.notifier)
             .getReadCompleteBookUserInfos(widget.isbn13);
+        _introduction = '완독한';
         break;
       case SearchDetailUserInfosType.holder:
         ref
             .refresh(searchUserInfosProvider.notifier)
             .getMyBookUserInfos(widget.isbn13);
+        _introduction = '소장하고 있는';
         break;
     }
   }
@@ -65,7 +70,9 @@ class _SearchDetailUserInfosScreenState
     final state = ref.watch(searchUserInfoListProvider);
 
     if (state == null || state is CommonResponseLoading) {
-      return _initUserInfosLayout(child: const CircularLoading());
+      return _initUserInfosLayout(
+        child: const CircularLoading(),
+      );
     }
 
     if (state is CommonResponseError) {
@@ -82,6 +89,15 @@ class _SearchDetailUserInfosScreenState
 
     if (state is! CommonResponseLoading) {
       userInfos.addAll(state.userInfos);
+    }
+
+    if (userInfos.isEmpty) {
+      return _initUserInfosLayout(
+        child: DataError(
+          icon: Icons.emoji_people_rounded,
+          errorMessage: '아직 이 책을 ${_introduction}\n 사람이 없어요 :(',
+        ),
+      );
     }
 
     return _initUserInfosLayout(
@@ -131,6 +147,7 @@ class _SearchDetailUserInfosScreenState
     required Widget child,
   }) {
     return SubPageLayout(
+      appBarTitle: widget.title,
       child: child,
     );
   }
