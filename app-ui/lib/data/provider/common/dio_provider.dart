@@ -61,9 +61,24 @@ class CustomInterceptor extends Interceptor {
       final refreshToken = await secureStorage.read(key: refreshTokenKey);
 
       final context = GlobalNavigatorVariable.navigatorKey.currentContext!;
+
       var refreshDio = Dio();
 
       refreshDio.interceptors.clear();
+      refreshDio.interceptors
+          .add(InterceptorsWrapper(onError: (err, handler) async {
+        if (err.response?.statusCode == 401) {
+          log('ERROR: Refresh 토큰 만료에 대한 서버 에러가 발생했습니다.');
+          await secureStorage.deleteAll();
+
+          if (!context.mounted) return;
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/signin',
+            (Route<dynamic> route) => false,
+          );
+        }
+        return handler.reject(err);
+      }));
 
       refreshDio.options.headers[accessTokenHeaderKey] =
           '$jwtHeaderBearer$accessToken';
@@ -82,21 +97,6 @@ class CustomInterceptor extends Interceptor {
       await secureStorage.write(key: refreshTokenKey, value: newRefreshToken);
 
       final options = err.requestOptions;
-
-      refreshDio.interceptors
-          .add(InterceptorsWrapper(onError: (err, handler) async {
-        if (err.response?.statusCode == 401) {
-          log('ERROR: Refresh 토큰 만료에 대한 서버 에러가 발생했습니다.');
-          await secureStorage.deleteAll();
-
-          if (!context.mounted) return;
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            '/signin',
-            (Route<dynamic> route) => false,
-          );
-        }
-        return handler.reject(err);
-      }));
 
       options.headers[accessTokenHeaderKey] = '$jwtHeaderBearer$newAccessToken';
 
