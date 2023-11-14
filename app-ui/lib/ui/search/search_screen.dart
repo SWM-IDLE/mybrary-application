@@ -195,21 +195,22 @@ class _SearchScreenState extends State<SearchScreen> {
                     fontSize: 16.0,
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _recentSearchKeywordList.clear();
-                      UserState.localStorage
-                          .setStringList('recentSearchKeywordList', []);
-                    });
-                  },
-                  child: Text(
-                    '전체 기록 지우기',
-                    style: recentKeywordTextStyle.copyWith(
-                      fontSize: 13.0,
+                if (_recentSearchKeywordList.isNotEmpty)
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _recentSearchKeywordList.clear();
+                        UserState.localStorage
+                            .setStringList('recentSearchKeywordList', []);
+                      });
+                    },
+                    child: Text(
+                      '전체 기록 지우기',
+                      style: recentKeywordTextStyle.copyWith(
+                        fontSize: 13.0,
+                      ),
                     ),
-                  ),
-                )
+                  )
               ],
             ),
             const SizedBox(height: 16.0),

@@ -8,9 +8,10 @@ import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/common/secure_storage_provider.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/variable/global_navigator_variable.dart';
+import 'package:mybrary/utils/dios/dio_service.dart';
 
 final dioProvider = Provider<Dio>((ref) {
-  final dio = ref.watch(dioSingletonProvider);
+  final dio = DioService().to();
 
   final secureStorage = ref.watch(secureStorageProvider);
 
@@ -60,9 +61,30 @@ class CustomInterceptor extends Interceptor {
       final refreshToken = await secureStorage.read(key: refreshTokenKey);
 
       final context = GlobalNavigatorVariable.navigatorKey.currentContext!;
+      var refreshDio = Dio();
 
-      dio.interceptors.clear();
-      dio.interceptors.add(InterceptorsWrapper(onError: (err, handler) async {
+      refreshDio.interceptors.clear();
+
+      refreshDio.options.headers[accessTokenHeaderKey] =
+          '$jwtHeaderBearer$accessToken';
+      refreshDio.options.headers[refreshTokenHeaderKey] =
+          '$jwtHeaderBearer$refreshToken';
+
+      final refreshResponse = await refreshDio.get(
+        getApi(API.getRefreshToken),
+      );
+
+      final newAccessToken = refreshResponse.headers[accessTokenHeaderKey]![0];
+      final newRefreshToken =
+          refreshResponse.headers[refreshTokenHeaderKey]![0];
+
+      await secureStorage.write(key: accessTokenKey, value: newAccessToken);
+      await secureStorage.write(key: refreshTokenKey, value: newRefreshToken);
+
+      final options = err.requestOptions;
+
+      refreshDio.interceptors
+          .add(InterceptorsWrapper(onError: (err, handler) async {
         if (err.response?.statusCode == 401) {
           log('ERROR: Refresh 토큰 만료에 대한 서버 에러가 발생했습니다.');
           await secureStorage.deleteAll();
@@ -76,27 +98,9 @@ class CustomInterceptor extends Interceptor {
         return handler.reject(err);
       }));
 
-      dio.options.headers[accessTokenHeaderKey] =
-          '$jwtHeaderBearer$accessToken';
-      dio.options.headers[refreshTokenHeaderKey] =
-          '$jwtHeaderBearer$refreshToken';
-
-      final refreshResponse = await dio.get(
-        getApi(API.getRefreshToken),
-      );
-
-      final newAccessToken = refreshResponse.headers[accessTokenHeaderKey]![0];
-      final newRefreshToken =
-          refreshResponse.headers[refreshTokenHeaderKey]![0];
-
-      await secureStorage.write(key: accessTokenKey, value: newAccessToken);
-      await secureStorage.write(key: refreshTokenKey, value: newRefreshToken);
-
-      final options = err.requestOptions;
-
       options.headers[accessTokenHeaderKey] = '$jwtHeaderBearer$newAccessToken';
 
-      final response = await dio.fetch(options);
+      final response = await refreshDio.fetch(options);
 
       return handler.resolve(response);
     }
