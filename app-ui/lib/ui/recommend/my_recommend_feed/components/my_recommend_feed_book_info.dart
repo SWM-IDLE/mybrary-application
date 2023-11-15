@@ -16,8 +16,8 @@ class MyRecommendFeedBookInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Wrap(
+      direction: Axis.vertical,
       children: [
         Text(
           title,
@@ -37,7 +37,6 @@ class MyRecommendFeedBookInfo extends StatelessWidget {
         const SizedBox(height: 6.0),
         Text(
           content,
-          maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: recommendBookSubStyle.copyWith(
             fontSize: 13.0,

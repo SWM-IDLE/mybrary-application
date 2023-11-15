@@ -21,8 +21,8 @@ Future<Dio> authDio(BuildContext context) async {
     options.headers[accessTokenHeaderKey] = '$jwtHeaderBearer$accessToken';
     return handler.next(options);
   }, onError: (error, handler) async {
-    log("ERROR: Server 에러 코드 <${error.response!.statusCode}>");
-    log("ERROR: Server 에러 메세지 <${error.response!.data.toString()}>");
+    log("ERROR: Server 에러 코드 <${error.response?.statusCode}>");
+    log("ERROR: Server 에러 메세지 <${error.response?.data.toString()}>");
 
     if (error.response?.statusCode == 401) {
       log('ERROR: Access 토큰 만료에 대한 서버 에러가 발생했습니다.');

@@ -9,4 +9,6 @@ class UserState {
   static String get userId => localStorage.getString('userId')!;
   static bool? get update => localStorage.getBool('update') ?? false;
   static bool? get forceUpdate => localStorage.getBool('forceUpdate') ?? false;
+  static List<String> get recentSearchKeywordList =>
+      localStorage.getStringList('recentSearchKeywordList') ?? [];
 }

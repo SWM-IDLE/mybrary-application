@@ -114,11 +114,10 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                   );
                 }
               },
-              child: Column(
+              child: Wrap(
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    height: 150,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -126,6 +125,7 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                           tag: myRecommendFeedData[index].recommendationFeedId,
                           child: Container(
                             width: 100,
+                            height: 150,
                             decoration: commonBookThumbnailStyle(
                               thumbnailUrl:
                                   myRecommendFeedData[index].thumbnailUrl,
@@ -145,6 +145,7 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                                         .recommendationTargetNames,
                                 content: myRecommendFeedData[index].content,
                               ),
+                              const SizedBox(height: 4.0),
                               _createdAtAndDeleteRecommendFeedComponent(
                                 myRecommendFeedData,
                                 index,

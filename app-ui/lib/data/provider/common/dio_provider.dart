@@ -57,12 +57,13 @@ class CustomInterceptor extends Interceptor {
       final accessToken = await secureStorage.read(key: accessTokenKey);
       final refreshToken = await secureStorage.read(key: refreshTokenKey);
 
-      final refreshDio = Dio();
       final context = GlobalNavigatorVariable.navigatorKey.currentContext!;
+
+      var refreshDio = Dio();
 
       refreshDio.interceptors.clear();
       refreshDio.interceptors
-          .add(InterceptorsWrapper(onError: (err, handler) async {
+          .add(QueuedInterceptorsWrapper(onError: (err, handler) async {
         if (err.response?.statusCode == 401) {
           log('ERROR: Refresh 토큰 만료에 대한 서버 에러가 발생했습니다.');
           await secureStorage.deleteAll();
