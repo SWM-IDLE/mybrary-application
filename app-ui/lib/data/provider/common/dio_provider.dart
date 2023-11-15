@@ -10,19 +10,12 @@ import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/variable/global_navigator_variable.dart';
 
 final dioProvider = Provider<Dio>((ref) {
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      sendTimeout: const Duration(seconds: 10),
-    ),
-  );
+  final dio = Dio();
 
   final secureStorage = ref.watch(secureStorageProvider);
 
   dio.interceptors.add(
-    CustomInterceptor(secureStorage: secureStorage, dio: dio),
+    CustomInterceptor(secureStorage: secureStorage),
   );
 
   return dio;
@@ -30,11 +23,9 @@ final dioProvider = Provider<Dio>((ref) {
 
 class CustomInterceptor extends Interceptor {
   final FlutterSecureStorage secureStorage;
-  final Dio dio;
 
   CustomInterceptor({
     required this.secureStorage,
-    required this.dio,
   });
 
   @override
@@ -72,7 +63,7 @@ class CustomInterceptor extends Interceptor {
 
       refreshDio.interceptors.clear();
       refreshDio.interceptors
-          .add(InterceptorsWrapper(onError: (err, handler) async {
+          .add(QueuedInterceptorsWrapper(onError: (err, handler) async {
         if (err.response?.statusCode == 401) {
           log('ERROR: Refresh 토큰 만료에 대한 서버 에러가 발생했습니다.');
           await secureStorage.deleteAll();
