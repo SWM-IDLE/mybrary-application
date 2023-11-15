@@ -8,10 +8,16 @@ import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/common/secure_storage_provider.dart';
 import 'package:mybrary/res/constants/config.dart';
 import 'package:mybrary/res/variable/global_navigator_variable.dart';
-import 'package:mybrary/utils/dios/dio_service.dart';
 
 final dioProvider = Provider<Dio>((ref) {
-  final dio = DioService().to();
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      sendTimeout: const Duration(seconds: 10),
+    ),
+  );
 
   final secureStorage = ref.watch(secureStorageProvider);
 

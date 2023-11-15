@@ -85,7 +85,9 @@ class _MyInterestsScreenState extends ConsumerState<MyInterestsScreen> {
               snackBarText: '마이 관심사가 저장되었습니다.',
             );
 
-            ref.invalidate(recommendationBooksProvider);
+            ref
+                .refresh(recommendationBooksProvider.notifier)
+                .getBooksByFirstInterests();
 
             Navigator.pop(context);
           },
