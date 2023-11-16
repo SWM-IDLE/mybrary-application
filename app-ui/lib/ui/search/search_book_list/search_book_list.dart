@@ -399,7 +399,7 @@ class _SearchBookListState extends State<SearchBookList>
   Widget searchedUsersScreen(List<SearchedUsers> searchedUsers) {
     if (searchedUsers.isNotEmpty) {
       return Padding(
-        padding: EdgeInsets.only(top: paddingTopHeight),
+        padding: EdgeInsets.only(top: paddingTopHeight + 8.0),
         child: ListView.builder(
           controller: _searchUserScrollController,
           physics: const BouncingScrollPhysics(
