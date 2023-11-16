@@ -32,8 +32,6 @@ class RecommendFeedContent extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   height: 1.8,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
               ),
             ),

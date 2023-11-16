@@ -82,7 +82,7 @@ class _SearchPopularKeywordState extends State<SearchPopularKeyword> {
                   ),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: greyDDDDDD,
+                      color: greyBCBCBC,
                     ),
                     borderRadius: BorderRadius.circular(30.0),
                   ),

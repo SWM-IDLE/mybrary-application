@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,10 +42,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   final _homeRepository = HomeRepository();
 
   late String _bookCategory = '';
-  late List<UserInterests> interests = [];
+  late List<UserInterests> _interests = [];
   late List<BooksModel> _bookListByCategory = [];
 
-  late bool _initAppBarIsVisible = false;
+  late bool _initAppBarIsVisible;
 
   final ScrollController _homeScrollController = ScrollController();
   final ScrollController _categoryScrollController = ScrollController();
@@ -54,6 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     super.initState();
 
     sendNotificationMessage();
+    _initAppBarIsVisible = false;
 
     Future.delayed(
       const Duration(milliseconds: 500),
@@ -213,12 +215,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
 
     if (booksByInterests is! CommonResponseLoading) {
-      interests = _getUserInterests(booksByInterests.userInterests);
+      if (booksByInterests.userInterests!.isNotEmpty &&
+          listEquals(_interests, booksByInterests.userInterests) == false) {
+        _interests = _getUserInterests(booksByInterests.userInterests);
+        _bookListByCategory = booksByInterests.bookRecommendations!;
+        _bookCategory = _interests.first.name!;
+      }
 
       if (_bookListByCategory.isEmpty &&
           booksByInterests.userInterests!.isNotEmpty) {
-        _bookListByCategory.addAll([...booksByInterests.bookRecommendations!]);
-        _bookCategory = interests.first.name!;
+        _bookListByCategory = booksByInterests.bookRecommendations!;
+        _bookCategory = _interests.first.name!;
       }
     }
 
@@ -274,7 +281,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     onTapMyInterests: _navigateToMyInterestsScreen,
                     onTapCategory: (String category) {
                       final [firstInterest, secondInterest, thirdInterest] =
-                          interests;
+                          _interests;
 
                       setState(() {
                         _bookCategory = category;
@@ -365,9 +372,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ),
     ).then(
       (value) => setState(() {
-        ref
-            .refresh(recommendationBooksProvider.notifier)
-            .getBooksByFirstInterests();
+        ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
       }),
     );
   }

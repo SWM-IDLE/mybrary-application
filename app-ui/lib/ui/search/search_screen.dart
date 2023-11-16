@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
-import 'package:mybrary/ui/search/components/search_all_user_list.dart';
 import 'package:mybrary/ui/search/components/search_popular_keyword.dart';
 import 'package:mybrary/ui/search/search_book_list/search_book_list.dart';
 import 'package:mybrary/utils/logics/permission_utils.dart';
@@ -22,6 +22,8 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _bookSearchKeywordController =
       TextEditingController();
 
+  List<String> _recentSearchKeywordList = [];
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +37,7 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
 
+    _loadRecentSearchKeywordList();
     _bookSearchKeywordController.addListener(_isClearText);
   }
 
@@ -42,6 +45,18 @@ class _SearchScreenState extends State<SearchScreen> {
     if (_bookSearchKeywordController.text.isEmpty) {
       _isClearButtonVisible = false;
     }
+  }
+
+  void _loadRecentSearchKeywordList() {
+    setState(() {
+      _recentSearchKeywordList = UserState.recentSearchKeywordList;
+    });
+  }
+
+  void _saveRecentSearchKeywordList(String keyword) {
+    _recentSearchKeywordList.insert(0, keyword);
+    UserState.localStorage
+        .setStringList('recentSearchKeywordList', _recentSearchKeywordList);
   }
 
   @override
@@ -119,6 +134,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                   })
                                 },
                               );
+
+                              _saveRecentSearchKeywordList(value);
                             }
                           },
                           decoration: InputDecoration(
@@ -140,9 +157,9 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 8.0,
-                      ),
+                      const SizedBox(height: 8.0),
+                      _recentSearchKeywordComponent(context),
+                      const SizedBox(height: 24.0),
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: SearchPopularKeyword(
@@ -161,48 +178,134 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _searchAllUserListBox() {
-    return Padding(
-      padding: const EdgeInsets.all(18.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const SearchAllUserList(),
-            ),
-          );
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+  SizedBox _recentSearchKeywordComponent(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '현재',
-                  style: commonMainRegularStyle.copyWith(
-                    fontSize: 16.0,
-                  ),
-                ),
-                Text(
-                  ' 마이브러리',
+                  '최근 검색어',
                   style: commonSubBoldStyle.copyWith(
                     fontSize: 16.0,
                   ),
                 ),
-                Text(
-                  '의 사용자는?',
-                  style: commonMainRegularStyle.copyWith(
-                    fontSize: 16.0,
-                  ),
-                ),
+                if (_recentSearchKeywordList.isNotEmpty)
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _recentSearchKeywordList.clear();
+                        UserState.localStorage
+                            .setStringList('recentSearchKeywordList', []);
+                      });
+                    },
+                    child: Text(
+                      '전체 기록 지우기',
+                      style: recentKeywordTextStyle.copyWith(
+                        fontSize: 13.0,
+                      ),
+                    ),
+                  )
               ],
             ),
-            SizedBox(
-              child: SvgPicture.asset(
-                'assets/svg/icon/right_arrow.svg',
+            const SizedBox(height: 16.0),
+            if (_recentSearchKeywordList.isEmpty)
+              const Text(
+                '최근 검색어가 없습니다.',
+                style: recentKeywordTextStyle,
+              )
+            else
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: List.generate(
+                  _recentSearchKeywordList.length,
+                  (index) => Stack(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 6.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: circularGreenColor,
+                          border: Border.all(
+                            color: circularGreenColor,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Wrap(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => SearchBookList(
+                                      searchKeyword:
+                                          _recentSearchKeywordList[index],
+                                    ),
+                                  ),
+                                ).then(
+                                  (value) => {
+                                    setState(() {
+                                      _bookSearchKeywordController.clear();
+                                      _isClearButtonVisible = false;
+                                    })
+                                  },
+                                );
+                              },
+                              child: Text(
+                                _recentSearchKeywordList[index],
+                                style: popularKeywordTextStyle.copyWith(
+                                  color: primaryColor,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8.0),
+                          ],
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _recentSearchKeywordList.removeAt(index);
+                                UserState.localStorage.setStringList(
+                                    'recentSearchKeywordList',
+                                    _recentSearchKeywordList);
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                right: 8.0,
+                                bottom: 2.0,
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/svg/icon/clear.svg',
+                                width: 8.0,
+                                height: 8.0,
+                                colorFilter: const ColorFilter.mode(
+                                  primaryColor,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),
