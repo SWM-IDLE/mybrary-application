@@ -118,6 +118,7 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
+                    height: 150,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
