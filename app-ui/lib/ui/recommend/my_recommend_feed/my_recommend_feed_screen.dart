@@ -105,14 +105,6 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                         .getRecommendFeedList(userId: widget.userId ?? _userId);
                   }
                 }
-
-                if (widget.userId != _userId) {
-                  if (!mounted) return;
-                  moveToBookDetail(
-                    context: context,
-                    isbn13: myRecommendFeedData[index].isbn13,
-                  );
-                }
               },
               child: Wrap(
                 children: [
@@ -124,35 +116,56 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                       children: [
                         Hero(
                           tag: myRecommendFeedData[index].recommendationFeedId,
-                          child: Container(
-                            width: 100,
-                            height: 150,
-                            decoration: commonBookThumbnailStyle(
-                              thumbnailUrl:
-                                  myRecommendFeedData[index].thumbnailUrl,
+                          child: InkWell(
+                            onTap: () {
+                              if (widget.userId != _userId) {
+                                moveToBookDetail(
+                                  context: context,
+                                  isbn13: myRecommendFeedData[index].isbn13,
+                                );
+                              }
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 150,
+                              decoration: commonBookThumbnailStyle(
+                                thumbnailUrl:
+                                    myRecommendFeedData[index].thumbnailUrl,
+                              ),
                             ),
                           ),
                         ),
                         const SizedBox(width: 16.0),
                         Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MyRecommendFeedBookInfo(
-                                title: myRecommendFeedData[index].title,
+                          child: InkWell(
+                            onTap: () {
+                              showUserRecommendFeed(
+                                context: context,
                                 recommendationTargetNames:
                                     myRecommendFeedData[index]
                                         .recommendationTargetNames,
                                 content: myRecommendFeedData[index].content,
-                              ),
-                              const SizedBox(height: 4.0),
-                              _createdAtAndDeleteRecommendFeedComponent(
-                                myRecommendFeedData,
-                                index,
-                                context,
-                              ),
-                            ],
+                              );
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyRecommendFeedBookInfo(
+                                  title: myRecommendFeedData[index].title,
+                                  recommendationTargetNames:
+                                      myRecommendFeedData[index]
+                                          .recommendationTargetNames,
+                                  content: myRecommendFeedData[index].content,
+                                ),
+                                const SizedBox(height: 4.0),
+                                _createdAtAndDeleteRecommendFeedComponent(
+                                  myRecommendFeedData,
+                                  index,
+                                  context,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

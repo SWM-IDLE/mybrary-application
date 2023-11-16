@@ -6,6 +6,8 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/mybook/interest_book_list/interest_book_list_screen.dart';
 import 'package:mybrary/ui/profile/user_profile/user_profile_screen.dart';
+import 'package:mybrary/ui/recommend/components/recommend_feed_content.dart';
+import 'package:mybrary/ui/recommend/components/recommend_feed_keyword.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/utils/logics/ui_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -430,5 +432,40 @@ Widget moveNextToInterestBookListScreen({
       '관심북으로 이동',
       style: commonSnackBarButtonStyle,
     ),
+  );
+}
+
+void showUserRecommendFeed({
+  required BuildContext context,
+  required List<String> recommendationTargetNames,
+  required String content,
+}) {
+  showDialog(
+    context: context,
+    barrierColor: commonBlackColor.withOpacity(0.2),
+    builder: (context) {
+      return AlertDialog(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        content: Container(
+          decoration: recommendBoxStyle,
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            children: [
+              RecommendFeedKeyword(
+                recommendationTargetNames: recommendationTargetNames,
+              ),
+              commonDivider(
+                dividerColor: greyF7F7F7,
+                dividerThickness: 4,
+              ),
+              RecommendFeedContent(
+                content: content,
+              ),
+            ],
+          ),
+        ),
+      );
+    },
   );
 }
