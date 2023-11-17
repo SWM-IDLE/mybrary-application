@@ -80,48 +80,30 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
           ),
           itemCount: myRecommendFeedData.length,
           itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () async {
-                if (widget.userId == _userId) {
-                  bool? refresh = await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => MyRecommendScreen(
-                        myRecommendFeedData: myRecommendFeedData[index],
-                      ),
-                    ),
-                  );
+            return Wrap(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 150,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          if (widget.userId == _userId) {
+                            await _editMyRecommendFeed(
+                                context, myRecommendFeedData, index);
+                          }
 
-                  setState(() {
-                    _refreshRecommendFeedPost = refresh ?? false;
-                  });
-
-                  if (_refreshRecommendFeedPost) {
-                    ref
-                        .refresh(recommendProvider.notifier)
-                        .getMyRecommendPostList(
-                            userId: widget.userId ?? _userId);
-                    ref
-                        .refresh(myRecommendProvider.notifier)
-                        .getRecommendFeedList(userId: widget.userId ?? _userId);
-                  }
-                }
-
-                if (widget.userId != _userId) {
-                  if (!mounted) return;
-                  moveToBookDetail(
-                    context: context,
-                    isbn13: myRecommendFeedData[index].isbn13,
-                  );
-                }
-              },
-              child: Wrap(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Hero(
+                          if (widget.userId != _userId) {
+                            if (!mounted) return;
+                            moveToBookDetail(
+                              context: context,
+                              isbn13: myRecommendFeedData[index].isbn13,
+                            );
+                          }
+                        },
+                        child: Hero(
                           tag: myRecommendFeedData[index].recommendationFeedId,
                           child: Container(
                             width: 100,
@@ -132,8 +114,27 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            if (widget.userId == _userId) {
+                              await _editMyRecommendFeed(
+                                  context, myRecommendFeedData, index);
+                            }
+
+                            if (widget.userId != _userId) {
+                              if (!mounted) return;
+                              showUserRecommendFeed(
+                                context: context,
+                                recommendationTargetNames:
+                                    myRecommendFeedData[index]
+                                        .recommendationTargetNames,
+                                content: myRecommendFeedData[index].content,
+                              );
+                            }
+                          },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,28 +155,52 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  if (index != myRecommendFeedData.length - 1)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 32.0,
-                      ),
-                      child: commonDivider(
-                        dividerColor: greyACACAC,
-                        dividerThickness: 1,
-                      ),
-                    )
-                  else
-                    const SizedBox(height: 20.0),
-                ],
-              ),
+                ),
+                if (index != myRecommendFeedData.length - 1)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 32.0,
+                    ),
+                    child: commonDivider(
+                      dividerColor: greyACACAC,
+                      dividerThickness: 1,
+                    ),
+                  )
+                else
+                  const SizedBox(height: 20.0),
+              ],
             );
           },
         ),
       ),
     );
+  }
+
+  Future<void> _editMyRecommendFeed(BuildContext context,
+      List<MyRecommendFeedDataModel> myRecommendFeedData, int index) async {
+    bool? refresh = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MyRecommendScreen(
+          myRecommendFeedData: myRecommendFeedData[index],
+        ),
+      ),
+    );
+
+    setState(() {
+      _refreshRecommendFeedPost = refresh ?? false;
+    });
+
+    if (_refreshRecommendFeedPost) {
+      ref
+          .refresh(recommendProvider.notifier)
+          .getMyRecommendPostList(userId: widget.userId ?? _userId);
+      ref
+          .refresh(myRecommendProvider.notifier)
+          .getRecommendFeedList(userId: widget.userId ?? _userId);
+    }
   }
 
   Row _createdAtAndDeleteRecommendFeedComponent(

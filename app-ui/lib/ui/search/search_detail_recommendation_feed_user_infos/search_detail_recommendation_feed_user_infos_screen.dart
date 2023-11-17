@@ -6,8 +6,6 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/data_error.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
-import 'package:mybrary/ui/recommend/components/recommend_feed_content.dart';
-import 'package:mybrary/ui/recommend/components/recommend_feed_keyword.dart';
 import 'package:mybrary/ui/search/search_book_list/components/search_user_info.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
 
@@ -95,34 +93,11 @@ class _SearchDetailRecommendationFeedUserInfosScreenState
 
                   return InkWell(
                     onTap: () {
-                      showDialog(
+                      showUserRecommendFeed(
                         context: context,
-                        barrierColor: commonBlackColor.withOpacity(0.2),
-                        builder: (context) {
-                          return AlertDialog(
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            content: Container(
-                              decoration: recommendBoxStyle,
-                              child: Wrap(
-                                alignment: WrapAlignment.center,
-                                children: [
-                                  RecommendFeedKeyword(
-                                    recommendationTargetNames:
-                                        user.recommendationTargetNames,
-                                  ),
-                                  commonDivider(
-                                    dividerColor: greyF7F7F7,
-                                    dividerThickness: 4,
-                                  ),
-                                  RecommendFeedContent(
-                                    content: user.content,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                        recommendationTargetNames:
+                            user.recommendationTargetNames,
+                        content: user.content,
                       );
                     },
                     child: Padding(

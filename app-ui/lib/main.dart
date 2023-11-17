@@ -24,6 +24,7 @@ import 'package:mybrary/ui/profile/profile_edit/profile_edit_screen.dart';
 import 'package:mybrary/ui/search/search_isbn_scan/search_isbn_scan_screen.dart';
 import 'package:mybrary/ui/search/search_screen.dart';
 import 'package:mybrary/utils/logics/future_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -65,10 +66,18 @@ class MyApp extends StatelessWidget {
             home: SplashScreen(),
           );
         } else if (snapshot.hasError) {
-          return const MaterialApp(
+          return MaterialApp(
             home: Scaffold(
               body: Center(
-                child: Text('앱을 실행할 수 없습니다.\n네트워크 연결 상태를 확인해주세요.'),
+                child: Column(
+                  children: [
+                    const Text(
+                      '앱을 실행할 수 없습니다.\n네트워크 연결 상태를 확인하시거나,\n앱 데이터를 한 번 삭제해주세요.',
+                    ),
+                    if (isAndroid)
+                      const Text('설정 > 애플리케이션 >\n마이브러리 > 저장공간 > 데이터 삭제'),
+                  ],
+                ),
               ),
             ),
           );
