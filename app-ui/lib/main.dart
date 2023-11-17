@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
                       '앱을 실행할 수 없습니다.\n네트워크 연결 상태를 확인하시거나,\n앱 데이터를 한 번 삭제해주세요.',
                     ),
                     if (isAndroid)
-                      const Text('설정 > 애플리케이션 >\n마이브러리 >저장공간 > 데이터 삭제'),
+                      const Text('설정 > 애플리케이션 >\n마이브러리 > 저장공간 > 데이터 삭제'),
                   ],
                 ),
               ),
