@@ -14,7 +14,7 @@ class IsbnScanBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: height * 0.08,
+      top: height * 0.125,
       child: Column(
         children: [
           Container(
@@ -53,14 +53,14 @@ class IsbnScanBox extends StatelessWidget {
                         Container(
                           width: 30.0,
                           height: 3.0,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: primaryColor,
                           ),
                         ),
                         Container(
                           width: 3.0,
                           height: 30.0,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: primaryColor,
                           ),
                         ),
@@ -76,14 +76,14 @@ class IsbnScanBox extends StatelessWidget {
                         Container(
                           width: 30.0,
                           height: 3.0,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: primaryColor,
                           ),
                         ),
                         Container(
                           width: 3.0,
                           height: 30.0,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: primaryColor,
                           ),
                         ),
@@ -99,14 +99,14 @@ class IsbnScanBox extends StatelessWidget {
                         Container(
                           width: 3.0,
                           height: 30.0,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: primaryColor,
                           ),
                         ),
                         Container(
                           width: 30.0,
                           height: 3.0,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: primaryColor,
                           ),
                         ),
@@ -122,14 +122,14 @@ class IsbnScanBox extends StatelessWidget {
                         Container(
                           width: 3.0,
                           height: 30.0,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: primaryColor,
                           ),
                         ),
                         Container(
                           width: 30.0,
                           height: 3.0,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: primaryColor,
                           ),
                         ),

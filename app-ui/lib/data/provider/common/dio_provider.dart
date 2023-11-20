@@ -52,7 +52,7 @@ class CustomInterceptor extends Interceptor {
     log("ERROR: Server 에러 메세지 <${err.response?.data.toString()}>");
 
     if (err.response?.statusCode == 401) {
-      log('ERROR: Access 토큰 만료에 대한 서버 에러가 발생했습니다.');
+      log('ERROR: Access 토큰에 대한 서버 에러가 발생했습니다.');
 
       final accessToken = await secureStorage.read(key: accessTokenKey);
       final refreshToken = await secureStorage.read(key: refreshTokenKey);
@@ -63,9 +63,11 @@ class CustomInterceptor extends Interceptor {
 
       refreshDio.interceptors.clear();
       refreshDio.interceptors
-          .add(QueuedInterceptorsWrapper(onError: (err, handler) async {
+          .add(InterceptorsWrapper(onError: (err, handler) async {
         if (err.response?.statusCode == 401) {
-          log('ERROR: Refresh 토큰 만료에 대한 서버 에러가 발생했습니다.');
+          log('ERROR: Refresh 토큰에 대한 서버 에러가 발생했습니다.');
+          log("ERROR: Server 에러 코드 <${err.response?.statusCode}>");
+          log("ERROR: Server 에러 메세지 <${err.response?.data.toString()}>");
           await secureStorage.deleteAll();
 
           if (!context.mounted) return;
@@ -82,24 +84,29 @@ class CustomInterceptor extends Interceptor {
       refreshDio.options.headers[refreshTokenHeaderKey] =
           '$jwtHeaderBearer$refreshToken';
 
-      final refreshResponse = await refreshDio.get(
-        getApi(API.getRefreshToken),
-      );
+      try {
+        final refreshResponse =
+            await refreshDio.get(getApi(API.getRefreshToken));
 
-      final newAccessToken = refreshResponse.headers[accessTokenHeaderKey]![0];
-      final newRefreshToken =
-          refreshResponse.headers[refreshTokenHeaderKey]![0];
+        final newAccessToken =
+            refreshResponse.headers[accessTokenHeaderKey]![0];
+        final newRefreshToken =
+            refreshResponse.headers[refreshTokenHeaderKey]![0];
 
-      await secureStorage.write(key: accessTokenKey, value: newAccessToken);
-      await secureStorage.write(key: refreshTokenKey, value: newRefreshToken);
+        await secureStorage.write(key: accessTokenKey, value: newAccessToken);
+        await secureStorage.write(key: refreshTokenKey, value: newRefreshToken);
 
-      final options = err.requestOptions;
+        final options = err.requestOptions;
 
-      options.headers[accessTokenHeaderKey] = '$jwtHeaderBearer$newAccessToken';
+        options.headers[accessTokenHeaderKey] =
+            '$jwtHeaderBearer$newAccessToken';
 
-      final response = await refreshDio.fetch(options);
+        final response = await refreshDio.fetch(options);
 
-      return handler.resolve(response);
+        return handler.resolve(response);
+      } catch (refreshError) {
+        log('ERROR: 리프레쉬 토큰을 갱신하는 중 에러가 발생했습니다. $refreshError');
+      }
     }
     return handler.reject(err);
   }

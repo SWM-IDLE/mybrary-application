@@ -1,14 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 
 class IsbnScanDescription extends StatelessWidget {
   final double width;
   final double height;
+  final String topText;
+  final String bottomText;
+  final IconData icon;
+  final void Function()? onPressedScanButton;
 
   const IsbnScanDescription({
     required this.width,
     required this.height,
+    required this.topText,
+    required this.bottomText,
+    required this.icon,
+    required this.onPressedScanButton,
     super.key,
   });
 
@@ -33,34 +40,32 @@ class IsbnScanDescription extends StatelessWidget {
             Column(
               children: [
                 Text(
-                  '도서 뒷면의 바코드를 인식시켜',
+                  topText,
                   style: barcodeDescriptionTextStyle,
                 ),
-                SizedBox(
-                  height: 10.0,
-                ),
+                const SizedBox(height: 10.0),
                 Text(
-                  '책을 검색할 수 있어요',
+                  bottomText,
                   style: barcodeDescriptionTextStyle,
                 ),
               ],
             ),
-            SizedBox(
-              height: 40.0,
-            ),
+            const SizedBox(height: 40.0),
             ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: onPressedScanButton,
               style: ElevatedButton.styleFrom(
-                fixedSize: Size(66.0, 66.0),
+                fixedSize: const Size(70.0, 70.0),
                 backgroundColor: primaryColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100.0),
                 ),
               ),
-              child: Icon(
-                CupertinoIcons.xmark,
-                color: commonWhiteColor,
-                size: 44.0,
+              child: Center(
+                child: Icon(
+                  icon,
+                  color: commonWhiteColor,
+                  size: 38.0,
+                ),
               ),
             ),
           ],
