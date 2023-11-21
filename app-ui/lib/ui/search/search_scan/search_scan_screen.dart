@@ -9,6 +9,7 @@ import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/ui/search/search_scan/components/scan_description.dart';
 import 'package:mybrary/ui/search/search_scan/components/scan_layout_box.dart';
+import 'package:mybrary/ui/search/search_scan/search_scan_list/search_scan_list_screen.dart';
 
 class SearchScanScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -151,6 +152,11 @@ class _SearchScanScreenState extends State<SearchScanScreen>
                         final image = await _controller.takePicture();
                         // TODO: 책장 촬영 후 로딩, 로딩 후 JSON 데이터와 함께 마이북 담기 화면 이동
                         print(image);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => SearchScanListScreen(),
+                          ),
+                        );
                       } catch (e) {
                         print(e);
                       }
