@@ -2,10 +2,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
-import 'package:mybrary/ui/search/search_isbn_scan/search_isbn_scan_screen.dart';
+import 'package:mybrary/ui/search/search_scan/search_scan_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-Future<dynamic> onIsbnScan(BuildContext context) async {
+Future<dynamic> checkScanPermission(BuildContext context) async {
   await Permission.camera.request();
 
   final permissionCameraStatus = await Permission.camera.status;
@@ -19,7 +19,7 @@ Future<dynamic> onIsbnScan(BuildContext context) async {
         if (!context.mounted) return;
         return Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => SearchIsbnScanScreen(camera: firstCamera),
+            builder: (context) => SearchScanScreen(camera: firstCamera),
           ),
         );
       }

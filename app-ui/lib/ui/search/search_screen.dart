@@ -86,7 +86,7 @@ class _SearchScreenState extends State<SearchScreen> {
             foregroundColor: commonBlackColor,
             actions: [
               IconButton(
-                onPressed: () => onIsbnScan(context),
+                onPressed: () => checkScanPermission(context),
                 icon: SvgPicture.asset('assets/svg/icon/barcode_scan.svg'),
               ),
             ],

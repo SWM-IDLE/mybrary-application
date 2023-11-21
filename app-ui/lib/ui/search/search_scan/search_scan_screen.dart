@@ -7,21 +7,21 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
-import 'package:mybrary/ui/search/search_isbn_scan/components/isbn_scan_box.dart';
-import 'package:mybrary/ui/search/search_isbn_scan/components/isbn_scan_description.dart';
+import 'package:mybrary/ui/search/search_scan/components/scan_description.dart';
+import 'package:mybrary/ui/search/search_scan/components/scan_layout_box.dart';
 
-class SearchIsbnScanScreen extends StatefulWidget {
+class SearchScanScreen extends StatefulWidget {
   final CameraDescription camera;
-  const SearchIsbnScanScreen({
+  const SearchScanScreen({
     required this.camera,
     super.key,
   });
 
   @override
-  State<SearchIsbnScanScreen> createState() => _SearchIsbnScanScreenState();
+  State<SearchScanScreen> createState() => _SearchScanScreenState();
 }
 
-class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
+class _SearchScanScreenState extends State<SearchScanScreen>
     with TickerProviderStateMixin {
   late final List<String> _scanTabs = ['마이북 스캔', '바코드 스캔'];
   late final TabController _scanTabController = TabController(
@@ -137,7 +137,7 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
                       },
                     ),
                   ),
-                  IsbnScanDescription(
+                  ScanDescription(
                     width: width,
                     height: height,
                     topText: '책장 또는 다량의 도서를 촬영해',
@@ -187,7 +187,7 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
                       },
                     ),
                   ),
-                  IsbnScanDescription(
+                  ScanDescription(
                     width: width,
                     height: height,
                     topText: '도서 뒷면의 바코드를 인식시켜',
@@ -198,7 +198,7 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
                       _isbnCameraController.dispose();
                     },
                   ),
-                  IsbnScanBox(
+                  ScanLayoutBox(
                     width: width,
                     height: height,
                   ),

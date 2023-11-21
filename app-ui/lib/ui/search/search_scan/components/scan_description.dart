@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 
-class IsbnScanDescription extends StatelessWidget {
+class ScanDescription extends StatelessWidget {
   final double width;
   final double height;
   final String topText;
@@ -10,7 +10,7 @@ class IsbnScanDescription extends StatelessWidget {
   final void Function()? onPressedScanButton;
   final bool isMyBookScan;
 
-  const IsbnScanDescription({
+  const ScanDescription({
     required this.width,
     required this.height,
     required this.topText,
@@ -54,7 +54,7 @@ class IsbnScanDescription extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 40.0),
+            const SizedBox(height: 50.0),
             ElevatedButton(
               onPressed: onPressedScanButton,
               style: ElevatedButton.styleFrom(
@@ -72,6 +72,7 @@ class IsbnScanDescription extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 20.0),
           ],
         ),
       ),

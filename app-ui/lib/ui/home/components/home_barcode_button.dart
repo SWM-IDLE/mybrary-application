@@ -23,7 +23,7 @@ class HomeBarcodeButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(4.0),
         ),
         child: InkWell(
-          onTap: () => onIsbnScan(context),
+          onTap: () => checkScanPermission(context),
           child: Row(
             children: [
               Container(

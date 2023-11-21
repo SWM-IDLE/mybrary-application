@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 
-class IsbnScanBox extends StatelessWidget {
+class ScanLayoutBox extends StatelessWidget {
   final double width;
   final double height;
 
-  const IsbnScanBox({
+  const ScanLayoutBox({
     required this.width,
     required this.height,
     super.key,

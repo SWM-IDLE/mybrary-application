@@ -340,7 +340,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: IconButton(
-            onPressed: () => onIsbnScan(context),
+            onPressed: () => checkScanPermission(context),
             icon: SvgPicture.asset(
                 'assets/svg/icon/barcode_${_initAppBarIsVisible ? 'black' : 'white'}.svg'),
           ),
