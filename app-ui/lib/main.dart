@@ -21,7 +21,6 @@ import 'package:mybrary/ui/common/components/spalsh_screen.dart';
 import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/ui/home/home_screen.dart';
 import 'package:mybrary/ui/profile/profile_edit/profile_edit_screen.dart';
-import 'package:mybrary/ui/search/search_isbn_scan/search_isbn_scan_screen.dart';
 import 'package:mybrary/ui/search/search_screen.dart';
 import 'package:mybrary/utils/logics/future_utils.dart';
 import 'package:mybrary/utils/logics/ui_utils.dart';
@@ -103,7 +102,6 @@ class MyApp extends StatelessWidget {
                 '/signup/verify': (context) => const SignUpVerifyScreen(),
                 '/home': (context) => const HomeScreen(),
                 '/search': (context) => const SearchScreen(),
-                '/search/barcode': (context) => const SearchIsbnScanScreen(),
                 '/profile/edit': (context) => const ProfileEditScreen(),
               },
             ),

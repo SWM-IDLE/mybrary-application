@@ -30,6 +30,7 @@ dependencies:
   flutter_svg: ^2.0.7
   image_picker: ^1.0.1
   carousel_slider: ^4.2.1
+  camera: ^0.10.5+5
   # dynamic url
   url_launcher: ^6.1.12
   # book detail parser

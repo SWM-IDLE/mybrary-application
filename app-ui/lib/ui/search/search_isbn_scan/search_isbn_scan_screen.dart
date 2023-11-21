@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +12,11 @@ import 'package:mybrary/ui/search/search_isbn_scan/components/isbn_scan_box.dart
 import 'package:mybrary/ui/search/search_isbn_scan/components/isbn_scan_description.dart';
 
 class SearchIsbnScanScreen extends StatefulWidget {
-  const SearchIsbnScanScreen({super.key});
+  final CameraDescription camera;
+  const SearchIsbnScanScreen({
+    required this.camera,
+    super.key,
+  });
 
   @override
   State<SearchIsbnScanScreen> createState() => _SearchIsbnScanScreenState();
@@ -24,6 +29,8 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
     length: _scanTabs.length,
     vsync: this,
   );
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
 
   MobileScannerController isbnCameraController = MobileScannerController(
     detectionSpeed: DetectionSpeed.normal,
@@ -43,6 +50,12 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
       ),
     );
     super.initState();
+
+    _controller = CameraController(
+      widget.camera,
+      ResolutionPreset.medium,
+    );
+    _initializeControllerFuture = _controller.initialize();
   }
 
   @override
@@ -130,7 +143,18 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
                 children: [
                   SizedBox(
                     width: width,
-                    child: const Text('마이북 스캔'),
+                    child: FutureBuilder<void>(
+                      future: _initializeControllerFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          // 미리보기
+                          return CameraPreview(_controller);
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
                   ),
                   IsbnScanDescription(
                     width: width,

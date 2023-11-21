@@ -1,6 +1,8 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
+import 'package:mybrary/ui/search/search_isbn_scan/search_isbn_scan_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Future<dynamic> onIsbnScan(BuildContext context) async {
@@ -11,7 +13,15 @@ Future<dynamic> onIsbnScan(BuildContext context) async {
   switch (permissionCameraStatus) {
     case PermissionStatus.granted || PermissionStatus.provisional:
       if (context.mounted) {
-        return Navigator.of(context).pushNamed('/search/barcode');
+        final cameras = await availableCameras();
+        final firstCamera = cameras.first;
+
+        if (!context.mounted) return;
+        return Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SearchIsbnScanScreen(camera: firstCamera),
+          ),
+        );
       }
     case PermissionStatus.denied || PermissionStatus.permanentlyDenied:
       if (context.mounted) {
