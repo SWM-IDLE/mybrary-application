@@ -23,7 +23,7 @@ dependencies:
   flutter_secure_storage: ^8.0.0 # minSdkVersion 18
   dio: ^5.2.1+1
   # barcode scan
-  mobile_scanner: ^3.3.0 # minSdkVersion 21
+  mobile_scanner: ^3.5.2 # minSdkVersion 21
   # permission
   permission_handler: ^11.0.1
   # image

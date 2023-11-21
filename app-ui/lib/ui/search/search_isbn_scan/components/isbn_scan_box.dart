@@ -14,7 +14,7 @@ class IsbnScanBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: height * 0.125,
+      top: height * 0.18,
       child: Column(
         children: [
           Container(

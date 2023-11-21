@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
-import 'package:mybrary/ui/common/layout/sliver_app_bar_delegate.dart';
 import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/ui/search/search_isbn_scan/components/isbn_scan_box.dart';
@@ -24,7 +23,7 @@ class SearchIsbnScanScreen extends StatefulWidget {
 
 class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
     with TickerProviderStateMixin {
-  late final List<String> _scanTabs = ['바코드 스캔', '마이북 스캔'];
+  late final List<String> _scanTabs = ['마이북 스캔', '바코드 스캔'];
   late final TabController _scanTabController = TabController(
     length: _scanTabs.length,
     vsync: this,
@@ -32,14 +31,11 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
 
-  MobileScannerController isbnCameraController = MobileScannerController(
-    detectionSpeed: DetectionSpeed.normal,
-    facing: CameraFacing.back,
-    torchEnabled: false,
-  );
+  late MobileScannerController _isbnCameraController;
 
   @override
   void initState() {
+    super.initState();
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: myBookScanBackgroundColor,
@@ -49,13 +45,35 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
         systemNavigationBarIconBrightness: Brightness.light,
       ),
     );
-    super.initState();
-
     _controller = CameraController(
       widget.camera,
       ResolutionPreset.medium,
+      enableAudio: false,
     );
     _initializeControllerFuture = _controller.initialize();
+    _isbnCameraController = MobileScannerController(
+      detectionSpeed: DetectionSpeed.normal,
+      facing: CameraFacing.back,
+      torchEnabled: false,
+    );
+    _scanTabController.addListener(_startIsbnScan);
+  }
+
+  void _startIsbnScan() {
+    setState(() {
+      if (_scanTabController.index == 0) {
+        _isbnCameraController = MobileScannerController(
+          detectionSpeed: DetectionSpeed.normal,
+          facing: CameraFacing.back,
+          torchEnabled: false,
+          autoStart: false,
+        );
+      }
+      if (_scanTabController.index == 1) {
+        if (_isbnCameraController.autoStart) return;
+        _isbnCameraController.start();
+      }
+    });
   }
 
   @override
@@ -69,6 +87,8 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
+    _controller.dispose();
+    _isbnCameraController.dispose();
     super.dispose();
   }
 
@@ -90,9 +110,6 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
         },
         body: TabBarView(
           controller: _scanTabController,
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
           children: [
             SizedBox(
               height: height,
@@ -100,8 +117,56 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
                 children: [
                   SizedBox(
                     width: width,
+                    child: FutureBuilder<void>(
+                      future: _initializeControllerFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return Transform.scale(
+                            scale: _controller.value.aspectRatio /
+                                MediaQuery.of(context).size.aspectRatio *
+                                0.4,
+                            child: CameraPreview(_controller),
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: primaryColor,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  IsbnScanDescription(
+                    width: width,
+                    height: height,
+                    topText: '책장 또는 다량의 도서를 촬영해',
+                    bottomText: '책을 마이북에 등록할 수 있어요',
+                    icon: CupertinoIcons.camera_fill,
+                    isMyBookScan: true,
+                    onPressedScanButton: () async {
+                      try {
+                        await _initializeControllerFuture;
+
+                        final image = await _controller.takePicture();
+                        // TODO: 책장 촬영 후 로딩, 로딩 후 JSON 데이터와 함께 마이북 담기 화면 이동
+                        print(image);
+                      } catch (e) {
+                        print(e);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: height,
+              child: Stack(
+                children: [
+                  SizedBox(
+                    width: width,
                     child: MobileScanner(
-                      controller: isbnCameraController,
+                      controller: _isbnCameraController,
                       scanWindow:
                           Rect.fromLTWH(0, 150, width * 0.8, height * 0.35),
                       onDetect: (capture) {
@@ -117,7 +182,7 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
                               ),
                             );
                           }
-                          isbnCameraController.dispose();
+                          _isbnCameraController.dispose();
                         }
                       },
                     ),
@@ -128,41 +193,10 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
                     topText: '도서 뒷면의 바코드를 인식시켜',
                     bottomText: '책을 검색할 수 있어요',
                     icon: CupertinoIcons.xmark,
-                    onPressedScanButton: () => Navigator.of(context).pop(),
-                  ),
-                  IsbnScanBox(
-                    width: width,
-                    height: height,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: height,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: width,
-                    child: FutureBuilder<void>(
-                      future: _initializeControllerFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          // 미리보기
-                          return CameraPreview(_controller);
-                        } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                      },
-                    ),
-                  ),
-                  IsbnScanDescription(
-                    width: width,
-                    height: height,
-                    topText: '책장 또는 다량의 도서를 촬영해',
-                    bottomText: '책을 마이북에 등록할 수 있어요',
-                    icon: CupertinoIcons.camera_fill,
-                    onPressedScanButton: () => Navigator.of(context).pop(),
+                    onPressedScanButton: () {
+                      Navigator.of(context).pop();
+                      _isbnCameraController.dispose();
+                    },
                   ),
                   IsbnScanBox(
                     width: width,
@@ -188,30 +222,27 @@ class _SearchIsbnScanScreenState extends State<SearchIsbnScanScreen>
         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
         sliver: SliverAppBar(
           elevation: 0,
-          toolbarHeight: 60.0,
+          toolbarHeight: 100.0,
           flexibleSpace: FlexibleSpaceBar(
             background: Container(
               color: myBookScanBackgroundColor,
             ),
           ),
-          title: const Text('검색'),
+          title: const Text('스캔'),
           titleTextStyle: commonSubTitleStyle.copyWith(
             color: commonWhiteColor,
           ),
           centerTitle: true,
           pinned: true,
           forceElevated: innerBoxIsScrolled,
-        ),
-      ),
-      SliverPersistentHeader(
-        delegate: SliverAppBarDelegate(
-          tabBar: scanTabBar(
-            tabController,
-            scanTabs,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(0),
+            child: scanTabBar(
+              tabController,
+              scanTabs,
+            ),
           ),
-          color: myBookScanBackgroundColor,
         ),
-        pinned: true,
       ),
     ];
   }

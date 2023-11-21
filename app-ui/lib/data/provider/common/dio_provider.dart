@@ -63,11 +63,11 @@ class CustomInterceptor extends Interceptor {
 
       refreshDio.interceptors.clear();
       refreshDio.interceptors
-          .add(InterceptorsWrapper(onError: (err, handler) async {
-        if (err.response?.statusCode == 401) {
+          .add(InterceptorsWrapper(onError: (error, handler) async {
+        if (error.response?.statusCode == 401) {
           log('ERROR: Refresh 토큰에 대한 서버 에러가 발생했습니다.');
-          log("ERROR: Server 에러 코드 <${err.response?.statusCode}>");
-          log("ERROR: Server 에러 메세지 <${err.response?.data.toString()}>");
+          log("ERROR: Server 에러 코드 <${error.response?.statusCode}>");
+          log("ERROR: Server 에러 메세지 <${error.response?.data.toString()}>");
           await secureStorage.deleteAll();
 
           if (!context.mounted) return;
@@ -76,7 +76,7 @@ class CustomInterceptor extends Interceptor {
             (Route<dynamic> route) => false,
           );
         }
-        return handler.reject(err);
+        return handler.reject(error);
       }));
 
       refreshDio.options.headers[accessTokenHeaderKey] =

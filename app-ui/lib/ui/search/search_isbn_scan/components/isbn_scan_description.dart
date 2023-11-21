@@ -8,6 +8,7 @@ class IsbnScanDescription extends StatelessWidget {
   final String bottomText;
   final IconData icon;
   final void Function()? onPressedScanButton;
+  final bool isMyBookScan;
 
   const IsbnScanDescription({
     required this.width,
@@ -16,6 +17,7 @@ class IsbnScanDescription extends StatelessWidget {
     required this.bottomText,
     required this.icon,
     required this.onPressedScanButton,
+    this.isMyBookScan = false,
     super.key,
   });
 
@@ -32,7 +34,9 @@ class IsbnScanDescription extends StatelessWidget {
         width: width,
         height: height * 0.35,
         decoration: BoxDecoration(
-          color: myBookScanBackgroundColor.withOpacity(0.7),
+          color: isMyBookScan
+              ? myBookScanBackgroundColor
+              : myBookScanBackgroundColor.withOpacity(0.7),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
