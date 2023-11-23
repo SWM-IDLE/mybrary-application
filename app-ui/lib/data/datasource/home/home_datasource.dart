@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/home/book_list_by_category_response.dart';
 import 'package:mybrary/data/model/home/book_recommendations_response.dart';
+import 'package:mybrary/data/model/home/books_ranking_model.dart';
 import 'package:mybrary/data/model/home/today_registered_book_count_model.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/utils/dios/auth_dio.dart';
@@ -71,6 +73,31 @@ class HomeDataSource {
         status: getBookListByInterestResponse.data['status'],
         message: getBookListByInterestResponse.data['message'],
         data: BookRecommendationsResponseData.fromJson(
+          getBookListByInterestResponse.data['data'],
+        ),
+      ),
+    );
+
+    return result.data!;
+  }
+
+  Future<BooksRankingModel> getBooksByRanking(
+    BuildContext context,
+    String order,
+    int limit,
+  ) async {
+    final dio = await authDio(context);
+    final getBookListByInterestResponse = await dio.get(
+      '${getApi(API.getBooksByRanking)}?order=$order&limit=$limit',
+    );
+
+    log('랭킹별 도서 조회 응답값: $getBookListByInterestResponse');
+    final CommonModel result = commonResponseResult(
+      getBookListByInterestResponse,
+      () => CommonModel(
+        status: getBookListByInterestResponse.data['status'],
+        message: getBookListByInterestResponse.data['message'],
+        data: BooksRankingModel.fromJson(
           getBookListByInterestResponse.data['data'],
         ),
       ),

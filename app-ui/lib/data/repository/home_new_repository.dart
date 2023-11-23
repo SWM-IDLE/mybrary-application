@@ -4,6 +4,7 @@ import 'package:mybrary/data/model/common/books_params.dart';
 import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/home/books_by_category_model.dart';
 import 'package:mybrary/data/model/home/books_by_interest_model.dart';
+import 'package:mybrary/data/model/home/books_ranking_model.dart';
 import 'package:mybrary/data/model/home/today_registered_book_count_model.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/data/provider/common/dio_provider.dart';
@@ -53,5 +54,11 @@ abstract class HomeNewRepository {
   @GET('/interests/book-recommendations/{type}')
   Future<CommonModel<BooksByInterestModel>> getBooksByInterest({
     @Path('type') required String? type,
+  });
+
+  @GET('/interests/books/ranked')
+  Future<CommonModel<BooksRankingModel>> getBooksByRanking({
+    @Query('order') required String order,
+    @Query('limit') required int limit,
   });
 }

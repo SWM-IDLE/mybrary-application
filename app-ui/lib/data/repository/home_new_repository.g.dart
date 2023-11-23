@@ -132,6 +132,38 @@ class _HomeNewRepository implements HomeNewRepository {
     return value;
   }
 
+  @override
+  Future<CommonModel<BooksRankingModel>> getBooksByRanking({
+    required order,
+    required limit,
+  }) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'order': order,
+      r'limit': limit,
+    };
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonModel<BooksRankingModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/interests/books/ranked',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonModel<BooksRankingModel>.fromJson(
+      _result.data!,
+      (json) => BooksRankingModel.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

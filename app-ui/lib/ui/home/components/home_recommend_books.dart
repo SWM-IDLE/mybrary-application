@@ -63,6 +63,9 @@ class HomeRecommendBooks extends StatelessWidget {
                       color: category == userInterests[index].name!
                           ? commonWhiteColor
                           : grey262626,
+                      fontWeight: category == userInterests[index].name!
+                          ? FontWeight.w500
+                          : FontWeight.w400,
                     ),
                   ),
                 ),
