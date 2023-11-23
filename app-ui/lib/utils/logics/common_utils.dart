@@ -439,6 +439,7 @@ void showUserRecommendFeed({
   required BuildContext context,
   required List<String> recommendationTargetNames,
   required String content,
+  bool isMyRecommend = true,
 }) {
   showDialog(
     context: context,
@@ -452,13 +453,15 @@ void showUserRecommendFeed({
           child: Wrap(
             alignment: WrapAlignment.center,
             children: [
-              RecommendFeedKeyword(
-                recommendationTargetNames: recommendationTargetNames,
-              ),
-              commonDivider(
-                dividerColor: greyF7F7F7,
-                dividerThickness: 4,
-              ),
+              if (isMyRecommend) ...[
+                RecommendFeedKeyword(
+                  recommendationTargetNames: recommendationTargetNames,
+                ),
+                commonDivider(
+                  dividerColor: greyF7F7F7,
+                  dividerThickness: 4,
+                )
+              ],
               RecommendFeedContent(
                 content: content,
               ),

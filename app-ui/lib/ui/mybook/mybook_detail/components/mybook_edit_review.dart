@@ -234,29 +234,32 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
 
   Center _reviewHeader() {
     return Center(
-      child: Container(
-        width: 176,
-        height: 254,
-        alignment: Alignment.center,
-        decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          shadows: [
-            BoxShadow(
-              color: commonBlackColor.withOpacity(0.3),
-              blurRadius: 6,
-              offset: const Offset(0, 4),
-              spreadRadius: 0,
-            )
-          ],
-          image: DecorationImage(
-            image: NetworkImage(widget.thumbnailUrl),
-            onError: (exception, stackTrace) => Image.asset(
-              'assets/img/logo/mybrary.png',
+      child: Hero(
+        tag: widget.reviewId!,
+        child: Container(
+          width: 176,
+          height: 254,
+          alignment: Alignment.center,
+          decoration: ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            shadows: [
+              BoxShadow(
+                color: commonBlackColor.withOpacity(0.3),
+                blurRadius: 6,
+                offset: const Offset(0, 4),
+                spreadRadius: 0,
+              )
+            ],
+            image: DecorationImage(
+              image: NetworkImage(widget.thumbnailUrl),
+              onError: (exception, stackTrace) => Image.asset(
+                'assets/img/logo/mybrary.png',
+                fit: BoxFit.fill,
+              ),
               fit: BoxFit.fill,
             ),
-            fit: BoxFit.fill,
           ),
         ),
       ),

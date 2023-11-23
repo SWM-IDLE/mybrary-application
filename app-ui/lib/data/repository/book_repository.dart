@@ -4,6 +4,7 @@ import 'package:mybrary/data/model/book/book_list_response.dart';
 import 'package:mybrary/data/model/book/interest_book_response.dart';
 import 'package:mybrary/data/model/book/mybook_detail_response.dart';
 import 'package:mybrary/data/model/book/mybook_record_reponse.dart';
+import 'package:mybrary/data/model/book/mybook_review_model.dart';
 import 'package:mybrary/data/model/book/mybook_review_response.dart';
 import 'package:mybrary/data/model/book/mybooks_response.dart';
 import 'package:mybrary/data/model/common/common_response.dart';
@@ -119,5 +120,12 @@ class BookRepository {
     required int reviewId,
   }) {
     return _bookDataSource.deleteMyBookReview(context, userId, reviewId);
+  }
+
+  Future<MyBookReviewModel> getMyBookReviewList({
+    required BuildContext context,
+    required String userId,
+  }) {
+    return _bookDataSource.getMyBookReviewList(context, userId);
   }
 }

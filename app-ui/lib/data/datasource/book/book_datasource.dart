@@ -6,8 +6,10 @@ import 'package:mybrary/data/model/book/book_list_response.dart';
 import 'package:mybrary/data/model/book/interest_book_response.dart';
 import 'package:mybrary/data/model/book/mybook_detail_response.dart';
 import 'package:mybrary/data/model/book/mybook_record_reponse.dart';
+import 'package:mybrary/data/model/book/mybook_review_model.dart';
 import 'package:mybrary/data/model/book/mybook_review_response.dart';
 import 'package:mybrary/data/model/book/mybooks_response.dart';
+import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/common/common_response.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/res/constants/config.dart';
@@ -313,5 +315,29 @@ class BookDataSource {
     );
 
     return result;
+  }
+
+  Future<MyBookReviewModel> getMyBookReviewList(
+    BuildContext context,
+    String userId,
+  ) async {
+    final dio = await authDio(context);
+    final getMyBookReviewListResponse = await dio.get(
+      '${getApi(API.getMyBookReviewList)}/$userId',
+    );
+
+    log('마이북 리뷰 목록 조회 응답값: $getMyBookReviewListResponse');
+    final CommonModel result = commonResponseResult(
+      getMyBookReviewListResponse,
+      () => CommonModel(
+        status: getMyBookReviewListResponse.data['status'],
+        message: getMyBookReviewListResponse.data['message'],
+        data: MyBookReviewModel.fromJson(
+          getMyBookReviewListResponse.data['data'],
+        ),
+      ),
+    );
+
+    return result.data;
   }
 }

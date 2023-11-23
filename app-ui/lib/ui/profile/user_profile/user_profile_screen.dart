@@ -20,6 +20,7 @@ import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/ui/common/components/circular_loading.dart';
 import 'package:mybrary/ui/common/components/single_data_error.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
+import 'package:mybrary/ui/mybook/mybook_review_list/mybook_review_list_screen.dart';
 import 'package:mybrary/ui/mybook/mybook_screen.dart';
 import 'package:mybrary/ui/profile/components/profile_header.dart';
 import 'package:mybrary/ui/profile/follow/follow_screen.dart';
@@ -180,6 +181,26 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                             bottom: 20.0,
                           ),
                           child: commonSubTitle(title: '마이 추천 피드'),
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => MyReviewListScreen(
+                                userId: widget.userId,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20.0,
+                            bottom: 20.0,
+                          ),
+                          child: commonSubTitle(title: '마이 리뷰 목록'),
                         ),
                       ),
                       Padding(
