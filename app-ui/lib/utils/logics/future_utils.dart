@@ -1,14 +1,18 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 Future<FirebaseRemoteConfig> getAppVersionConfig() async {
   FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.instance;
@@ -140,6 +144,7 @@ Future<void> getToken() async {
     token = await FirebaseMessaging.instance.getToken();
   }
   log("fcmToken : $token");
+  log("fcmToken : ${await FirebaseMessaging.instance.getToken()}");
 }
 
 Future<void> showNotification() async {
@@ -160,4 +165,51 @@ Future<void> showNotification() async {
     'test body',
     notificationDetails,
   );
+}
+
+Future<String> convertHeicToJpg(XFile heicFile) async {
+  try {
+    Uint8List heicBytes = await heicFile.readAsBytes();
+    List<int> jpgBytes = await FlutterImageCompress.compressWithList(
+      heicBytes,
+      quality: 94, // 압축 품질, 0-100 사이의 값
+      rotate: 0, // 이미지 회전 각도 (0, 90, 180, 270)
+      format: CompressFormat.jpeg, // 압축 형식 설정
+    );
+
+    String jpgPath = heicFile.path.replaceAll('.heic', '.jpg');
+    File jpgFile = File(jpgPath);
+    await jpgFile.writeAsBytes(jpgBytes);
+
+    return jpgFile.path;
+  } catch (e) {
+    log("HEIC to JPEG 변환 오류: $e");
+    rethrow;
+  }
+}
+
+Future<String> resizeAndroidPhoto(String filePath, Size previewSize) async {
+  File imageFile = await resizePhoto(filePath, previewSize);
+
+  return imageFile.path;
+}
+
+Future<XFile> resizeIosPhoto(String filePath, Size previewSize) async {
+  File imageFile = await resizePhoto(filePath, previewSize);
+
+  return XFile(imageFile.path);
+}
+
+Future<File> resizePhoto(String filePath, Size previewSize) async {
+  ImageProperties properties =
+      await FlutterNativeImage.getImageProperties(filePath);
+
+  var cropSize =
+      math.min(previewSize.width, previewSize.height) * (isIOS ? 0.7 : 2.2);
+  int offsetX = (properties.width! - cropSize) ~/ 2;
+  int offsetY = (properties.height! - cropSize) ~/ 2;
+
+  File imageFile = await FlutterNativeImage.cropImage(
+      filePath, offsetX, offsetY, cropSize.toInt(), cropSize.toInt());
+  return imageFile;
 }

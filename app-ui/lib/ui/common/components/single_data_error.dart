@@ -27,6 +27,7 @@ class SingleDataError extends StatelessWidget {
             style: commonSubMediumStyle.copyWith(
               color: grey777777,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 100.0),
         ],

@@ -26,6 +26,7 @@ import 'package:mybrary/ui/home/components/home_recommend_books_header.dart';
 import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
+import 'package:mybrary/utils/logics/future_utils.dart';
 import 'package:mybrary/utils/logics/permission_utils.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -55,6 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     super.initState();
 
     sendNotificationMessage();
+    getToken();
     _initAppBarIsVisible = false;
 
     Future.delayed(

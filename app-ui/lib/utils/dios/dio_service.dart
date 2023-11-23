@@ -10,9 +10,6 @@ class DioService {
   DioService._internal() {
     BaseOptions options = BaseOptions(
       baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      sendTimeout: const Duration(seconds: 10),
     );
     _dio = Dio(options);
   }

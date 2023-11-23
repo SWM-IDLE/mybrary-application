@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,8 @@ import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/ui/search/search_scan/components/scan_description.dart';
 import 'package:mybrary/ui/search/search_scan/components/scan_layout_box.dart';
 import 'package:mybrary/ui/search/search_scan/search_scan_list/search_scan_list_screen.dart';
+import 'package:mybrary/utils/logics/future_utils.dart';
+import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class SearchScanScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -48,7 +52,7 @@ class _SearchScanScreenState extends State<SearchScanScreen>
     );
     _controller = CameraController(
       widget.camera,
-      ResolutionPreset.medium,
+      ResolutionPreset.ultraHigh,
       enableAudio: false,
     );
     _initializeControllerFuture = _controller.initialize();
@@ -150,15 +154,26 @@ class _SearchScanScreenState extends State<SearchScanScreen>
                         await _initializeControllerFuture;
 
                         final image = await _controller.takePicture();
-                        // TODO: 책장 촬영 후 로딩, 로딩 후 JSON 데이터와 함께 마이북 담기 화면 이동
-                        print(image);
-                        Navigator.of(context).push(
+
+                        Size previewSize = _controller.value.previewSize!;
+
+                        final aosImagePath =
+                            await resizeAndroidPhoto(image.path, previewSize);
+                        final iosImagePath = await convertHeicToJpg(
+                            await resizeIosPhoto(image.path, previewSize));
+
+                        if (!mounted) return;
+                        Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (_) => SearchScanListScreen(),
+                            builder: (_) => SearchScanListScreen(
+                              multiBookImagePath:
+                                  isIOS ? iosImagePath : aosImagePath,
+                            ),
                           ),
                         );
                       } catch (e) {
-                        print(e);
+                        log('다중 도서 스캔 에러: $e');
+                        rethrow;
                       }
                     },
                   ),

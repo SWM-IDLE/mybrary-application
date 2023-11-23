@@ -1,29 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'book_search_response_model.dart';
+part of 'multi_book_search_response_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-BookSearchResponseModel _$BookSearchResponseModelFromJson(
+MultiBookSearchResultModel _$MultiBookSearchResultModelFromJson(
         Map<String, dynamic> json) =>
-    BookSearchResponseModel(
-      bookSearchResult: (json['bookSearchResult'] as List<dynamic>?)
-          ?.map(
-              (e) => BookSearchResultModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$BookSearchResponseModelToJson(
-        BookSearchResponseModel instance) =>
-    <String, dynamic>{
-      'bookSearchResult': instance.bookSearchResult,
-    };
-
-BookSearchResultModel _$BookSearchResultModelFromJson(
-        Map<String, dynamic> json) =>
-    BookSearchResultModel(
+    MultiBookSearchResultModel(
       title: json['title'] as String,
       description: json['description'] as String,
       author: json['author'] as String,
@@ -33,8 +18,8 @@ BookSearchResultModel _$BookSearchResultModelFromJson(
       starRating: (json['starRating'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$BookSearchResultModelToJson(
-        BookSearchResultModel instance) =>
+Map<String, dynamic> _$MultiBookSearchResultModelToJson(
+        MultiBookSearchResultModel instance) =>
     <String, dynamic>{
       'title': instance.title,
       'description': instance.description,
