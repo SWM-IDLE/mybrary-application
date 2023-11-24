@@ -140,6 +140,9 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
                             Navigator.pop(context, true);
                           },
                         );
+                    ref
+                        .refresh(recommendProvider.notifier)
+                        .getMyRecommendPostList(userId: _userId);
                   },
                   confirmButtonColor: commonRedColor,
                   confirmButtonTextColor: commonWhiteColor,
@@ -187,6 +190,9 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
                         recommendationTargetNames: _recommendKeywordList,
                       ),
                     );
+                ref
+                    .refresh(recommendProvider.notifier)
+                    .getMyRecommendPostList(userId: _userId);
               }
 
               if (widget.myRecommendFeedData != null) {
@@ -200,6 +206,9 @@ class _MyRecommendScreenState extends ConsumerState<MyRecommendScreen> {
                         recommendationTargetNames: _recommendKeywordList,
                       ),
                     );
+                ref
+                    .refresh(recommendProvider.notifier)
+                    .getMyRecommendPostList(userId: _userId);
               }
             },
             style: disableAnimationButtonStyle,

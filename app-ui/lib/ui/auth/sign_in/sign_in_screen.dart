@@ -1,8 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:mybrary/data/network/api.dart';
+import 'package:mybrary/data/provider/home/home_bestseller_provider.dart';
+import 'package:mybrary/data/provider/home/home_provider.dart';
+import 'package:mybrary/data/provider/home/home_recommendation_books_provider.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_post_provider.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/config.dart';
@@ -14,14 +22,14 @@ import 'package:mybrary/ui/common/layout/root_tab.dart';
 import 'package:mybrary/utils/logics/parse_utils.dart';
 import 'package:mybrary/utils/logics/ui_utils.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInScreenState extends ConsumerState<SignInScreen> {
   @override
   void initState() {
     super.initState();
@@ -133,6 +141,17 @@ class _SignInScreenState extends State<SignInScreen> {
 
       if (accessToken.isNotEmpty && refreshToken.isNotEmpty) {
         UserState.localStorage.setString('userId', jwtPayload['loginId']);
+        ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
+        ref.refresh(bestSellerProvider.notifier).getBooksByBestSeller();
+        ref
+            .refresh(recommendationBooksProvider.notifier)
+            .getBooksByFirstInterests();
+        ref
+            .refresh(myRecommendProvider.notifier)
+            .getRecommendFeedList(userId: jwtPayload['loginId']);
+        ref
+            .refresh(recommendProvider.notifier)
+            .getMyRecommendPostList(userId: jwtPayload['loginId']);
 
         if (!mounted) return;
         Navigator.of(context).pushAndRemoveUntil(
@@ -143,6 +162,7 @@ class _SignInScreenState extends State<SignInScreen> {
         );
       }
     } on PlatformException catch (e) {
+      log(e.toString());
       showSignInFailDialog();
     }
   }

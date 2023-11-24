@@ -67,57 +67,45 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
       );
     }
 
-    return SubPageLayout(
-      appBarTitle: '마이 추천 피드',
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24.0,
-          vertical: 16.0,
-        ),
-        child: ListView.builder(
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
+    return RefreshIndicator(
+      color: commonWhiteColor,
+      backgroundColor: primaryColor,
+      edgeOffset: const SliverAppBar().toolbarHeight * 0.5,
+      onRefresh: () {
+        return Future.delayed(
+          const Duration(milliseconds: 500),
+          () {
+            ref
+                .refresh(myRecommendProvider.notifier)
+                .getRecommendFeedList(userId: _userId);
+            ref
+                .refresh(recommendProvider.notifier)
+                .getMyRecommendPostList(userId: _userId);
+          },
+        );
+      },
+      child: SubPageLayout(
+        appBarTitle: '마이 추천 피드',
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24.0,
+            vertical: 16.0,
           ),
-          itemCount: myRecommendFeedData.length,
-          itemBuilder: (context, index) {
-            return Wrap(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 150,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: () async {
-                          if (widget.userId == _userId) {
-                            await _editMyRecommendFeed(
-                                context, myRecommendFeedData, index);
-                          }
-
-                          if (widget.userId != _userId) {
-                            if (!mounted) return;
-                            moveToBookDetail(
-                              context: context,
-                              isbn13: myRecommendFeedData[index].isbn13,
-                            );
-                          }
-                        },
-                        child: Hero(
-                          tag: myRecommendFeedData[index].recommendationFeedId,
-                          child: Container(
-                            width: 100,
-                            height: 150,
-                            decoration: commonBookThumbnailStyle(
-                              thumbnailUrl:
-                                  myRecommendFeedData[index].thumbnailUrl,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16.0),
-                      Expanded(
-                        child: InkWell(
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            itemCount: myRecommendFeedData.length,
+            itemBuilder: (context, index) {
+              return Wrap(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 150,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InkWell(
                           onTap: () async {
                             if (widget.userId == _userId) {
                               await _editMyRecommendFeed(
@@ -126,54 +114,85 @@ class _MyRecommendPostScreenState extends ConsumerState<MyRecommendFeedScreen> {
 
                             if (widget.userId != _userId) {
                               if (!mounted) return;
-                              showUserRecommendFeed(
+                              moveToBookDetail(
                                 context: context,
-                                recommendationTargetNames:
-                                    myRecommendFeedData[index]
-                                        .recommendationTargetNames,
-                                content: myRecommendFeedData[index].content,
+                                isbn13: myRecommendFeedData[index].isbn13,
                               );
                             }
                           },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MyRecommendFeedBookInfo(
-                                title: myRecommendFeedData[index].title,
-                                recommendationTargetNames:
-                                    myRecommendFeedData[index]
-                                        .recommendationTargetNames,
-                                content: myRecommendFeedData[index].content,
+                          child: Hero(
+                            tag:
+                                myRecommendFeedData[index].recommendationFeedId,
+                            child: Container(
+                              width: 100,
+                              height: 150,
+                              decoration: commonBookThumbnailStyle(
+                                thumbnailUrl:
+                                    myRecommendFeedData[index].thumbnailUrl,
                               ),
-                              const SizedBox(height: 4.0),
-                              _createdAtAndDeleteRecommendFeedComponent(
-                                myRecommendFeedData,
-                                index,
-                                context,
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 16.0),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              if (widget.userId == _userId) {
+                                await _editMyRecommendFeed(
+                                    context, myRecommendFeedData, index);
+                              }
+
+                              if (widget.userId != _userId) {
+                                if (!mounted) return;
+                                showUserRecommendFeed(
+                                  context: context,
+                                  recommendationTargetNames:
+                                      myRecommendFeedData[index]
+                                          .recommendationTargetNames,
+                                  content: myRecommendFeedData[index].content,
+                                );
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyRecommendFeedBookInfo(
+                                  title: myRecommendFeedData[index].title,
+                                  recommendationTargetNames:
+                                      myRecommendFeedData[index]
+                                          .recommendationTargetNames,
+                                  content: myRecommendFeedData[index].content,
+                                ),
+                                const SizedBox(height: 4.0),
+                                _createdAtAndDeleteRecommendFeedComponent(
+                                  myRecommendFeedData,
+                                  index,
+                                  context,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                if (index != myRecommendFeedData.length - 1)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 32.0,
-                    ),
-                    child: commonDivider(
-                      dividerColor: greyACACAC,
-                      dividerThickness: 1,
-                    ),
-                  )
-                else
-                  const SizedBox(height: 20.0),
-              ],
-            );
-          },
+                  if (index != myRecommendFeedData.length - 1)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 32.0,
+                      ),
+                      child: commonDivider(
+                        dividerColor: greyACACAC,
+                        dividerThickness: 1,
+                      ),
+                    )
+                  else
+                    const SizedBox(height: 20.0),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

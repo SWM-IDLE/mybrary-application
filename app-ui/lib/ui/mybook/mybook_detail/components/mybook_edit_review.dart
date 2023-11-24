@@ -235,7 +235,7 @@ class _MyBookEditReviewState extends State<MyBookEditReview> {
   Center _reviewHeader() {
     return Center(
       child: Hero(
-        tag: widget.reviewId!,
+        tag: widget.reviewId ?? 0,
         child: Container(
           width: 176,
           height: 254,

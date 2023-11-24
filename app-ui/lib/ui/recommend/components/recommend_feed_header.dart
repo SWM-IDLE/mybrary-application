@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mybrary/data/model/profile/user_report_model.dart';
 import 'package:mybrary/data/provider/profile/user_report_provider.dart';
+import 'package:mybrary/data/provider/recommend/my_recommend_post_provider.dart';
 import 'package:mybrary/data/provider/recommend/my_recommend_provider.dart';
 import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
@@ -252,6 +253,9 @@ class _RecommendFeedHeaderState extends ConsumerState<RecommendFeedHeader> {
                       .getRecommendFeedList(
                         userId: _userId,
                       );
+                  ref
+                      .refresh(recommendProvider.notifier)
+                      .getMyRecommendPostList(userId: _userId);
                 });
               },
             );

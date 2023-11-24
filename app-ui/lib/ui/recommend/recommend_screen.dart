@@ -146,6 +146,9 @@ class _RecommendScreenState extends ConsumerState<RecommendScreen>
             ref
                 .refresh(myRecommendProvider.notifier)
                 .getRecommendFeedList(userId: _userId);
+            ref
+                .refresh(recommendProvider.notifier)
+                .getMyRecommendPostList(userId: _userId);
           },
         );
       },

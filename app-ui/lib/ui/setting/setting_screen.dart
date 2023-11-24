@@ -9,6 +9,7 @@ import 'package:mybrary/ui/profile/profile_edit/profile_edit_screen.dart';
 import 'package:mybrary/ui/setting/components/account_withdrawal.dart';
 import 'package:mybrary/ui/setting/components/login_info.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -208,6 +209,9 @@ class SettingScreen extends StatelessWidget {
                 ),
                 confirmButton(
                   onTap: () async {
+                    SharedPreferences preferences =
+                        await SharedPreferences.getInstance();
+                    await preferences.clear();
                     await secureStorage.deleteAll();
 
                     if (context.mounted) {
