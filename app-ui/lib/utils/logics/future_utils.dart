@@ -78,13 +78,12 @@ Future<bool> onWillPopCommonSaveAlert({
   }
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("백그라운드 메시지 처리.. ${message.notification!.body!}");
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  log("백그라운드 메시지 처리.. ${message.notification!.body!}");
+  await _showNotification(message);
 }
 
 void initializeNotification() async {
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   AndroidNotificationChannel? androidNotificationChannel;
   if (Platform.isIOS) {
@@ -99,8 +98,8 @@ void initializeNotification() async {
     );
   } else if (Platform.isAndroid) {
     androidNotificationChannel = const AndroidNotificationChannel(
-      'important_channel', // id
-      'Important_Notifications', // name
+      'high_importance_channel', // id
+      'high_importance_notification', // name
       description: '중요도가 높은 알림을 위한 채널.',
       importance: Importance.high,
     );
@@ -128,6 +127,8 @@ void initializeNotification() async {
       badge: true,
       sound: true,
     );
+
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
     getToken();
   }
@@ -208,4 +209,25 @@ Future<File> resizePhoto(String filePath, Size previewSize) async {
   File imageFile = await FlutterNativeImage.cropImage(
       filePath, offsetX, offsetY, cropSize.toInt(), cropSize.toInt());
   return imageFile;
+}
+
+Future<void> _showNotification(RemoteMessage message) async {
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+    'high_importance_channel',
+    'high_importance_notification',
+    importance: Importance.max,
+    priority: Priority.high,
+    showWhen: false,
+  );
+  const NotificationDetails platformChannelSpecifics =
+      NotificationDetails(android: androidPlatformChannelSpecifics);
+
+  await FlutterLocalNotificationsPlugin().show(
+    message.notification.hashCode,
+    message.notification?.title,
+    message.notification?.body,
+    platformChannelSpecifics,
+    payload: 'item x',
+  );
 }

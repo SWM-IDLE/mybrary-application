@@ -107,6 +107,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void sendNotificationMessage() {
     setState(() {
+      FirebaseMessaging.onMessageOpenedApp
+          .listen((RemoteMessage message) async {
+        RemoteNotification? notification = message.notification;
+
+        if (notification != null) {
+          FlutterLocalNotificationsPlugin().show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            const NotificationDetails(
+              android: AndroidNotificationDetails(
+                'high_importance_channel',
+                'high_importance_notification',
+                importance: Importance.max,
+              ),
+              iOS: DarwinNotificationDetails(
+                presentAlert: true,
+                presentBadge: true,
+                presentSound: true,
+              ),
+            ),
+          );
+        }
+      });
+
       FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
         RemoteNotification? notification = message.notification;
 
