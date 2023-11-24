@@ -133,18 +133,14 @@ void initializeNotification() async {
   }
 }
 
-Future<void> getToken() async {
-  String? token;
-  if (defaultTargetPlatform == TargetPlatform.iOS ||
-      defaultTargetPlatform == TargetPlatform.macOS) {
-    token = await FirebaseMessaging.instance.getAPNSToken();
-  }
-  // aos
-  else {
-    token = await FirebaseMessaging.instance.getToken();
-  }
-  log("fcmToken : $token");
+Future<String> getToken() async {
   log("fcmToken : ${await FirebaseMessaging.instance.getToken()}");
+  String? token;
+  token = await FirebaseMessaging.instance.getToken();
+  if (token != null) {
+    return token;
+  }
+  return '';
 }
 
 Future<void> showNotification() async {

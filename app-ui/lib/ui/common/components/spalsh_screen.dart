@@ -1,8 +1,13 @@
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
+import 'package:mybrary/utils/dios/auth_dio.dart';
 import 'package:mybrary/utils/logics/future_utils.dart';
 import 'package:mybrary/utils/logics/parse_utils.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -17,12 +22,28 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   var _opacity = 0.0;
+  final _userId = UserState.userId;
 
   @override
   void initState() {
     super.initState();
 
     checkForUpdateAlert();
+  }
+
+  void updateFcmToken() async {
+    final dio = await authDio(context);
+    final updateFcmTokenResponse = await dio.post(
+      'http://13.125.198.36:8080/api/v1/users/device-token',
+      options: Options(
+        headers: {'User-Id': _userId},
+      ),
+      data: {
+        'userDeviceToken': await getToken(),
+      },
+    );
+
+    log('FCM 토큰 업데이트 응답값: $updateFcmTokenResponse');
   }
 
   void checkForUpdateAlert() async {
@@ -44,6 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     if (_isAfterLastUpdateCheckTime(lastUpdateCheck, nowDateTime)) {
+      updateFcmToken();
       _updateLastCheckTime(prefs);
 
       if (parseAppVersion(minAppVersion) > parseAppVersion(currAppVersion)) {
