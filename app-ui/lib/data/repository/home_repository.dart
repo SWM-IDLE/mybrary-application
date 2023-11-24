@@ -3,6 +3,7 @@ import 'package:mybrary/data/datasource/home/home_datasource.dart';
 import 'package:mybrary/data/model/home/book_list_by_category_response.dart';
 import 'package:mybrary/data/model/home/book_recommendations_response.dart';
 import 'package:mybrary/data/model/home/books_ranking_model.dart';
+import 'package:mybrary/data/model/home/notification_model.dart';
 
 class HomeRepository {
   final HomeDataSource _homeDataSource = HomeDataSource();
@@ -42,5 +43,12 @@ class HomeRepository {
     required int limit,
   }) async {
     return await _homeDataSource.getBooksByRanking(context, order, limit);
+  }
+
+  Future<NotificationModel> getNotificationList({
+    required BuildContext context,
+    required String userId,
+  }) async {
+    return await _homeDataSource.getNotificationList(context, userId);
   }
 }

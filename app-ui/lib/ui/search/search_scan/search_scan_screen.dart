@@ -1,11 +1,9 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
@@ -155,11 +153,11 @@ class _SearchScanScreenState extends State<SearchScanScreen>
                       try {
                         await _initializeControllerFuture;
 
-                        final originImage = await _controller.takePicture();
-                        File image =
-                            await FlutterExifRotation.rotateAndSaveImage(
-                          path: originImage.path,
-                        );
+                        final image = await _controller.takePicture();
+                        // File image =
+                        //     await FlutterExifRotation.rotateAndSaveImage(
+                        //   path: originImage.path,
+                        // );
 
                         Size previewSize = _controller.value.previewSize!;
 

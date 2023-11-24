@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mybrary/data/provider/user_provider.dart';
 import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/ui/common/layout/default_layout.dart';
 import 'package:mybrary/utils/dios/auth_dio.dart';
@@ -22,7 +21,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   var _opacity = 0.0;
-  final _userId = UserState.userId;
 
   @override
   void initState() {
@@ -33,10 +31,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void updateFcmToken() async {
     final dio = await authDio(context);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     final updateFcmTokenResponse = await dio.post(
       'http://13.125.198.36:8080/api/v1/users/device-token',
       options: Options(
-        headers: {'User-Id': _userId},
+        headers: {'User-Id': prefs.getString('userId')},
       ),
       data: {
         'userDeviceToken': await getToken(),

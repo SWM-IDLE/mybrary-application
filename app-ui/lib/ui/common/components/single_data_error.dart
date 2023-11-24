@@ -3,10 +3,14 @@ import 'package:mybrary/res/constants/color.dart';
 import 'package:mybrary/res/constants/style.dart';
 
 class SingleDataError extends StatelessWidget {
+  final IconData? icon;
+  final Color? iconColor;
   final String errorMessage;
 
   const SingleDataError({
     required this.errorMessage,
+    this.icon,
+    this.iconColor,
     super.key,
   });
 
@@ -16,10 +20,10 @@ class SingleDataError extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.info,
+          Icon(
+            icon ?? Icons.info,
             size: 78.0,
-            color: grey777777,
+            color: iconColor ?? grey777777,
           ),
           const SizedBox(height: 8.0),
           Text(

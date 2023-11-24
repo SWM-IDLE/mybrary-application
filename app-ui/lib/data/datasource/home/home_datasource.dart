@@ -6,6 +6,7 @@ import 'package:mybrary/data/model/common/common_model.dart';
 import 'package:mybrary/data/model/home/book_list_by_category_response.dart';
 import 'package:mybrary/data/model/home/book_recommendations_response.dart';
 import 'package:mybrary/data/model/home/books_ranking_model.dart';
+import 'package:mybrary/data/model/home/notification_model.dart';
 import 'package:mybrary/data/model/home/today_registered_book_count_model.dart';
 import 'package:mybrary/data/network/api.dart';
 import 'package:mybrary/utils/dios/auth_dio.dart';
@@ -99,6 +100,30 @@ class HomeDataSource {
         message: getBookListByInterestResponse.data['message'],
         data: BooksRankingModel.fromJson(
           getBookListByInterestResponse.data['data'],
+        ),
+      ),
+    );
+
+    return result.data!;
+  }
+
+  Future<NotificationModel> getNotificationList(
+    BuildContext context,
+    String userId,
+  ) async {
+    final dio = await authDio(context);
+    final getNotificationListResponse = await dio.get(
+      'http://13.125.198.36:8080/api/v1/notification/users/$userId',
+    );
+
+    log('알림 목록 응답값: $getNotificationListResponse');
+    final CommonModel result = commonResponseResult(
+      getNotificationListResponse,
+      () => CommonModel(
+        status: getNotificationListResponse.data['status'],
+        message: getNotificationListResponse.data['message'],
+        data: NotificationModel.fromJson(
+          getNotificationListResponse.data['data'],
         ),
       ),
     );
