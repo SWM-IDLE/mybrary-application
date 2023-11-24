@@ -77,6 +77,7 @@ Future<Dio> authDio(BuildContext context) async {
 
       return handler.resolve(clonedRequest);
     }
+    return handler.next(error);
   }));
 
   return dio;

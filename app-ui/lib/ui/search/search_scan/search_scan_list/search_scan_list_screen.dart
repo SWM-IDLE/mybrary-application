@@ -32,6 +32,7 @@ class _SearchScanListScreenState extends State<SearchScanListScreen> {
 
   late List<MultiBookSearchResultModel> multiBookSearchResults = [];
   late List<String> _selectedSearchBooks = [];
+  late bool _failedToLoad = false;
 
   late Future<List<dynamic>> _multiBookSearchResponseData;
 
@@ -46,36 +47,44 @@ class _SearchScanListScreenState extends State<SearchScanListScreen> {
   }
 
   Future<List<dynamic>> _postMultiBookScanResults() async {
-    final dio = await authDio(context);
-    final multiBookScanResults = await dio.post(
-      '$baseUrl/multi-book-recog/upload',
-      options: Options(
-        contentType: 'multipart/form-data',
-      ),
-      data: FormData.fromMap(
-        {
-          'fileobject': await MultipartFile.fromFile(
-            widget.multiBookImagePath,
-            contentType: MediaType(
-              'image',
-              'jpg',
+    try {
+      final dio = await authDio(context);
+      final multiBookScanResults = await dio.post(
+        '$baseUrl/multi-book-recog/upload',
+        options: Options(
+          contentType: 'multipart/form-data',
+        ),
+        data: FormData.fromMap(
+          {
+            'fileobject': await MultipartFile.fromFile(
+              widget.multiBookImagePath,
+              contentType: MediaType(
+                'image',
+                'jpg',
+              ),
             ),
-          ),
-        },
-      ),
-    );
+          },
+        ),
+      );
 
-    log('다중 도서 검색 응답값: $multiBookScanResults');
-    final MultiBookSearchResponse result = commonResponseResult(
-      multiBookScanResults,
-      () => MultiBookSearchResponse(
-        status: multiBookScanResults.data['status'],
-        message: multiBookScanResults.data['message'],
-        data: multiBookScanResults.data['data'],
-      ),
-    );
+      log('다중 도서 검색 응답값: $multiBookScanResults');
+      final MultiBookSearchResponse result = commonResponseResult(
+        multiBookScanResults,
+        () => MultiBookSearchResponse(
+          status: multiBookScanResults.data['status'],
+          message: multiBookScanResults.data['message'],
+          data: multiBookScanResults.data['data'],
+        ),
+      );
 
-    return result.data;
+      return result.data;
+    } catch (e) {
+      log('다중 도서 검색 응답값: $e');
+      setState(() {
+        _failedToLoad = true;
+      });
+      return [];
+    }
   }
 
   @override
@@ -107,7 +116,7 @@ class _SearchScanListScreenState extends State<SearchScanListScreen> {
       child: FutureBuilder(
         future: _multiBookSearchResponseData,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
+          if (_failedToLoad || snapshot.hasError) {
             return const SingleDataError(
               errorMessage: '마이북 스캔 결과를\n불러오는데 실패했습니다.',
             );
@@ -374,11 +383,15 @@ class _SearchScanListScreenState extends State<SearchScanListScreen> {
       context: context,
       loadingAction: () async {
         for (var isbn13 in bookList) {
-          await _bookRepository.createMyBook(
-            context: context,
-            userId: _userId,
-            isbn13: isbn13,
-          );
+          try {
+            await _bookRepository.createMyBook(
+              context: context,
+              userId: _userId,
+              isbn13: isbn13,
+            );
+          } catch (e) {
+            continue;
+          }
         }
 
         if (!mounted) return;

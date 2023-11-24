@@ -35,6 +35,7 @@ dependencies:
   image: ^4.1.3
   path_provider: ^2.1.1
   flutter_native_image: ^0.0.6
+  flutter_exif_rotation: ^0.5.1
   # dynamic url
   url_launcher: ^6.1.12
   # book detail parser

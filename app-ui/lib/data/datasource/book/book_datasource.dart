@@ -130,26 +130,31 @@ class BookDataSource {
     String userId,
     String isbn13,
   ) async {
-    final dio = await authDio(context);
-    final createMyBookResponse = await dio.post(
-      getApi(API.createMyBook),
-      options: Options(
-        headers: {'User-Id': userId, "Content-Type": headerJsonValue},
-      ),
-      data: {'isbn13': isbn13},
-    );
+    try {
+      final dio = await authDio(context);
+      final createMyBookResponse = await dio.post(
+        getApi(API.createMyBook),
+        options: Options(
+          headers: {'User-Id': userId, "Content-Type": headerJsonValue},
+        ),
+        data: {'isbn13': isbn13},
+      );
 
-    log('마이북 등록 응답값: $createMyBookResponse');
-    final CommonResponse result = commonResponseResult(
-      createMyBookResponse,
-      () => CommonResponse(
-        status: createMyBookResponse.data['status'],
-        message: createMyBookResponse.data['message'],
-        data: null,
-      ),
-    );
+      log('마이북 등록 응답값: $createMyBookResponse');
+      final CommonResponse result = commonResponseResult(
+        createMyBookResponse,
+        () => CommonResponse(
+          status: createMyBookResponse.data['status'],
+          message: createMyBookResponse.data['message'],
+          data: null,
+        ),
+      );
 
-    return result;
+      return result;
+    } catch (e) {
+      log('마이북 등록 응답값: $e');
+      rethrow;
+    }
   }
 
   Future<CommonResponse> deleteMyBook(

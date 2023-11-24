@@ -257,12 +257,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       onRefresh: () {
         return Future.delayed(
           const Duration(milliseconds: 500),
-          () {
+          () async {
             ref.refresh(homeProvider.notifier).getTodayRegisteredBookCount();
             ref.refresh(bestSellerProvider.notifier).getBooksByBestSeller();
             ref
                 .refresh(recommendationBooksProvider.notifier)
                 .getBooksByFirstInterests();
+            _bookRankingCategory = 'holder';
+            _booksRankingResponseData = await _homeRepository.getBooksByRanking(
+                context: context, order: _bookRankingCategory, limit: 6);
+            _booksRankingList = _booksRankingResponseData.books;
           },
         );
       },
