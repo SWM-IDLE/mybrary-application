@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +9,6 @@ import 'package:mybrary/ui/common/layout/subpage_layout.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/ui/search/search_scan/components/scan_description.dart';
 import 'package:mybrary/ui/search/search_scan/components/scan_layout_box.dart';
-import 'package:mybrary/ui/search/search_scan/search_scan_list/search_scan_list_screen.dart';
-import 'package:mybrary/utils/logics/future_utils.dart';
-import 'package:mybrary/utils/logics/ui_utils.dart';
 
 class SearchScanScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -28,7 +23,8 @@ class SearchScanScreen extends StatefulWidget {
 
 class _SearchScanScreenState extends State<SearchScanScreen>
     with TickerProviderStateMixin {
-  late final List<String> _scanTabs = ['마이북 스캔', '바코드 스캔'];
+  late final List<String> _scanTabs = ['바코드 스캔'];
+  // late final List<String> _scanTabs = ['마이북 스캔', '바코드 스캔'];
   late final TabController _scanTabController = TabController(
     length: _scanTabs.length,
     vsync: this,
@@ -61,25 +57,25 @@ class _SearchScanScreenState extends State<SearchScanScreen>
       facing: CameraFacing.back,
       torchEnabled: false,
     );
-    _scanTabController.addListener(_startIsbnScan);
+    // _scanTabController.addListener(_startIsbnScan);
   }
 
-  void _startIsbnScan() {
-    setState(() {
-      if (_scanTabController.index == 0) {
-        _isbnCameraController = MobileScannerController(
-          detectionSpeed: DetectionSpeed.normal,
-          facing: CameraFacing.back,
-          torchEnabled: false,
-          autoStart: false,
-        );
-      }
-      if (_scanTabController.index == 1) {
-        if (_isbnCameraController.autoStart) return;
-        _isbnCameraController.start();
-      }
-    });
-  }
+  // void _startIsbnScan() {
+  //   setState(() {
+  //     if (_scanTabController.index == 0) {
+  //       _isbnCameraController = MobileScannerController(
+  //         detectionSpeed: DetectionSpeed.normal,
+  //         facing: CameraFacing.back,
+  //         torchEnabled: false,
+  //         autoStart: false,
+  //       );
+  //     }
+  //     if (_scanTabController.index == 1) {
+  //       if (_isbnCameraController.autoStart) return;
+  //       _isbnCameraController.start();
+  //     }
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -116,74 +112,74 @@ class _SearchScanScreenState extends State<SearchScanScreen>
         body: TabBarView(
           controller: _scanTabController,
           children: [
-            SizedBox(
-              height: height,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: width,
-                    child: FutureBuilder<void>(
-                      future: _initializeControllerFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          return Transform.scale(
-                            scale: _controller.value.aspectRatio /
-                                MediaQuery.of(context).size.aspectRatio *
-                                0.4,
-                            child: CameraPreview(_controller),
-                          );
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: primaryColor,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                  ScanDescription(
-                    width: width,
-                    height: height,
-                    topText: '책장 또는 다량의 도서를 촬영해',
-                    bottomText: '책을 마이북에 등록할 수 있어요',
-                    icon: CupertinoIcons.camera_fill,
-                    isMyBookScan: true,
-                    onPressedScanButton: () async {
-                      try {
-                        await _initializeControllerFuture;
-
-                        final image = await _controller.takePicture();
-                        // File image =
-                        //     await FlutterExifRotation.rotateAndSaveImage(
-                        //   path: originImage.path,
-                        // );
-
-                        Size previewSize = _controller.value.previewSize!;
-
-                        final aosImagePath =
-                            await resizeAndroidPhoto(image.path, previewSize);
-                        final iosImagePath = await convertHeicToJpg(
-                            await resizeIosPhoto(image.path, previewSize));
-
-                        if (!mounted) return;
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => SearchScanListScreen(
-                              multiBookImagePath:
-                                  isIOS ? iosImagePath : aosImagePath,
-                            ),
-                          ),
-                        );
-                      } catch (e) {
-                        log('다중 도서 스캔 에러: $e');
-                        rethrow;
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
+            // SizedBox(
+            //   height: height,
+            //   child: Stack(
+            //     children: [
+            //       SizedBox(
+            //         width: width,
+            //         child: FutureBuilder<void>(
+            //           future: _initializeControllerFuture,
+            //           builder: (context, snapshot) {
+            //             if (snapshot.connectionState == ConnectionState.done) {
+            //               return Transform.scale(
+            //                 scale: _controller.value.aspectRatio /
+            //                     MediaQuery.of(context).size.aspectRatio *
+            //                     0.4,
+            //                 child: CameraPreview(_controller),
+            //               );
+            //             } else {
+            //               return const Center(
+            //                 child: CircularProgressIndicator(
+            //                   color: primaryColor,
+            //                 ),
+            //               );
+            //             }
+            //           },
+            //         ),
+            //       ),
+            //       ScanDescription(
+            //         width: width,
+            //         height: height,
+            //         topText: '책장 또는 다량의 도서를 촬영해',
+            //         bottomText: '책을 마이북에 등록할 수 있어요',
+            //         icon: CupertinoIcons.camera_fill,
+            //         isMyBookScan: true,
+            //         onPressedScanButton: () async {
+            //           try {
+            //             await _initializeControllerFuture;
+            //
+            //             final image = await _controller.takePicture();
+            //             // File image =
+            //             //     await FlutterExifRotation.rotateAndSaveImage(
+            //             //   path: originImage.path,
+            //             // );
+            //
+            //             Size previewSize = _controller.value.previewSize!;
+            //
+            //             final aosImagePath =
+            //                 await resizeAndroidPhoto(image.path, previewSize);
+            //             final iosImagePath = await convertHeicToJpg(
+            //                 await resizeIosPhoto(image.path, previewSize));
+            //
+            //             if (!mounted) return;
+            //             Navigator.of(context).pushReplacement(
+            //               MaterialPageRoute(
+            //                 builder: (_) => SearchScanListScreen(
+            //                   multiBookImagePath:
+            //                       isIOS ? iosImagePath : aosImagePath,
+            //                 ),
+            //               ),
+            //             );
+            //           } catch (e) {
+            //             log('다중 도서 스캔 에러: $e');
+            //             rethrow;
+            //           }
+            //         },
+            //       ),
+            //     ],
+            //   ),
+            // ),
             SizedBox(
               height: height,
               child: Stack(
@@ -278,7 +274,8 @@ class _SearchScanScreenState extends State<SearchScanScreen>
   ) {
     return TabBar(
       controller: tabController,
-      indicatorColor: commonWhiteColor,
+      indicatorColor: myBookScanBackgroundColor,
+      // indicatorColor: commonWhiteColor,
       labelColor: commonWhiteColor,
       labelStyle: commonButtonTextStyle,
       physics: const BouncingScrollPhysics(),

@@ -24,7 +24,6 @@ import 'package:mybrary/ui/home/components/home_book_count.dart';
 import 'package:mybrary/ui/home/components/home_interest_setting_button.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books.dart';
 import 'package:mybrary/ui/home/components/home_recommend_books_header.dart';
-import 'package:mybrary/ui/home/notification_list/notification_list_screen.dart';
 import 'package:mybrary/ui/profile/my_interests/my_interests_screen.dart';
 import 'package:mybrary/ui/search/search_detail/search_detail_screen.dart';
 import 'package:mybrary/utils/logics/common_utils.dart';
@@ -600,20 +599,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 'assets/svg/icon/barcode_${_initAppBarIsVisible ? 'black' : 'white'}.svg'),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 4.0, right: 24.0),
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const NotificationListScreen(),
-                ),
-              );
-            },
-            child: SvgPicture.asset(
-                'assets/svg/icon/notification_${_initAppBarIsVisible ? 'black' : 'white'}.svg'),
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 4.0, right: 24.0),
+        //   child: InkWell(
+        //     onTap: () {
+        //       Navigator.of(context).push(
+        //         MaterialPageRoute(
+        //           builder: (_) => const NotificationListScreen(),
+        //         ),
+        //       );
+        //     },
+        //     child: SvgPicture.asset(
+        //         'assets/svg/icon/notification_${_initAppBarIsVisible ? 'black' : 'white'}.svg'),
+        //   ),
+        // ),
       ],
     );
   }
